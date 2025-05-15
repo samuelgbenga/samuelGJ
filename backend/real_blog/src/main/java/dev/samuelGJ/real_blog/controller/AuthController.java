@@ -1,0 +1,110 @@
+package dev.samuelGJ.real_blog.controller;
+
+import dev.samuelGJ.real_blog.exception.AppException;
+import dev.samuelGJ.real_blog.exception.BlogApiException;
+import dev.samuelGJ.real_blog.model.role.Role;
+import dev.samuelGJ.real_blog.model.role.RoleName;
+import dev.samuelGJ.real_blog.model.user.User;
+import dev.samuelGJ.real_blog.payload.ApiResponse;
+import dev.samuelGJ.real_blog.payload.JwtAuthenticationResponse;
+import dev.samuelGJ.real_blog.payload.LoginRequest;
+import dev.samuelGJ.real_blog.payload.SignUpRequest;
+import dev.samuelGJ.real_blog.repository.RoleRepository;
+import dev.samuelGJ.real_blog.repository.UserRepository;
+import dev.samuelGJ.real_blog.security.JwtTokenProvider;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+	private static final String USER_ROLE_NOT_SET = "User role not set";
+
+
+	private final AuthenticationManager authenticationManager;
+
+
+	private final UserRepository userRepository;
+
+
+	private final RoleRepository roleRepository;
+
+
+	private final PasswordEncoder passwordEncoder;
+
+
+	private final JwtTokenProvider jwtTokenProvider;
+
+	@PostMapping("/signin")
+	public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		String jwt = jwtTokenProvider.generateToken(authentication);
+		return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+	}
+
+	@PostMapping("/signup")
+	public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+		if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
+			throw new BlogApiException(HttpStatus.BAD_REQUEST, "Username is already taken");
+		}
+
+		if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
+			throw new BlogApiException(HttpStatus.BAD_REQUEST, "Email is already taken");
+		}
+
+		String firstName = signUpRequest.getFirstName().toLowerCase();
+
+		String lastName = signUpRequest.getLastName().toLowerCase();
+
+		String username = signUpRequest.getUsername().toLowerCase();
+
+		String email = signUpRequest.getEmail().toLowerCase();
+
+		String password = passwordEncoder.encode(signUpRequest.getPassword());
+
+		User user = new User(firstName, lastName, username, email, password);
+
+		List<Role> roles = new ArrayList<>();
+
+		if (userRepository.count() == 0) {
+			roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+					.orElseThrow(() -> new AppException(USER_ROLE_NOT_SET)));
+			roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN)
+					.orElseThrow(() -> new AppException(USER_ROLE_NOT_SET)));
+		} else {
+			roles.add(roleRepository.findByName(RoleName.ROLE_USER)
+					.orElseThrow(() -> new AppException(USER_ROLE_NOT_SET)));
+		}
+
+		user.setRoles(roles);
+
+		User result = userRepository.save(user);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{userId}")
+				.buildAndExpand(result.getId()).toUri();
+
+		return ResponseEntity.created(location).body(new ApiResponse(Boolean.TRUE, "User registered successfully"));
+	}
+}
