@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import java.util.List;
 public class PostRequest {
 
 	@NotBlank
-	@Size(min = 10)
+	@Size(min = 5)
 	private String title;
 
 	@NotBlank
@@ -25,17 +25,4 @@ public class PostRequest {
 
 	private List<String> tags;
 
-	public List<String> getTags() {
-
-		return tags == null ? Collections.emptyList() : new ArrayList<>(tags);
-	}
-
-	public void setTags(List<String> tags) {
-
-		if (tags == null) {
-			this.tags = null;
-		} else {
-			this.tags = Collections.unmodifiableList(tags);
-		}
-	}
 }

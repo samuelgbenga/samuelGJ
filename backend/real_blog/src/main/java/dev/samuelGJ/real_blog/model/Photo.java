@@ -11,7 +11,8 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "photos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
 public class Photo extends UserDateAudit {
@@ -21,15 +22,9 @@ public class Photo extends UserDateAudit {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Column(name = "title")
-	private String title;
-
-	@NotBlank
 	@Column(name = "url")
 	private String url;
 
-	@NotBlank
 	@Column(name = "thumbnail_url")
 	private String thumbnailUrl;
 
@@ -37,15 +32,10 @@ public class Photo extends UserDateAudit {
 	@JoinColumn(name = "album_id")
 	private Album album;
 
-	public Photo(@NotBlank String title, @NotBlank String url, @NotBlank String thumbnailUrl, Album album) {
-		this.title = title;
+	public Photo(  String url, String thumbnailUrl, Album album) {
+
 		this.url = url;
 		this.thumbnailUrl = thumbnailUrl;
 		this.album = album;
-	}
-
-	@JsonIgnore
-	public Album getAlbum() {
-		return album;
 	}
 }

@@ -1,2 +1,16 @@
 todo:
+- implement standard loggers
+- update security
+- update dto
+- update exceptions
+- update the package structure
+- implement cloudinary for image upload
+- password constrains, unique user name constrains
 
+todo: immediate
+- update dto specifically the updated user endpoint (currently)
+- see who can delete admin or user role
+- what role is assigned at birth
+- give admin and take admin having issue there is a role issue
+- api/users have issue "invalid json body format"
+- api/users/{username}/profile has issue "json nested repeated"

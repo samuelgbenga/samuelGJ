@@ -2,16 +2,17 @@ package dev.samuelGJ.real_blog.service.impl;
 
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
+import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.model.Category;
 import dev.samuelGJ.real_blog.model.role.RoleName;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
+import dev.samuelGJ.real_blog.payload.request.CategoryRequestDto;
+import dev.samuelGJ.real_blog.payload.response.*;
 import dev.samuelGJ.real_blog.repository.CategoryRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.CategoryService;
 import dev.samuelGJ.real_blog.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,40 +31,46 @@ public class CategoryServiceImpl implements CategoryService {
 
 	private final CategoryRepository categoryRepository;
 
+	private final ModelMapper modelMapper;
+
 	@Override
-	public PagedResponse<Category> getAllCategories(int page, int size) {
+	public PagedResponse<CategoryResponseDto> getAllCategories(int page, int size) {
 		AppUtils.validatePageNumberAndSize(page, size);
 
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
 
 		Page<Category> categories = categoryRepository.findAll(pageable);
 
-		List<Category> content = categories.getNumberOfElements() == 0 ? Collections.emptyList() : categories.getContent();
+		List<CategoryResponseDto> content = categories.getNumberOfElements() == 0 ? Collections.emptyList() : categories.getContent().stream().map(this::fromCategoryToDto).toList();
 
 		return new PagedResponse<>(content, categories.getNumber(), categories.getSize(), categories.getTotalElements(),
 				categories.getTotalPages(), categories.isLast());
 	}
 
 	@Override
-	public ResponseEntity<Category> getCategory(Long id) {
+	public ResponseEntity<CategoryResponseDto> getCategory(Long id) {
 		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-		return new ResponseEntity<>(category, HttpStatus.OK);
+
+		return new ResponseEntity<>(fromCategoryToDto(category), HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<Category> addCategory(Category category, UserPrincipal currentUser) {
+	public ResponseEntity<CategoryResponseDto> addCategory(CategoryRequestDto dto, UserPrincipal currentUser) {
+
+		Category category = new Category();
+		category.setName(dto.name());
 		Category newCategory = categoryRepository.save(category);
-		return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
+		return new ResponseEntity<>(fromCategoryToDto(newCategory), HttpStatus.CREATED);
 	}
 
 	@Override
-	public ResponseEntity<Category> updateCategory(Long id, Category newCategory, UserPrincipal currentUser) {
+	public ResponseEntity<CategoryResponseDto> updateCategory(Long id, Category newCategory, UserPrincipal currentUser) {
 		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
 		if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			category.setName(newCategory.getName());
 			Category updatedCategory = categoryRepository.save(category);
-			return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+			return new ResponseEntity<>(fromCategoryToDto(updatedCategory), HttpStatus.OK);
 		}
 
 		throw new UnauthorizedException("You don't have permission to edit this category");
@@ -78,6 +85,20 @@ public class CategoryServiceImpl implements CategoryService {
 			return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted category"), HttpStatus.OK);
 		}
 		throw new UnauthorizedException("You don't have permission to delete this category");
+	}
+
+
+	private CategoryResponseDto fromCategoryToDto(Category category) {
+		CategoryResponseDto dto = modelMapper.map(category, CategoryResponseDto.class);
+
+		List<PostResponseDto> postDtos = category.getPosts()
+				.stream()
+				.map(post -> modelMapper.map(post, PostResponseDto.class))
+				.toList();
+
+		dto.setPostsResponseDtoList(postDtos);
+
+		return dto;
 	}
 }
 

@@ -5,15 +5,14 @@ import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
 import dev.samuelGJ.real_blog.model.Todo;
 import dev.samuelGJ.real_blog.model.user.User;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.repository.TodoRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.TodoService;
 import dev.samuelGJ.real_blog.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +28,7 @@ import static dev.samuelGJ.real_blog.utils.AppConstants.*;
 @Service
 @RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
-
-
 	private final TodoRepository todoRepository;
-
 
 	private final UserRepository userRepository;
 

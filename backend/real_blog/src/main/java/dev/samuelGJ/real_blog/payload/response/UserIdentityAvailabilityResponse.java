@@ -1,11 +1,11 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserIdentityAvailability {
+public class UserIdentityAvailabilityResponse {
 	private Boolean available;
 
 }

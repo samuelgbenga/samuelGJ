@@ -1,10 +1,10 @@
 package dev.samuelGJ.real_blog.service;
 
 import dev.samuelGJ.real_blog.model.Post;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
-import dev.samuelGJ.real_blog.payload.PostRequest;
-import dev.samuelGJ.real_blog.payload.PostResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.request.PostRequest;
+import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 
 /**
@@ -12,20 +12,20 @@ import dev.samuelGJ.real_blog.security.UserPrincipal;
  */
 public interface PostService {
 
-    PagedResponse<Post> getAllPosts(int page, int size);
+    PagedResponse<PostResponseDto> getAllPosts(int page, int size);
 
-    PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size);
+    PagedResponse<PostResponseDto> getPostsByCreatedBy(String username, int page, int size);
 
-    PagedResponse<Post> getPostsByCategory(Long id, int page, int size);
+    PagedResponse<PostResponseDto> getPostsByCategory(Long id, int page, int size);
 
-    PagedResponse<Post> getPostsByTag(Long id, int page, int size);
+    PagedResponse<PostResponseDto> getPostsByTag(Long id, int page, int size);
 
-    Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser);
+    PostResponseDto updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser);
 
     ApiResponse deletePost(Long id, UserPrincipal currentUser);
 
-    PostResponse addPost(PostRequest postRequest, UserPrincipal currentUser);
+    PostResponseDto addPost(PostRequest postRequest, UserPrincipal currentUser);
 
-    Post getPost(Long id);
+    PostResponseDto getPost(Long id);
 
 }

@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

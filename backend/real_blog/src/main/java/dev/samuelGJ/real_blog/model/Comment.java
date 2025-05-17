@@ -14,7 +14,8 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "comments")
 public class Comment extends UserDateAudit {
@@ -24,20 +25,7 @@ public class Comment extends UserDateAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    @NotBlank
-    @Size(min = 4, max = 50)
-    private String name;
-
-    @Column(name = "email")
-    @NotBlank
-    @Email
-    @Size(min = 4, max = 50)
-    private String email;
-
     @Column(name = "body")
-    @NotBlank
-    @Size(min = 10, message = "Comment body must be minimum 10 characters")
     private String body;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,17 +36,14 @@ public class Comment extends UserDateAudit {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment(@NotBlank @Size(min = 10, message = "Comment body must be minimum 10 characters") String body) {
-        this.body = body;
-    }
 
-    @JsonIgnore
-    public Post getPost() {
-        return post;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
-    }
+    @Column(name = "path", nullable = false)
+    private String path; // e.g., "1/4/9"
+
+    @Column(name = "depth", nullable = false)
+    private Integer depth;
 }

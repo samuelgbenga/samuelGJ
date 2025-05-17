@@ -2,10 +2,10 @@ package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.exception.ResponseEntityErrorException;
 import dev.samuelGJ.real_blog.model.Album;
-import dev.samuelGJ.real_blog.payload.AlbumResponse;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
-import dev.samuelGJ.real_blog.payload.PhotoResponse;
+import dev.samuelGJ.real_blog.payload.response.AlbumResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.payload.request.AlbumRequest;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
@@ -53,12 +53,12 @@ public class AlbumController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Album> addAlbum(@Valid @RequestBody AlbumRequest albumRequest, @CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<AlbumResponse> addAlbum(@Valid @RequestBody AlbumRequest albumRequest, @CurrentUser UserPrincipal currentUser) {
         return albumService.addAlbum(albumRequest, currentUser);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Album> getAlbum(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<AlbumResponse> getAlbum(@PathVariable(name = "id") Long id) {
         return albumService.getAlbum(id);
     }
 

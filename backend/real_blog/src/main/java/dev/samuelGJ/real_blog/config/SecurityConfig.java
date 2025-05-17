@@ -30,6 +30,10 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+				//.securityMatcher("/**")
+				.headers(headers -> headers
+						.frameOptions(frameOptions -> frameOptions.sameOrigin())
+				)
 				.csrf(csrf -> csrf.disable())
 				.cors(Customizer.withDefaults())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
@@ -51,13 +55,5 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-		return authConfig.getAuthenticationManager();
-	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 }

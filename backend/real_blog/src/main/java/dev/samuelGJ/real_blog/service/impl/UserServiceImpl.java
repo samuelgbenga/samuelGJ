@@ -10,6 +10,9 @@ import dev.samuelGJ.real_blog.model.user.Company;
 import dev.samuelGJ.real_blog.model.user.Geo;
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.*;
+import dev.samuelGJ.real_blog.payload.request.InfoRequest;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.UserIdentityAvailabilityResponse;
 import dev.samuelGJ.real_blog.repository.PostRepository;
 import dev.samuelGJ.real_blog.repository.RoleRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
@@ -46,15 +49,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserIdentityAvailability checkUsernameAvailability(String username) {
+	public UserIdentityAvailabilityResponse checkUsernameAvailability(String username) {
 		Boolean isAvailable = !userRepository.existsByUsername(username);
-		return new UserIdentityAvailability(isAvailable);
+		return new UserIdentityAvailabilityResponse(isAvailable);
 	}
 
 	@Override
-	public UserIdentityAvailability checkEmailAvailability(String email) {
+	public UserIdentityAvailabilityResponse checkEmailAvailability(String email) {
 		Boolean isAvailable = !userRepository.existsByEmail(email);
-		return new UserIdentityAvailability(isAvailable);
+		return new UserIdentityAvailabilityResponse(isAvailable);
 	}
 
 	@Override

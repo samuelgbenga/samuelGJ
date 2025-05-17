@@ -6,9 +6,8 @@ import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.model.role.RoleName;
 import dev.samuelGJ.real_blog.model.user.User;
-import dev.samuelGJ.real_blog.payload.AlbumResponse;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
+import dev.samuelGJ.real_blog.payload.UserSummary;
+import dev.samuelGJ.real_blog.payload.response.*;
 import dev.samuelGJ.real_blog.payload.request.AlbumRequest;
 import dev.samuelGJ.real_blog.repository.AlbumRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
@@ -64,29 +63,32 @@ public class AlbumServiceImpl implements AlbumService {
 					albums.getTotalPages(), albums.isLast());
 		}
 
-		List<AlbumResponse> albumResponses = Arrays.asList(modelMapper.map(albums.getContent(), AlbumResponse[].class));
+		List<AlbumResponse> albumResponses = List.of(albums.getContent().stream().map(this::mapToAlbumResponse).toArray(AlbumResponse[]::new));
 
 		return new PagedResponse<>(albumResponses, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(),
 				albums.isLast());
 	}
 
 	@Override
-	public ResponseEntity<Album> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
+	public ResponseEntity<AlbumResponse> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
 		User user = userRepository.getUser(currentUser);
 
 		Album album = new Album();
 
-		modelMapper.map(albumRequest, album);
-
 		album.setUser(user);
-		Album newAlbum = albumRepository.save(album);
-		return new ResponseEntity<>(newAlbum, HttpStatus.CREATED);
+		AlbumResponse response = mapToAlbumResponse(albumRepository.save(album));
+
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	@Override
-	public ResponseEntity<Album> getAlbum(Long id) {
+	public ResponseEntity<AlbumResponse> getAlbum(Long id) {
 		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
-		return new ResponseEntity<>(album, HttpStatus.OK);
+
+		AlbumResponse albumResponse = modelMapper.map(album, AlbumResponse.class);
+		albumResponse.setUserSummary(modelMapper.map(album.getUser(), UserSummary.class));
+
+		return new ResponseEntity<>(albumResponse, HttpStatus.OK);
 	}
 
 	@Override
@@ -122,15 +124,31 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public PagedResponse<Album> getUserAlbums(String username, int page, int size) {
+	public PagedResponse<AlbumResponse> getUserAlbums(String username, int page, int size) {
 		User user = userRepository.getUserByName(username);
 
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
 		Page<Album> albums = albumRepository.findByCreatedBy(user.getId(), pageable);
 
-		List<Album> content = albums.getNumberOfElements() > 0 ? albums.getContent() : Collections.emptyList();
+		List<AlbumResponse> content = albums.getNumberOfElements() > 0
+				? albums.getContent().stream().map(this::mapToAlbumResponse).toList()
+				: Collections.emptyList();
 
 		return new PagedResponse<>(content, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
+	}
+
+	private AlbumResponse mapToAlbumResponse(Album album){
+		AlbumResponse albumResponse = modelMapper.map(album, AlbumResponse.class);
+		albumResponse.setUserSummary(modelMapper.map(album.getUser(), UserSummary.class));
+
+		List<PhotoResponse> photosDto = album.getPhoto()
+				.stream()
+				.map(photo -> modelMapper.map(photo, PhotoResponse.class))
+				.toList();
+
+		albumResponse.setPhotoResponseList(photosDto);
+
+		return albumResponse;
 	}
 }

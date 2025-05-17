@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

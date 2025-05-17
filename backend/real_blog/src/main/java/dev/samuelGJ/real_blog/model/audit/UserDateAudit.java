@@ -5,13 +5,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
 
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-@Data
+@Getter
+@Setter
 @JsonIgnoreProperties(
 		value = { "createdBY", "updatedBy" },
 		allowGetters = true

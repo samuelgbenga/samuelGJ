@@ -11,7 +11,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfile {
+public class UserProfile  {
 	private Long id;
 	private String username;
 	private String firstName;

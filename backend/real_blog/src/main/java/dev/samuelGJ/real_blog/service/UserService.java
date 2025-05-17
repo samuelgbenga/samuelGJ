@@ -2,6 +2,9 @@ package dev.samuelGJ.real_blog.service;
 
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.*;
+import dev.samuelGJ.real_blog.payload.request.InfoRequest;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.UserIdentityAvailabilityResponse;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 
 /**
@@ -11,9 +14,9 @@ public interface UserService {
 
     UserSummary getCurrentUser(UserPrincipal currentUser);
 
-    UserIdentityAvailability checkUsernameAvailability(String username);
+    UserIdentityAvailabilityResponse checkUsernameAvailability(String username);
 
-    UserIdentityAvailability checkEmailAvailability(String email);
+    UserIdentityAvailabilityResponse checkEmailAvailability(String email);
 
     UserProfile getUserProfile(String username);
 

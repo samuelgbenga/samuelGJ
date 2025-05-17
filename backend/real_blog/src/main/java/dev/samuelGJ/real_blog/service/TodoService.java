@@ -2,8 +2,8 @@ package dev.samuelGJ.real_blog.service;
 
 
 import dev.samuelGJ.real_blog.model.Todo;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 
 public interface TodoService {

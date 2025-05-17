@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.response;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class ExceptionResponse {
 	private String error;
 	private Integer status;
-	private List<String> messages;
+	private List<String> messages = new ArrayList<>();
 	private Instant timestamp;
 
 	public ExceptionResponse(List<String> messages, String error, Integer status) {
@@ -21,18 +21,5 @@ public class ExceptionResponse {
 		this.timestamp = Instant.now();
 	}
 
-	public List<String> getMessages() {
-
-		return messages == null ? null : new ArrayList<>(messages);
-	}
-
-	public final void setMessages(List<String> messages) {
-
-		if (messages == null) {
-			this.messages = null;
-		} else {
-			this.messages = Collections.unmodifiableList(messages);
-		}
-	}
 
 }

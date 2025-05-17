@@ -24,10 +24,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-	@Autowired
-	private JwtTokenProvider tokenProvider;
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+
+	private final JwtTokenProvider tokenProvider;
+
+	private final  CustomUserDetailsService customUserDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

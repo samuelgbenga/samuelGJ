@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.payload;
+package dev.samuelGJ.real_blog.payload.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,16 +8,11 @@ import lombok.Data;
 @Data
 public class PhotoRequest {
 
-	@NotBlank
-	@Size(min = 3)
-	private String title;
 
 	@NotBlank
-	@Size(min = 10)
 	private String url;
 
 	@NotBlank
-	@Size(min = 10)
 	private String thumbnailUrl;
 
 	@NotNull

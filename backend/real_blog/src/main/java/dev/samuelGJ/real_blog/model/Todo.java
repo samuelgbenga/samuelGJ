@@ -33,8 +33,4 @@ public class Todo extends UserDateAudit {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@JsonIgnore
-	public User getUser() {
-		return user;
-	}
 }

@@ -1,6 +1,6 @@
 package dev.samuelGJ.real_blog.exception;
 
-import dev.samuelGJ.real_blog.payload.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

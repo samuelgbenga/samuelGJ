@@ -1,16 +1,15 @@
 package dev.samuelGJ.real_blog.controller;
 
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
-import dev.samuelGJ.real_blog.payload.PhotoRequest;
-import dev.samuelGJ.real_blog.payload.PhotoResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.request.PhotoRequest;
+import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.PhotoService;
 import dev.samuelGJ.real_blog.utils.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

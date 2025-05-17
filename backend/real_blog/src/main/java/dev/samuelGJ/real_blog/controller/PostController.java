@@ -1,10 +1,10 @@
 package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.model.Post;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
-import dev.samuelGJ.real_blog.payload.PostRequest;
-import dev.samuelGJ.real_blog.payload.PostResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.request.PostRequest;
+import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.PostService;
@@ -33,55 +33,55 @@ public class PostController {
 	private final PostService postService;
 
 	@GetMapping
-	public ResponseEntity<PagedResponse<Post>> getAllPosts(
+	public ResponseEntity<PagedResponse<PostResponseDto>> getAllPosts(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-		PagedResponse<Post> response = postService.getAllPosts(page, size);
+		PagedResponse<PostResponseDto> response = postService.getAllPosts(page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/category/{id}")
-	public ResponseEntity<PagedResponse<Post>> getPostsByCategory(
+	public ResponseEntity<PagedResponse<PostResponseDto>> getPostsByCategory(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
 			@PathVariable(name = "id") Long id) {
-		PagedResponse<Post> response = postService.getPostsByCategory(id, page, size);
+		PagedResponse<PostResponseDto> response = postService.getPostsByCategory(id, page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/tag/{id}")
-	public ResponseEntity<PagedResponse<Post>> getPostsByTag(
+	public ResponseEntity<PagedResponse<PostResponseDto>> getPostsByTag(
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
 			@PathVariable(name = "id") Long id) {
-		PagedResponse<Post> response = postService.getPostsByTag(id, page, size);
+		PagedResponse<PostResponseDto> response = postService.getPostsByTag(id, page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<PostResponse> addPost(@Valid @RequestBody PostRequest postRequest,
+	public ResponseEntity<PostResponseDto> addPost(@Valid @RequestBody PostRequest postRequest,
 												@CurrentUser UserPrincipal currentUser) {
-		PostResponse postResponse = postService.addPost(postRequest, currentUser);
+		PostResponseDto postResponse = postService.addPost(postRequest, currentUser);
 
 		return new ResponseEntity< >(postResponse, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Post> getPost(@PathVariable(name = "id") Long id) {
-		Post post = postService.getPost(id);
+	public ResponseEntity<PostResponseDto> getPost(@PathVariable(name = "id") Long id) {
+		PostResponseDto post = postService.getPost(id);
 
 		return new ResponseEntity< >(post, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<Post> updatePost(@PathVariable(name = "id") Long id,
+	public ResponseEntity<PostResponseDto> updatePost(@PathVariable(name = "id") Long id,
 			@Valid @RequestBody PostRequest newPostRequest, @CurrentUser UserPrincipal currentUser) {
-		Post post = postService.updatePost(id, newPostRequest, currentUser);
+		PostResponseDto post = postService.updatePost(id, newPostRequest, currentUser);
 
 		return new ResponseEntity< >(post, HttpStatus.OK);
 	}

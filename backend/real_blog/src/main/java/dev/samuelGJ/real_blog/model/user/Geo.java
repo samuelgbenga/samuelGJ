@@ -4,21 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import dev.samuelGJ.real_blog.model.audit.UserDateAudit;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "geo")
 public class Geo extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
-
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -37,51 +34,4 @@ public class Geo extends UserDateAudit {
 		this.lng = lng;
 	}
 
-	@JsonIgnore
-	@Override
-	public Long getCreatedBy() {
-		return super.getCreatedBy();
-	}
-
-	@JsonIgnore
-	@Override
-	public void setCreatedBy(Long createdBy) {
-		super.setCreatedBy(createdBy);
-	}
-
-	@JsonIgnore
-	@Override
-	public Long getUpdatedBy() {
-		return super.getUpdatedBy();
-	}
-
-	@JsonIgnore
-	@Override
-	public void setUpdatedBy(Long updatedBy) {
-		super.setUpdatedBy(updatedBy);
-	}
-
-	@JsonIgnore
-	@Override
-	public Instant getCreatedAt() {
-		return super.getCreatedAt();
-	}
-
-	@JsonIgnore
-	@Override
-	public void setCreatedAt(Instant createdAt) {
-		super.setCreatedAt(createdAt);
-	}
-
-	@JsonIgnore
-	@Override
-	public Instant getUpdatedAt() {
-		return super.getUpdatedAt();
-	}
-
-	@JsonIgnore
-	@Override
-	public void setUpdatedAt(Instant updatedAt) {
-		super.setUpdatedAt(updatedAt);
-	}
 }

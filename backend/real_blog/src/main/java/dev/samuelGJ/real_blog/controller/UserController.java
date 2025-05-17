@@ -2,16 +2,16 @@ package dev.samuelGJ.real_blog.controller;
 
 
 import dev.samuelGJ.real_blog.model.Album;
-import dev.samuelGJ.real_blog.model.Post;
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.*;
+import dev.samuelGJ.real_blog.payload.request.InfoRequest;
+import dev.samuelGJ.real_blog.payload.response.*;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.AlbumService;
 import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.service.UserService;
 import dev.samuelGJ.real_blog.utils.AppConstants;
-import io.swagger.v3.oas.models.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,16 +49,16 @@ public class UserController {
 	}
 
 	@GetMapping("/checkUsernameAvailability")
-	public ResponseEntity<UserIdentityAvailability> checkUsernameAvailability(@RequestParam(value = "username") String username) {
-		UserIdentityAvailability userIdentityAvailability = userService.checkUsernameAvailability(username);
+	public ResponseEntity<UserIdentityAvailabilityResponse> checkUsernameAvailability(@RequestParam(value = "username") String username) {
+		UserIdentityAvailabilityResponse userIdentityAvailabilityResponse = userService.checkUsernameAvailability(username);
 
-		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
+		return new ResponseEntity< >(userIdentityAvailabilityResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkEmailAvailability")
-	public ResponseEntity<UserIdentityAvailability> checkEmailAvailability(@RequestParam(value = "email") String email) {
-		UserIdentityAvailability userIdentityAvailability = userService.checkEmailAvailability(email);
-		return new ResponseEntity< >(userIdentityAvailability, HttpStatus.OK);
+	public ResponseEntity<UserIdentityAvailabilityResponse> checkEmailAvailability(@RequestParam(value = "email") String email) {
+		UserIdentityAvailabilityResponse userIdentityAvailabilityResponse = userService.checkEmailAvailability(email);
+		return new ResponseEntity< >(userIdentityAvailabilityResponse, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}/profile")
@@ -69,22 +69,22 @@ public class UserController {
 	}
 
 	@GetMapping("/{username}/posts")
-	public ResponseEntity<PagedResponse<Post>> getPostsCreatedBy(@PathVariable(value = "username") String username,
-																 @RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-																 @RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-		PagedResponse<Post> response = postService.getPostsByCreatedBy(username, page, size);
+	public ResponseEntity<PagedResponse<PostResponseDto>> getPostsCreatedBy(@PathVariable(value = "username") String username,
+																			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
+																			@RequestParam(value = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+		PagedResponse<PostResponseDto> response = postService.getPostsByCreatedBy(username, page, size);
 
 		return new ResponseEntity<  >(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}/albums")
-	public ResponseEntity<PagedResponse<Album>> getUserAlbums(@PathVariable(name = "username") String username,
+	public ResponseEntity<PagedResponse<AlbumResponse>> getUserAlbums(@PathVariable(name = "username") String username,
 															  @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 															  @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		PagedResponse<Album> response = albumService.getUserAlbums(username, page, size);
+		PagedResponse<AlbumResponse> response = albumService.getUserAlbums(username, page, size);
 
-		return new ResponseEntity<  >(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -107,7 +107,7 @@ public class UserController {
 	@DeleteMapping("/{username}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> deleteUser(@PathVariable(value = "username") String username,
-												   @CurrentUser UserPrincipal currentUser) {
+												  @CurrentUser UserPrincipal currentUser) {
 		ApiResponse apiResponse = userService.deleteUser(username, currentUser);
 
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);

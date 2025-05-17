@@ -33,22 +33,6 @@ public class Album extends UserDateAudit {
 	private User user;
 
 	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Photo> photo;
+	private List<Photo> photo = new ArrayList<>();
 
-	@JsonIgnore
-	public User getUser() {
-		return user;
-	}
-
-	public List<Photo> getPhoto() {
-		return this.photo == null ? null : new ArrayList<>(this.photo);
-	}
-
-	public void setPhoto(List<Photo> photo) {
-		if (photo == null) {
-			this.photo = null;
-		} else {
-			this.photo = Collections.unmodifiableList(photo);
-		}
-	}
 }

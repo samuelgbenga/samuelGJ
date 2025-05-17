@@ -1,26 +1,18 @@
 package dev.samuelGJ.real_blog.payload;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
+
+@Data
+@NoArgsConstructor
 public abstract class DateAuditPayload {
 
 	private Instant createdAt;
 
 	private Instant updatedAt;
 
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
 
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Instant getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Instant updatedAt) {
-		this.updatedAt = updatedAt;
-	}
 }

@@ -6,18 +6,18 @@ import dev.samuelGJ.real_blog.exception.UnauthorizedException;
 import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.model.role.RoleName;
-import dev.samuelGJ.real_blog.payload.ApiResponse;
-import dev.samuelGJ.real_blog.payload.PagedResponse;
-import dev.samuelGJ.real_blog.payload.PhotoRequest;
-import dev.samuelGJ.real_blog.payload.PhotoResponse;
+import dev.samuelGJ.real_blog.payload.response.ApiResponse;
+import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.request.PhotoRequest;
+import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.repository.AlbumRepository;
 import dev.samuelGJ.real_blog.repository.PhotoRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.PhotoService;
 import dev.samuelGJ.real_blog.utils.AppConstants;
 import dev.samuelGJ.real_blog.utils.AppUtils;
+import dev.samuelGJ.real_blog.utils.EntityMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,8 +51,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 		List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
 		for (Photo photo : photos.getContent()) {
-			photoResponses.add(new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
-					photo.getThumbnailUrl(), photo.getAlbum().getId()));
+			photoResponses.add(EntityMapper.fromPhotoToDto(photo));
 		}
 
 		if (photos.getNumberOfElements() == 0) {
@@ -68,8 +67,7 @@ public class PhotoServiceImpl implements PhotoService {
 	public PhotoResponse getPhoto(Long id) {
 		Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
 
-		return new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
-				photo.getThumbnailUrl(), photo.getAlbum().getId());
+		return EntityMapper.fromPhotoToDto(photo);
 	}
 
 	@Override
@@ -79,12 +77,11 @@ public class PhotoServiceImpl implements PhotoService {
 		Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO, ID, id));
 		if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
 				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
-			photo.setTitle(photoRequest.getTitle());
+
 			photo.setThumbnailUrl(photoRequest.getThumbnailUrl());
 			photo.setAlbum(album);
 			Photo updatedPhoto = photoRepository.save(photo);
-			return new PhotoResponse(updatedPhoto.getId(), updatedPhoto.getTitle(),
-					updatedPhoto.getUrl(), updatedPhoto.getThumbnailUrl(), updatedPhoto.getAlbum().getId());
+			return EntityMapper.fromPhotoToDto(updatedPhoto);
 		}
 
 		ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo");
@@ -97,10 +94,10 @@ public class PhotoServiceImpl implements PhotoService {
 		Album album = albumRepository.findById(photoRequest.getAlbumId())
 				.orElseThrow(() -> new ResourceNotFoundException(ALBUM, ID, photoRequest.getAlbumId()));
 		if (album.getUser().getId().equals(currentUser.getId())) {
-			Photo photo = new Photo(photoRequest.getTitle(), photoRequest.getUrl(), photoRequest.getThumbnailUrl(),
+			Photo photo = new Photo( photoRequest.getUrl(), photoRequest.getThumbnailUrl(),
 					album);
 			Photo newPhoto = photoRepository.save(photo);
-			return new PhotoResponse(newPhoto.getId(), newPhoto.getTitle(), newPhoto.getUrl(),
+			return new PhotoResponse(newPhoto.getId(), newPhoto.getUrl(),
 					newPhoto.getThumbnailUrl(), newPhoto.getAlbum().getId());
 		}
 
@@ -133,8 +130,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 		List<PhotoResponse> photoResponses = new ArrayList<>(photos.getContent().size());
 		for (Photo photo : photos.getContent()) {
-			photoResponses.add(new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
-					photo.getThumbnailUrl(), photo.getAlbum().getId()));
+			photoResponses.add(EntityMapper.fromPhotoToDto(photo));
 		}
 
 		return new PagedResponse<>(photoResponses, photos.getNumber(), photos.getSize(), photos.getTotalElements(),
