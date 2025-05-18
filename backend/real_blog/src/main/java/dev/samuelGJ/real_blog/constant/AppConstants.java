@@ -1,4 +1,4 @@
-package dev.samuelGJ.real_blog.utils;
+package dev.samuelGJ.real_blog.constant;
 
 public class AppConstants {
 	public static final String DEFAULT_PAGE_NUMBER = "0";

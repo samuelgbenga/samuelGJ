@@ -25,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -110,28 +109,28 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public List<CommentResponseDto> getComment(Long postId, Long id) {
 		Post post = postRepository.findById(postId)
-				.orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+				.orElseThrow(() -> new ResourceNotFoundException(POST_STR));
 		Comment comment = commentRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR));
 		if (comment.getPost().getId().equals(post.getId())) {
 			List<Comment> flatComments = commentRepository.findByPathStartingWith(comment.getPath());
 			List<CommentResponseDto> thread = buildCommentTree(flatComments);
 			return thread;
 		}
 
-		throw new BlogApiException(HttpStatus.BAD_REQUEST, COMMENT_DOES_NOT_BELONG_TO_POST);
+		throw new BlogApiException( COMMENT_DOES_NOT_BELONG_TO_POST);
 	}
 
 	@Override
 	public Comment updateComment(Long postId, Long id, CommentRequest commentRequest,
 			UserPrincipal currentUser) {
 		Post post = postRepository.findById(postId)
-				.orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+				.orElseThrow(() -> new ResourceNotFoundException(POST_STR));
 		Comment comment = commentRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR));
 
 		if (!comment.getPost().getId().equals(post.getId())) {
-			throw new BlogApiException(HttpStatus.BAD_REQUEST, COMMENT_DOES_NOT_BELONG_TO_POST);
+			throw new BlogApiException( COMMENT_DOES_NOT_BELONG_TO_POST);
 		}
 
 		if (comment.getUser().getId().equals(currentUser.getId())
@@ -140,15 +139,15 @@ public class CommentServiceImpl implements CommentService {
 			return commentRepository.save(comment);
 		}
 
-		throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO + "update" + THIS_COMMENT);
+		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + "update" + THIS_COMMENT);
 	}
 
 	@Override
 	public ApiResponse deleteComment(Long postId, Long id, UserPrincipal currentUser) {
 		Post post = postRepository.findById(postId)
-				.orElseThrow(() -> new ResourceNotFoundException(POST_STR, ID_STR, postId));
+				.orElseThrow(() -> new ResourceNotFoundException(POST_STR));
 		Comment comment = commentRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR, ID_STR, id));
+				.orElseThrow(() -> new ResourceNotFoundException(COMMENT_STR));
 
 		if (!comment.getPost().getId().equals(post.getId())) {
 			return new ApiResponse(Boolean.FALSE, COMMENT_DOES_NOT_BELONG_TO_POST);
@@ -160,7 +159,7 @@ public class CommentServiceImpl implements CommentService {
 			return new ApiResponse(Boolean.TRUE, "You successfully deleted comment");
 		}
 
-		throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO + "delete" + THIS_COMMENT);
+		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + "delete" + THIS_COMMENT);
 	}
 
 

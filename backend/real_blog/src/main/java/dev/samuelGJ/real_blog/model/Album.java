@@ -32,7 +32,7 @@ public class Album extends UserDateAudit {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Photo> photo = new ArrayList<>();
 
 }

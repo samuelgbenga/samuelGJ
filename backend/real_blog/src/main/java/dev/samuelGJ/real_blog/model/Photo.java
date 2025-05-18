@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*; // Changed from javax.persistence.*
 import lombok.*;
 
+import java.util.UUID;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Getter
@@ -19,8 +21,7 @@ public class Photo extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 
 	@Column(name = "url")
 	private String url;
@@ -28,14 +29,19 @@ public class Photo extends UserDateAudit {
 	@Column(name = "thumbnail_url")
 	private String thumbnailUrl;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "album_id")
-	private Album album;
+	public Photo(  String url, String thumbnailUrl) {
 
-	public Photo(  String url, String thumbnailUrl, Album album) {
-
+		this.id = UUID.randomUUID().toString();
 		this.url = url;
 		this.thumbnailUrl = thumbnailUrl;
-		this.album = album;
+
 	}
+
+	public Photo( String publicId, String url, String thumbnailUrl) {
+		id = publicId;
+		this.url = url;
+		this.thumbnailUrl = thumbnailUrl;
+
+	}
+
 }

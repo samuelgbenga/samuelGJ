@@ -1,6 +1,5 @@
 package dev.samuelGJ.real_blog.controller;
 
-import dev.samuelGJ.real_blog.model.Post;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.payload.request.PostRequest;
@@ -8,7 +7,7 @@ import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.PostService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

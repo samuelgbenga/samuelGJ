@@ -1,8 +1,9 @@
 package dev.samuelGJ.real_blog.service;
 
-import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.*;
 import dev.samuelGJ.real_blog.payload.request.InfoRequest;
+import dev.samuelGJ.real_blog.payload.request.AddUserRequestDto;
+import dev.samuelGJ.real_blog.payload.request.UserUpdateDto;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.UserIdentityAvailabilityResponse;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
@@ -20,9 +21,9 @@ public interface UserService {
 
     UserProfile getUserProfile(String username);
 
-    User addUser(User user);
+    UserProfile addUser(AddUserRequestDto user);
 
-    User updateUser(User newUser, String username, UserPrincipal currentUser);
+    UserProfile updateUser(UserUpdateDto dto, String username, UserPrincipal currentUser);
 
     ApiResponse deleteUser(String username, UserPrincipal currentUser);
 

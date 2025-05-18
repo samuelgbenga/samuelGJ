@@ -18,8 +18,7 @@ import dev.samuelGJ.real_blog.repository.TagRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.PostService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
-import dev.samuelGJ.real_blog.utils.AppUtils;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import dev.samuelGJ.real_blog.utils.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static dev.samuelGJ.real_blog.utils.AppConstants.*;
+import static dev.samuelGJ.real_blog.constant.AppConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -89,9 +88,9 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponseDto updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
 		Post post = postRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+				.orElseThrow(() -> new ResourceNotFoundException(POST));
 		Category category = categoryRepository.findById(newPostRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, newPostRequest.getCategoryId()));
+				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY));
 
 		if (post.getUser().getId().equals(currentUser.getId()) ||
 				currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
@@ -102,13 +101,13 @@ public class PostServiceImpl implements PostService {
 			return mapToDto(updated);
 		}
 
-		throw new UnauthorizedException(new ApiResponse(false, "You don't have permission to edit this post"));
+		throw new UnauthorizedException("You don't have permission to edit this post");
 	}
 
 	@Override
 	public ApiResponse deletePost(Long id, UserPrincipal currentUser) {
 		Post post = postRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+				.orElseThrow(() -> new ResourceNotFoundException(POST));
 
 		if (post.getUser().getId().equals(currentUser.getId()) ||
 				currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
@@ -116,16 +115,16 @@ public class PostServiceImpl implements PostService {
 			return new ApiResponse(true, "You successfully deleted post");
 		}
 
-		throw new UnauthorizedException(new ApiResponse(false, "You don't have permission to delete this post"));
+		throw new UnauthorizedException( "You don't have permission to delete this post");
 	}
 
 	@Override
 	public PostResponseDto addPost(PostRequest postRequest, UserPrincipal currentUser) {
 		User user = userRepository.findById(currentUser.getId())
-				.orElseThrow(() -> new ResourceNotFoundException(USER, ID, currentUser.getId()));
+				.orElseThrow(() -> new ResourceNotFoundException(USER));
 
 		Category category = categoryRepository.findById(postRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
+				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY));
 
 		List<Tag> tags = postRequest.getTags().stream()
 				.map(tagName -> {
@@ -148,7 +147,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponseDto getPost(Long id) {
 		Post post = postRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+				.orElseThrow(() -> new ResourceNotFoundException(POST));
 		return mapToDto(post);
 	}
 
@@ -161,7 +160,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	private PostResponseDto mapToDto(Post post) {
-		PostResponseDto dto = EntityMapper.mapToPostResponse(post);
-		return dto;
+		return EntityMapper.mapToPostResponse(post);
 	}
 }

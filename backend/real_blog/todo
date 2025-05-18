@@ -1,16 +1,19 @@
 todo:
 - implement standard loggers
 - update security
-- update dto
-- update exceptions
-- update the package structure
-- implement cloudinary for image upload
 - password constrains, unique user name constrains
 
-todo: immediate
-- update dto specifically the updated user endpoint (currently)
-- see who can delete admin or user role
-- what role is assigned at birth
-- give admin and take admin having issue there is a role issue
-- api/users have issue "invalid json body format"
-- api/users/{username}/profile has issue "json nested repeated"
+
+todo: next
+- conclude the userService class add and drop.
+- implement password and email constrains and unique user name constrains
+- convert all written string to constants and move the ones in every class
+
+
+- forget password
+- change password
+- reset password
+
+
+todo: some endpoint to remove
+- add standalone tag endpoint

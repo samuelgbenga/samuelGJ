@@ -1,7 +1,5 @@
 package dev.samuelGJ.real_blog.controller;
 
-import dev.samuelGJ.real_blog.exception.ResponseEntityErrorException;
-import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.payload.response.AlbumResponse;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
@@ -11,36 +9,23 @@ import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.AlbumService;
 import dev.samuelGJ.real_blog.service.PhotoService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import dev.samuelGJ.real_blog.utils.AppUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/albums")
 @RequiredArgsConstructor
 public class AlbumController {
     private final AlbumService albumService;
-    private final PhotoService photoService;
     private final AppUtils appUtils;
 
-    @ExceptionHandler(ResponseEntityErrorException.class)
-    public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
-        return exception.getApiResponse();
-    }
 
     @GetMapping
     public PagedResponse<AlbumResponse> getAllAlbums(
@@ -51,9 +36,9 @@ public class AlbumController {
         return albumService.getAllAlbums(page, size);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<AlbumResponse> addAlbum(@Valid @RequestBody AlbumRequest albumRequest, @CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<AlbumResponse> addAlbum(@Valid @ModelAttribute AlbumRequest albumRequest, @CurrentUser UserPrincipal currentUser) {
         return albumService.addAlbum(albumRequest, currentUser);
     }
 
@@ -75,13 +60,4 @@ public class AlbumController {
         return albumService.deleteAlbum(id, currentUser);
     }
 
-    @GetMapping("/{id}/photos")
-    public ResponseEntity<PagedResponse<PhotoResponse>> getAllPhotosByAlbum(@PathVariable(name = "id") Long id,
-                                                                            @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-                                                                            @RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
-
-        PagedResponse<PhotoResponse> response = photoService.getAllPhotosByAlbum(id, page, size);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }

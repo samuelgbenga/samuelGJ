@@ -2,7 +2,6 @@ package dev.samuelGJ.real_blog.service.impl;
 
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
-import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.model.Category;
 import dev.samuelGJ.real_blog.model.role.RoleName;
 import dev.samuelGJ.real_blog.payload.request.CategoryRequestDto;
@@ -49,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public ResponseEntity<CategoryResponseDto> getCategory(Long id) {
-		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found"));
 
 		return new ResponseEntity<>(fromCategoryToDto(category), HttpStatus.OK);
 	}
@@ -64,11 +63,11 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public ResponseEntity<CategoryResponseDto> updateCategory(Long id, Category newCategory, UserPrincipal currentUser) {
-		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+	public ResponseEntity<CategoryResponseDto> updateCategory(Long id, CategoryRequestDto dto, UserPrincipal currentUser) {
+		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found"));
 		if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
-			category.setName(newCategory.getName());
+			category.setName(dto.name());
 			Category updatedCategory = categoryRepository.save(category);
 			return new ResponseEntity<>(fromCategoryToDto(updatedCategory), HttpStatus.OK);
 		}
@@ -78,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) {
-		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("category", "id", id));
+		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("category Not found"));
 		if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			categoryRepository.deleteById(id);

@@ -9,7 +9,7 @@ import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.CategoryService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -55,14 +55,14 @@ public class CategoryController {
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<CategoryResponseDto> updateCategory(@PathVariable(name = "id") Long id,
-			@Valid @RequestBody Category category, @CurrentUser UserPrincipal currentUser) throws UnauthorizedException {
+			@Valid @RequestBody CategoryRequestDto category, @CurrentUser UserPrincipal currentUser) {
 		return categoryService.updateCategory(id, category, currentUser);
 	}
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> deleteCategory(@PathVariable(name = "id") Long id,
-													  @CurrentUser UserPrincipal currentUser) throws UnauthorizedException {
+													  @CurrentUser UserPrincipal currentUser)  {
 		return categoryService.deleteCategory(id, currentUser);
 	}
 

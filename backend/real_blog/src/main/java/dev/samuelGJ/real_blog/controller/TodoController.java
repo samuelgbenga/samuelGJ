@@ -1,12 +1,14 @@
 package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.model.Todo;
+import dev.samuelGJ.real_blog.payload.request.TodoRequestDto;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.TodoResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.TodoService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,37 +36,37 @@ public class TodoController {
 
 	@GetMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<PagedResponse<Todo>> getAllTodos(
+	public ResponseEntity<PagedResponse<TodoResponseDto>> getAllTodos(
 			@CurrentUser UserPrincipal currentUser,
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		PagedResponse<Todo> response = todoService.getAllTodos(currentUser, page, size);
+		PagedResponse<TodoResponseDto> response = todoService.getAllTodos(currentUser, page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Todo> addTodo(@Valid @RequestBody Todo todo, @CurrentUser UserPrincipal currentUser) {
-		Todo newTodo = todoService.addTodo(todo, currentUser);
+	public ResponseEntity<TodoResponseDto> addTodo(@Valid @RequestBody TodoRequestDto todo, @CurrentUser UserPrincipal currentUser) {
+		TodoResponseDto newTodo = todoService.addTodo(todo, currentUser);
 
 		return new ResponseEntity< >(newTodo, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Todo> getTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
-		Todo todo = todoService.getTodo(id, currentUser);
+	public ResponseEntity<TodoResponseDto> getTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+		TodoResponseDto todo = todoService.getTodo(id, currentUser);
 
 		return new ResponseEntity< >(todo, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Todo> updateTodo(@PathVariable(value = "id") Long id, @Valid @RequestBody Todo newTodo,
+	public ResponseEntity<TodoResponseDto> updateTodo(@PathVariable(value = "id") Long id, @Valid @RequestBody TodoRequestDto newTodo,
 			@CurrentUser UserPrincipal currentUser) {
-		Todo updatedTodo = todoService.updateTodo(id, newTodo, currentUser);
+		TodoResponseDto updatedTodo = todoService.updateTodo(id, newTodo, currentUser);
 
 		return new ResponseEntity< >(updatedTodo, HttpStatus.OK);
 	}
@@ -79,18 +81,18 @@ public class TodoController {
 
 	@PutMapping("/{id}/complete")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Todo> completeTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<TodoResponseDto> completeTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
 
-		Todo todo = todoService.completeTodo(id, currentUser);
+		TodoResponseDto todo = todoService.completeTodo(id, currentUser);
 
 		return new ResponseEntity< >(todo, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}/unComplete")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Todo> unCompleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<TodoResponseDto> unCompleteTodo(@PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser) {
 
-		Todo todo = todoService.unCompleteTodo(id, currentUser);
+		TodoResponseDto todo = todoService.unCompleteTodo(id, currentUser);
 
 		return new ResponseEntity< >(todo, HttpStatus.OK);
 	}

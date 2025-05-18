@@ -14,7 +14,8 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "tags")
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -29,7 +30,6 @@ public class Tag extends UserDateAudit {
 	@Column(name = "name")
 	private String name;
 
-	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
 	private List<Post> posts = new ArrayList<>();

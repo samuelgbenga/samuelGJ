@@ -4,22 +4,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.samuelGJ.real_blog.payload.UserDateAuditPayload;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class PhotoResponse extends UserDateAuditPayload {
-	private Long id;
+	private String id;
 
 	private String url;
 	private String thumbnailUrl;
-	private Long albumId;
 
-	public PhotoResponse(Long id, String url, String thumbnailUrl, Long albumId) {
+
+	public PhotoResponse(String id, String url, String thumbnailUrl) {
 		this.id = id;
 		this.url = url;
 		this.thumbnailUrl = thumbnailUrl;
-		this.albumId = albumId;
+
 	}
 
 }

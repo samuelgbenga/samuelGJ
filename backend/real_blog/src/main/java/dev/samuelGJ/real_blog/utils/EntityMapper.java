@@ -1,6 +1,5 @@
 package dev.samuelGJ.real_blog.utils;
 
-import dev.samuelGJ.real_blog.model.Category;
 import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.model.Post;
 import dev.samuelGJ.real_blog.model.Tag;
@@ -31,7 +30,7 @@ public class EntityMapper {
 
     public static PhotoResponse fromPhotoToDto(Photo photo){
         PhotoResponse photoResponse = new PhotoResponse(photo.getId(), photo.getUrl(),
-                photo.getThumbnailUrl(), photo.getAlbum().getId());
+                photo.getThumbnailUrl());
 
         photoResponse.setCreatedBy(photo.getCreatedBy());
         photoResponse.setUpdatedBy(photo.getUpdatedBy());

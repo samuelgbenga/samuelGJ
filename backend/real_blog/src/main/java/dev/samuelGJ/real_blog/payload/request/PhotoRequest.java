@@ -3,18 +3,16 @@ package dev.samuelGJ.real_blog.payload.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-@Data
-public class PhotoRequest {
+import lombok.NoArgsConstructor;
 
 
-	@NotBlank
-	private String url;
+public record PhotoRequest (	@NotBlank
+								String url,
 
-	@NotBlank
-	private String thumbnailUrl;
+										@NotBlank
+									 String thumbnailUrl){
 
-	@NotNull
-	private Long albumId;
 }
+

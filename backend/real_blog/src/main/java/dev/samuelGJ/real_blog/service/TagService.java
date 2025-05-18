@@ -1,20 +1,21 @@
 package dev.samuelGJ.real_blog.service;
 
 
-import dev.samuelGJ.real_blog.model.Tag;
+import dev.samuelGJ.real_blog.payload.request.TagRequestDto;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.TagResponseDto;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 
 public interface TagService {
 
-	PagedResponse<Tag> getAllTags(int page, int size);
+	PagedResponse<TagResponseDto> getAllTags(int page, int size);
 
-	Tag getTag(Long id);
+	TagResponseDto getTag(Long id);
 
-	Tag addTag(Tag tag, UserPrincipal currentUser);
+	TagResponseDto addTag(TagRequestDto dto, UserPrincipal currentUser);
 
-	Tag updateTag(Long id, Tag newTag, UserPrincipal currentUser);
+	TagResponseDto updateTag(Long id, TagRequestDto dto, UserPrincipal currentUser);
 
 	ApiResponse deleteTag(Long id, UserPrincipal currentUser);
 

@@ -8,7 +8,7 @@ import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.CommentService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

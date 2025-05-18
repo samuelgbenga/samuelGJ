@@ -2,12 +2,14 @@ package dev.samuelGJ.real_blog.controller;
 
 
 import dev.samuelGJ.real_blog.model.Tag;
+import dev.samuelGJ.real_blog.payload.request.TagRequestDto;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.TagResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.TagService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,35 +34,35 @@ public class TagController {
 	private final TagService tagService;
 
 	@GetMapping
-	public ResponseEntity<PagedResponse<Tag>> getAllTags(
+	public ResponseEntity<PagedResponse<TagResponseDto>> getAllTags(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		PagedResponse<Tag> response = tagService.getAllTags(page, size);
+		PagedResponse<TagResponseDto> response = tagService.getAllTags(page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Tag> addTag(@Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser) {
-		Tag newTag = tagService.addTag(tag, currentUser);
+	public ResponseEntity<TagResponseDto> addTag(@Valid @RequestBody TagRequestDto tag, @CurrentUser UserPrincipal currentUser) {
+		TagResponseDto newTag = tagService.addTag(tag, currentUser);
 
 		return new ResponseEntity< >(newTag, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Tag> getTag(@PathVariable(name = "id") Long id) {
-		Tag tag = tagService.getTag(id);
+	public ResponseEntity<TagResponseDto> getTag(@PathVariable(name = "id") Long id) {
+		TagResponseDto tag = tagService.getTag(id);
 
 		return new ResponseEntity< >(tag, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<Tag> updateTag(@PathVariable(name = "id") Long id, @Valid @RequestBody Tag tag, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<TagResponseDto> updateTag(@PathVariable(name = "id") Long id, @Valid @RequestBody TagRequestDto tag, @CurrentUser UserPrincipal currentUser) {
 
-		Tag updatedTag = tagService.updateTag(id, tag, currentUser);
+		TagResponseDto updatedTag = tagService.updateTag(id, tag, currentUser);
 
 		return new ResponseEntity< >(updatedTag, HttpStatus.OK);
 	}

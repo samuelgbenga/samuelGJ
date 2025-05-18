@@ -4,6 +4,7 @@ package dev.samuelGJ.real_blog.service.impl;
 import dev.samuelGJ.real_blog.exception.BlogApiException;
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.model.Album;
+import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.model.role.RoleName;
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.UserSummary;
@@ -13,6 +14,7 @@ import dev.samuelGJ.real_blog.repository.AlbumRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.AlbumService;
+import dev.samuelGJ.real_blog.service.PhotoService;
 import dev.samuelGJ.real_blog.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,11 +27,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static dev.samuelGJ.real_blog.utils.AppConstants.ID;
+import static dev.samuelGJ.real_blog.constant.AppConstants.ID;
 
 
 @Service
@@ -49,6 +50,8 @@ public class AlbumServiceImpl implements AlbumService {
 
 
 	private final ModelMapper modelMapper;
+
+	private final PhotoService photoService;
 
 	@Override
 	public PagedResponse<AlbumResponse> getAllAlbums(int page, int size) {
@@ -75,7 +78,14 @@ public class AlbumServiceImpl implements AlbumService {
 
 		Album album = new Album();
 
+		album.setTitle(albumRequest.getTitle());
+
 		album.setUser(user);
+
+		 List<Photo> photos = albumRequest.getMultipartFiles().stream().map(multipartFile -> photoService.addPhoto(multipartFile)).toList();
+
+		 album.setPhoto(photos);
+
 		AlbumResponse response = mapToAlbumResponse(albumRepository.save(album));
 
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -83,7 +93,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public ResponseEntity<AlbumResponse> getAlbum(Long id) {
-		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
+		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR));
 
 		AlbumResponse albumResponse = modelMapper.map(album, AlbumResponse.class);
 		albumResponse.setUserSummary(modelMapper.map(album.getUser(), UserSummary.class));
@@ -93,11 +103,13 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
-		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
+		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR));
 		User user = userRepository.getUser(currentUser);
 		if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			album.setTitle(newAlbum.getTitle());
+
+			// todo: add more photos to album
 			Album updatedAlbum = albumRepository.save(album);
 
 			AlbumResponse albumResponse = new AlbumResponse();
@@ -107,12 +119,12 @@ public class AlbumServiceImpl implements AlbumService {
 			return new ResponseEntity<>(albumResponse, HttpStatus.OK);
 		}
 
-		throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		throw new BlogApiException(YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
 	}
 
 	@Override
 	public ResponseEntity<ApiResponse> deleteAlbum(Long id, UserPrincipal currentUser) {
-		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR, ID, id));
+		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR));
 		User user = userRepository.getUser(currentUser);
 		if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
@@ -120,7 +132,7 @@ public class AlbumServiceImpl implements AlbumService {
 			return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted album"), HttpStatus.OK);
 		}
 
-		throw new BlogApiException(HttpStatus.UNAUTHORIZED, YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
+		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO_MAKE_THIS_OPERATION);
 	}
 
 	@Override
@@ -137,6 +149,8 @@ public class AlbumServiceImpl implements AlbumService {
 
 		return new PagedResponse<>(content, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(), albums.isLast());
 	}
+
+	// todo: add more photos to album
 
 	private AlbumResponse mapToAlbumResponse(Album album){
 		AlbumResponse albumResponse = modelMapper.map(album, AlbumResponse.class);

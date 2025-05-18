@@ -1,17 +1,18 @@
 package dev.samuelGJ.real_blog.controller;
 
 
-import dev.samuelGJ.real_blog.model.Album;
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.*;
+import dev.samuelGJ.real_blog.payload.request.AddUserRequestDto;
 import dev.samuelGJ.real_blog.payload.request.InfoRequest;
+import dev.samuelGJ.real_blog.payload.request.UserUpdateDto;
 import dev.samuelGJ.real_blog.payload.response.*;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.AlbumService;
 import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.service.UserService;
-import dev.samuelGJ.real_blog.utils.AppConstants;
+import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -89,17 +90,17 @@ public class UserController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-		User newUser = userService.addUser(user);
+	public ResponseEntity<UserProfile> addUser(@Valid @RequestBody AddUserRequestDto user) {
+		UserProfile newUser = userService.addUser(user);
 
 		return new ResponseEntity< >(newUser, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{username}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<User> updateUser(@Valid @RequestBody User newUser,
+	public ResponseEntity<UserProfile> updateUser(@Valid @RequestBody UserUpdateDto newUser,
 			@PathVariable(value = "username") String username, @CurrentUser UserPrincipal currentUser) {
-		User updatedUSer = userService.updateUser(newUser, username, currentUser);
+		UserProfile updatedUSer = userService.updateUser(newUser, username, currentUser);
 
 		return new ResponseEntity< >(updatedUSer, HttpStatus.CREATED);
 	}
