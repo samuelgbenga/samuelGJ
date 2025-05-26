@@ -2,9 +2,12 @@ package dev.samuelGJ.real_blog.utils;
 
 import dev.samuelGJ.real_blog.model.role.Role;
 import dev.samuelGJ.real_blog.model.role.RoleName;
+import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.repository.RoleRepository;
+import dev.samuelGJ.real_blog.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,9 +15,13 @@ import java.util.TimeZone;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DataInitializer {
 
     private final RoleRepository roleRepository;
+
+    private final UserRepository userRepository;
+
 
     @PostConstruct
     public void init() {
@@ -33,7 +40,22 @@ public class DataInitializer {
             roleRepository.saveAll(List.of(userRole, adminRole));
 
             // replace with l4sjl
-            System.out.println("Initialized roles: USER and ADMIN");
+            log.info("Initialized roles: USER and ADMIN");
+        }
+
+        if(userRepository.count() == 0) {
+            // replace with l4sjl
+            log.info("Initialized users: none");
+            User admin = new User();
+            admin.setFirstName("Admin");
+            admin.setLastName("Admin");
+            admin.setUsername("admin");
+            admin.setEmail("samuel@gmail.com");
+            admin.setPassword("admin");
+            admin.setRoles(roleRepository.findAll());
+            userRepository.save(admin);
+
+            log.info("Initialized users: admin");
         }
     }
 }
