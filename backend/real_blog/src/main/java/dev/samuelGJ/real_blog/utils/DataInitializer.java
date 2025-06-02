@@ -8,6 +8,8 @@ import dev.samuelGJ.real_blog.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +23,8 @@ public class DataInitializer {
     private final RoleRepository roleRepository;
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
 
     @PostConstruct
@@ -51,7 +55,7 @@ public class DataInitializer {
             admin.setLastName("Admin");
             admin.setUsername("admin");
             admin.setEmail("samuel@gmail.com");
-            admin.setPassword("admin");
+            admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRoles(roleRepository.findAll());
             userRepository.save(admin);
 

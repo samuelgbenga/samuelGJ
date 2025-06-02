@@ -20,7 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/albums")
+@RequestMapping("/api/v1/albums")
 @RequiredArgsConstructor
 public class AlbumController {
     private final AlbumService albumService;

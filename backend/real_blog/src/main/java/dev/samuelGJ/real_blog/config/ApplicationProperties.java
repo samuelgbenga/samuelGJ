@@ -23,7 +23,7 @@ public class ApplicationProperties {
     private String jwtSecret;
 
     @Value("${spring.jwt.expiration}")
-    private String jwtExpirationInMs;
+    private Long jwtExpirationInMs;
 
 
 }

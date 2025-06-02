@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { PATHS } from "../../route/route";
 
 export default function ProfileLeft() {
   const scrollToSection = (sectionId) => {
@@ -29,9 +31,10 @@ export default function ProfileLeft() {
           Entre Devs
         </a>
         . In my spare time, I share what I learn on my{" "}
-        <a href="#" className="underline hover:no-underline">
+        {/* will update you to my news letter later */}
+        <Link to="#" className="underline hover:no-underline">
           blog
-        </a>{" "}
+        </Link>{" "}
         and speak at{" "}
         <a href="#" className="underline hover:no-underline">
           tech conferences

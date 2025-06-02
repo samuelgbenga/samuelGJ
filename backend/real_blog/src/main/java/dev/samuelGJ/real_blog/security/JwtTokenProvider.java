@@ -5,9 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +14,9 @@ import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenProvider {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
 	private final ApplicationProperties properties;
 
@@ -58,13 +56,13 @@ public class JwtTokenProvider {
 					.parseSignedClaims(authToken);
 			return true;
 		} catch (SecurityException | MalformedJwtException e) {
-			LOGGER.error("Invalid JWT signature or token structure.");
+			log.error("Invalid JWT signature or token structure.");
 		} catch (ExpiredJwtException e) {
-			LOGGER.error("Expired JWT token.");
+			log.error("Expired JWT token.");
 		} catch (UnsupportedJwtException e) {
-			LOGGER.error("Unsupported JWT token.");
+			log.error("Unsupported JWT token.");
 		} catch (IllegalArgumentException e) {
-			LOGGER.error("JWT claims string is empty.");
+			log.error("JWT claims string is empty.");
 		}
 		return false;
 	}

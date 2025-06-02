@@ -17,8 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -26,7 +27,12 @@ public class AuthController {
 
 	@PostMapping("/signIn")
 	public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-		return ResponseEntity.ok(authService.signIn(loginRequest));
+		try {
+			return ResponseEntity.ok(authService.signIn(loginRequest));
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	@PostMapping("/signup")

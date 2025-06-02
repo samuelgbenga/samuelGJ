@@ -1,0 +1,1 @@
+export const USER = "samuel_blog_user";

@@ -17,3 +17,6 @@ todo: next
 
 todo: some endpoint to remove
 - add standalone tag endpoint
+
+MAY 31 
+- correct the response of the login: and others too.

@@ -2,7 +2,11 @@ import SingBlogPage from "../pages/articles/SingArticlePage";
 
 export const PATHS = {
   HOME: "/",
-
+  ADMIN:{
+    DASHBOARD: "/admin_dashboard",
+    LOGIN: "/admin_login",
+    //REGISTER: "/register"
+  },
   PROJECT: "/project/:id",
   CERTIFICATION: "/certification/:id",
   ARTICLE: {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="da8aecd1-e4f4-4844-a90d-6b89143990cc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/real_blog/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/real_blog/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/real_blog/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/real_blog/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2xmHS9rq5yu5wd0hqw9moUxeH8J" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="da8aecd1-e4f4-4844-a90d-6b89143990cc" name="Changes" comment="" />
+      <created>1748536329976</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748536329976</updated>
+    </task>
+    <servers />
+  </component>
+</project>
