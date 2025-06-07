@@ -1,6 +1,8 @@
 package dev.samuelGJ.real_blog.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.samuelGJ.real_blog.enums.CategoryEnum;
+import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.payload.UserDateAuditPayload;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +20,20 @@ public class PostResponseDto extends UserDateAuditPayload {
     private String title;
     private String body;
 
+    private String description;
+
     private String authorName;        // From User
     private Long authorId;
 
-    private String categoryName;      // From Category
+
+
+    private CategoryEnum categoryEnum;      // From Category
     private Long categoryId;
 
     private List<String> tagNames;    // From Tags
     private int totalComments;        // From Comments
+
+    private Photo photo;
 
     private Instant createdAt;
     private Instant updatedAt;

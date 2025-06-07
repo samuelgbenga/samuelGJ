@@ -22,5 +22,7 @@ public interface PhotoService {
 
 	ApiResponse deletePhoto(Long id, UserPrincipal currentUser);
 
+	PhotoResponse createPhoto(MultipartFile multipartFile);
+
 
 }

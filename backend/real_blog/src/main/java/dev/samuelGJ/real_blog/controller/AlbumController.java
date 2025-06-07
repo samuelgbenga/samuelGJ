@@ -13,11 +13,15 @@ import dev.samuelGJ.real_blog.constant.AppConstants;
 import dev.samuelGJ.real_blog.utils.AppUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/albums")
@@ -37,7 +41,7 @@ public class AlbumController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AlbumResponse> addAlbum(@Valid @ModelAttribute AlbumRequest albumRequest, @CurrentUser UserPrincipal currentUser) {
         return albumService.addAlbum(albumRequest, currentUser);
     }
@@ -47,15 +51,18 @@ public class AlbumController {
         return albumService.getAlbum(id);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<AlbumResponse> updateAlbum(@PathVariable(name = "id") Long id, @Valid @RequestBody AlbumRequest newAlbum,
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AlbumResponse> updateAlbum(
+            @PathVariable("id") Long id,
+            @RequestPart("multipartFiles") List<MultipartFile> multipartFiles,
             @CurrentUser UserPrincipal currentUser) {
-        return albumService.updateAlbum(id, newAlbum, currentUser);
+      
+        return albumService.updateAlbum(id, multipartFiles, currentUser);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteAlbum(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
         return albumService.deleteAlbum(id, currentUser);
     }

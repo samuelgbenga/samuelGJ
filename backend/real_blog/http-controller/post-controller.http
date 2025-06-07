@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:8080
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5MjUyNTQzLCJleHAiOjE3NDkzMzg5NDN9.xkmx5E2oOZcB8WTNVjOrn7RaNVX7UM1vFnmJn8iypHsugTyxWw67sIDAyj_oza74rgTXbrajuuiY6YzcO8iqjg
+
+### Create New Post
+POST {{baseUrl}}/api/v1/posts
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+Authorization: Bearer {{accessToken}}
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="title"
+
+My First Blog Post
+------WebKitFormBoundary
+Content-Disposition: form-data; name="body"
+
+This is the body of my first blog post. It contains detailed information about the topic I'm writing about.
+------WebKitFormBoundary
+Content-Disposition: form-data; name="description"
+
+A brief description of my blog post
+------WebKitFormBoundary
+Content-Disposition: form-data; name="categoryEnum"
+
+RDBMS
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tags"
+
+backend
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tags"
+
+java
+------WebKitFormBoundary
+Content-Disposition: form-data; name="photo"; filename="post-image.jpeg"
+Content-Type: image/jpeg
+
+< ./post-image.jpeg
+------WebKitFormBoundary--

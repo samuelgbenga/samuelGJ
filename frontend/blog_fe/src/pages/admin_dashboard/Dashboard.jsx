@@ -1,9 +1,16 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { useLoginHook } from "../../hooks/useAuth";
 
+import SideBar from "../../components/dashboard/SideBar";
+import TopBar from "../../components/dashboard/TopBar";
+
 const Dashboard = () => {
+  // todo: make flexible the active item to catch the current page 
+  // so upon refresh the current page tab is active instead of the Dashboar tab by default
+  const [activeItem, setActiveItem] = useState("Dashboard");
+  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const { logout } = useLoginHook();
   const navigate = useNavigate();
 
@@ -13,16 +20,17 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <Link to={PATHS.ARTICLE.CREATE}>Create Article</Link>
-      <Link to={PATHS.ARTICLE.EDIT}> EDIT ARTICLE</Link>
-      <Link to={PATHS.ARTICLE.PREVIEW}>PREVIEW ARTICLE</Link>
-      <Link to={PATHS.PROJECT.CREATE}> CREATE PROJECT</Link>
-      <Link to={PATHS.PROJECT.EDIT}>EDIT PROJECT</Link>
-      <Link to={PATHS.CERTIFICATION.CREATE}>CREATE CERTIFICATION</Link>
-      <Link to={PATHS.CERTIFICATION.EDIT}>EDIT CERTIFICATION</Link>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <SideBar activeItem={activeItem} setActiveItem={setActiveItem} />
 
-      <button onClick={handleLogout}>logout</button>
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto">
+        <TopBar isAvatarOpen={isAvatarOpen} setIsAvatarOpen={setIsAvatarOpen} />
+        <div className="p-6">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };

@@ -2,6 +2,8 @@ package dev.samuelGJ.real_blog.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import dev.samuelGJ.real_blog.enums.CategoryEnum;
 import dev.samuelGJ.real_blog.model.audit.UserDateAudit;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,9 +30,13 @@ public class Category extends UserDateAudit {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name")
-	private String name;
+	@Enumerated(EnumType.STRING)
+	private CategoryEnum categoryEnum;
 
+	/**
+	 * A category can exist without any posts.
+	 * Posts are optional and can be added later.
+	 */
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Post> posts = new ArrayList<>();
 

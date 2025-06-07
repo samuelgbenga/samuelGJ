@@ -14,6 +14,12 @@ import Login from "../pages/auth/Login";
 //import Register from "../pages/auth/Register";
 import ProtectedRoute from "../pages/auth/ProtectedRoute";
 import Dashboard from "../pages/admin_dashboard/Dashboard";
+import ProjectDashboardPage from "../pages/admin_dashboard/ProjectDashboardPage";
+import ArticleDashboardPage from "../pages/admin_dashboard/ArticleDashboardPage";
+import CertificDashboardPage from "../pages/admin_dashboard/CertificDashboardPage";
+import ProfileDashboardPage from "../pages/admin_dashboard/ProfileDashboardPage";
+import NotFoundPage from "../pages/error/NotFoundPage";
+import DashboardPage from "../pages/admin_dashboard/DashboardPage";
 
 export function Routes() {
   let element = useRoutes([
@@ -32,6 +38,29 @@ export function Routes() {
           <Dashboard />
         </ProtectedRoute>
       ),
+      children: [
+        {
+          index: true,
+          element: <DashboardPage />,
+        },
+
+        {
+          path: PATHS.ADMIN.PROJECT,
+          element: <ProjectDashboardPage />,
+        },
+        {
+          path: PATHS.ADMIN.ARTICLE,
+          element: <ArticleDashboardPage />,
+        },
+        {
+          path: PATHS.ADMIN.CERTIFICATION,
+          element: <CertificDashboardPage />,
+        },
+        {
+          path: PATHS.ADMIN.PROFILE,
+          element: <ProfileDashboardPage />,
+        },
+      ],
     },
 
     {
@@ -90,6 +119,8 @@ export function Routes() {
         </ProtectedRoute>
       ),
     },
+    // Catch all route - must be last
+    { path: "*", element: <NotFoundPage /> },
   ]);
 
   return element;

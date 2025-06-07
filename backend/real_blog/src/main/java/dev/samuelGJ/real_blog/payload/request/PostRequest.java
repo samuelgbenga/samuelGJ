@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import dev.samuelGJ.real_blog.enums.CategoryEnum;
+
 @Data
 public class PostRequest {
 
@@ -20,9 +24,14 @@ public class PostRequest {
 	@Size(min = 50)
 	private String body;
 
+	private String description;
+
 	@NotNull
-	private Long categoryId;
+	private CategoryEnum categoryEnum;
 
 	private List<String> tags;
+
+	@NotNull
+	private MultipartFile multipartFile;
 
 }

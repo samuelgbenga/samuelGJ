@@ -1,5 +1,6 @@
 package dev.samuelGJ.real_blog.service.impl;
 
+import dev.samuelGJ.real_blog.enums.CategoryEnum;
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
 import dev.samuelGJ.real_blog.model.Category;
@@ -48,16 +49,39 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public ResponseEntity<CategoryResponseDto> getCategory(Long id) {
+		Category category = getCategoryById(id);
+
+		return new ResponseEntity<>(fromCategoryToDto(category), HttpStatus.OK);
+	}
+
+
+	@Override
+	public Category getCategoryById(Long id) {
 		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found"));
+
+		return category;
+	}
+
+
+
+	@Override
+	public ResponseEntity<CategoryResponseDto> getCategory( CategoryEnum categoryEnum) {
+		Category category = getCategoryByEnum(categoryEnum);
 
 		return new ResponseEntity<>(fromCategoryToDto(category), HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<CategoryResponseDto> addCategory(CategoryRequestDto dto, UserPrincipal currentUser) {
+	public Category getCategoryByEnum( CategoryEnum categoryEnum) {
+		Category category = categoryRepository.findByCategoryEnum(categoryEnum).orElseThrow(() -> new ResourceNotFoundException("Category Not Found"));
 
+		return category;
+	}
+
+	@Override
+	public ResponseEntity<CategoryResponseDto> addCategory(CategoryRequestDto dto, UserPrincipal currentUser) {
 		Category category = new Category();
-		category.setName(dto.name());
+		category.setCategoryEnum(dto.categoryEnum());
 		Category newCategory = categoryRepository.save(category);
 		return new ResponseEntity<>(fromCategoryToDto(newCategory), HttpStatus.CREATED);
 	}
@@ -67,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category Not Found"));
 		if (category.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
-			category.setName(dto.name());
+			category.setCategoryEnum(dto.categoryEnum());
 			Category updatedCategory = categoryRepository.save(category);
 			return new ResponseEntity<>(fromCategoryToDto(updatedCategory), HttpStatus.OK);
 		}

@@ -1,3 +1,41 @@
 - Remove explicit registeration from user
 - allow them to register implicitly by signinup for newsletter instead.
 - no serious external user. but user will be able to create there avatar though
+
+
+
+ <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+        {/* Logo/Brand */}
+        <div className="h-16 flex items-center justify-center ">
+          <div className="text-sm font-bold text-gray-800">Admin Panel</div>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          {sidebarItems.map((item) => (
+            <SidebarItem
+              key={item.id}
+              icon={item.icon}
+              text={item.id}
+              isActive={activeItem === item.id}
+              onClick={() => setActiveItem(item.id)}
+            />
+          ))}
+        </nav>
+
+        {/* Logout Button */}
+        <div className="p-3 border-t border-gray-200">
+          <SidebarItem
+            icon={ArrowRightOnRectangleIcon}
+            text="Log Out"
+            isActive={false}
+            onClick={() => console.log("Logout clicked")}
+            isLogout
+          />
+        </div>
+      </aside>
+
+
+- My next assigment is you
+      - IMPLEMENT SKELENTON INSTEAD OF THAT NONESNENNCE IMAGE LOADER THAT GPT GAVE ME
+      - AND A PLACHOLDER PLACE HOLDER STRING TO BE REPLACED AFTER SUCCEFULL UPLOAD TO MAKE THE PACING OPTIMISTIC. 

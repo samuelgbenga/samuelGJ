@@ -1,8 +1,11 @@
 package dev.samuelGJ.real_blog.utils;
 
+import dev.samuelGJ.real_blog.enums.CategoryEnum;
+import dev.samuelGJ.real_blog.model.Category;
 import dev.samuelGJ.real_blog.model.role.Role;
 import dev.samuelGJ.real_blog.model.role.RoleName;
 import dev.samuelGJ.real_blog.model.user.User;
+import dev.samuelGJ.real_blog.repository.CategoryRepository;
 import dev.samuelGJ.real_blog.repository.RoleRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -21,15 +24,14 @@ import java.util.TimeZone;
 public class DataInitializer {
 
     private final RoleRepository roleRepository;
-
     private final UserRepository userRepository;
-
+    private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
-
 
     @PostConstruct
     public void init() {
         initializeRoles();
+        initializeCategories();
 
         // tell the time to consistently use this time zone regardless
         // of location or system definition
@@ -60,6 +62,23 @@ public class DataInitializer {
             userRepository.save(admin);
 
             log.info("Initialized users: admin");
+        }
+    }
+
+    private void initializeCategories() {
+        if (categoryRepository.count() == 0) {
+            List<Category> categories = List.of(CategoryEnum.values()).stream()
+                .map(categoryEnum -> {
+                    Category category = new Category();
+                    category.setCategoryEnum(categoryEnum);
+                    return category;
+                })
+                .toList();
+
+            categoryRepository.saveAll(categories);
+            log.info("Initialized categories: {}", categories.stream()
+                .map(category -> category.getCategoryEnum().name())
+                .toList());
         }
     }
 }

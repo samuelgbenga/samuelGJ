@@ -11,6 +11,7 @@ import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -38,7 +41,7 @@ public class PhotoController {
 		return photoService.getAllPhotos(page, size);
 	}
 
-	@PostMapping
+	@PostMapping("/will_be_removed")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<PhotoResponse> addPhoto(@Valid @RequestBody PhotoRequest photoRequest,
 			@CurrentUser UserPrincipal currentUser) {
@@ -71,4 +74,14 @@ public class PhotoController {
 
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
+
+
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PhotoResponse> updateAlbum(
+            @RequestPart("multipartFiles") MultipartFile multipartFiles,
+            @CurrentUser UserPrincipal currentUser) {
+				PhotoResponse photoResponse = photoService.createPhoto(multipartFiles);
+        return ResponseEntity.ok(photoResponse) ;
+    }
 }

@@ -7,7 +7,11 @@ import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.payload.request.AlbumRequest;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface AlbumService {
 
@@ -17,7 +21,7 @@ public interface AlbumService {
 
 	ResponseEntity<AlbumResponse> getAlbum(Long id);
 
-	ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser);
+	ResponseEntity<AlbumResponse> updateAlbum(Long id, List<MultipartFile> multipartFile, UserPrincipal currentUser);
 
 	ResponseEntity<ApiResponse> deleteAlbum(Long id, UserPrincipal currentUser);
 

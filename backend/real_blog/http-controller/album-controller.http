@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:8080
+@accessToken = eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5MjUyNTQzLCJleHAiOjE3NDkzMzg5NDN9.xkmx5E2oOZcB8WTNVjOrn7RaNVX7UM1vFnmJn8iypHsugTyxWw67sIDAyj_oza74rgTXbrajuuiY6YzcO8iqjg
+
+### Update Album with Photos
+PUT {{baseUrl}}/api/v1/albums/1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+Authorization: Bearer {{accessToken}}
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="title"
+
+Updated Album Title
+------WebKitFormBoundary
+Content-Disposition: form-data; name="multipartFiles"; filename="photo1.jpg"
+Content-Type: image/jpeg
+
+< ./photo1.jpg
+------WebKitFormBoundary
+Content-Disposition: form-data; name="multipartFiles"; filename="photo2.jpg"
+Content-Type: image/jpeg
+
+< ./photo2.jpg
+------WebKitFormBoundary--
+
+### Get All Albums
+GET {{baseUrl}}/api/v1/albums
+Accept: application/json
+
+### Get Album by ID
+GET {{baseUrl}}/api/v1/albums/1
+Accept: application/json
+
+### Create New Album
+POST {{baseUrl}}/api/v1/albums
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+Authorization: Bearer {{accessToken}}
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="title"
+
+My New Album
+------WebKitFormBoundary
+Content-Disposition: form-data; name="multipartFiles"; filename="photo1.jpg"
+Content-Type: image/jpeg
+
+< ./photo1.jpg
+------WebKitFormBoundary--

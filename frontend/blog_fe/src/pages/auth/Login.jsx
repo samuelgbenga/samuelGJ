@@ -33,12 +33,12 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login(formData);
-      console.log("Login response in component:", response);
+//      console.log("Login response in component:", response);
       // Navigate immediately after successful login
       navigate(PATHS.ADMIN.DASHBOARD, { replace: true });
     } catch (err) {
       // Error is already handled by the hook
-      console.log("Login failed in component:", err);
+ //     console.log("Login failed in component:", err);
     }
   };
 

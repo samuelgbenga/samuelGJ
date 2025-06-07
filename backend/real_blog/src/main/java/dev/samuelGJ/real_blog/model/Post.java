@@ -30,8 +30,12 @@ public class Post extends UserDateAudit {
 	@Column(name = "title")
 	private String title;
 
-	@Column(name = "body")
+	@Lob
+	@Column(nullable = false)
 	private String body;
+
+	@Column(name = "description")
+	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -47,5 +51,9 @@ public class Post extends UserDateAudit {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
 	private List<Tag> tags = new ArrayList<>();
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "photo_id")
+	private Photo photo;
 
 }

@@ -1,9 +1,6 @@
 package dev.samuelGJ.real_blog.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.samuelGJ.real_blog.model.audit.UserDateAudit;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*; // Changed from javax.persistence.*
@@ -16,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "photos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
+@Table(name = "photos")
 public class Photo extends UserDateAudit {
 	private static final long serialVersionUID = 1L;
 

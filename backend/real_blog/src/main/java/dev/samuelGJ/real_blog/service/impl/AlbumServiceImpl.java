@@ -26,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
@@ -95,26 +97,41 @@ public class AlbumServiceImpl implements AlbumService {
 	public ResponseEntity<AlbumResponse> getAlbum(Long id) {
 		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR));
 
-		AlbumResponse albumResponse = modelMapper.map(album, AlbumResponse.class);
-		albumResponse.setUserSummary(modelMapper.map(album.getUser(), UserSummary.class));
+		AlbumResponse albumResponse = mapToAlbumResponse(album);
+		//albumResponse.setUserSummary(modelMapper.map(album.getUser(), UserSummary.class));
 
 		return new ResponseEntity<>(albumResponse, HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
+	public ResponseEntity<AlbumResponse> updateAlbum(Long id, List<MultipartFile> multipartFiles, UserPrincipal currentUser) {
 		Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALBUM_STR));
 		User user = userRepository.getUser(currentUser);
 		if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
 				.contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
-			album.setTitle(newAlbum.getTitle());
+			
+
+
+			// check if a file is sent and add to the already existing album
+			if(multipartFiles.isEmpty()){
+			 throw new ResourceAccessException("File cannot be empty");
+			}
+
+			List<Photo> photoList = album.getPhoto();
+			List<Photo> photos = multipartFiles.stream()
+				.map(multipartFile -> photoService.addPhoto(multipartFile))
+				.toList();
+			photoList.addAll(photos);
+
+			album.setPhoto(photoList);
+
 
 			// todo: add more photos to album
 			Album updatedAlbum = albumRepository.save(album);
 
 			AlbumResponse albumResponse = new AlbumResponse();
 
-			modelMapper.map(updatedAlbum, albumResponse);
+			albumResponse = mapToAlbumResponse(updatedAlbum);
 
 			return new ResponseEntity<>(albumResponse, HttpStatus.OK);
 		}

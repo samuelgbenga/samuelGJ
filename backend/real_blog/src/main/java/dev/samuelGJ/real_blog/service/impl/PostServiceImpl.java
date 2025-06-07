@@ -4,6 +4,7 @@ import dev.samuelGJ.real_blog.exception.BadRequestException;
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
 import dev.samuelGJ.real_blog.model.Category;
+import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.model.Post;
 import dev.samuelGJ.real_blog.model.Tag;
 import dev.samuelGJ.real_blog.model.role.RoleName;
@@ -17,6 +18,8 @@ import dev.samuelGJ.real_blog.repository.PostRepository;
 import dev.samuelGJ.real_blog.repository.TagRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
+import dev.samuelGJ.real_blog.service.CategoryService;
+import dev.samuelGJ.real_blog.service.PhotoService;
 import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.constant.AppConstants;
 import dev.samuelGJ.real_blog.utils.EntityMapper;
@@ -38,6 +41,8 @@ public class PostServiceImpl implements PostService {
 	private final UserRepository userRepository;
 	private final CategoryRepository categoryRepository;
 	private final TagRepository tagRepository;
+	private final CategoryService categoryService;
+	private final PhotoService photoService;
 
 	@Override
 	public PagedResponse<PostResponseDto> getAllPosts(int page, int size) {
@@ -89,14 +94,17 @@ public class PostServiceImpl implements PostService {
 	public PostResponseDto updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
 		Post post = postRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(POST));
-		Category category = categoryRepository.findById(newPostRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY));
+		Category category = categoryService.getCategoryByEnum(newPostRequest.getCategoryEnum());
 
 		if (post.getUser().getId().equals(currentUser.getId()) ||
 				currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
 			post.setTitle(newPostRequest.getTitle());
 			post.setBody(newPostRequest.getBody());
 			post.setCategory(category);
+
+
+
+
 			Post updated = postRepository.save(post);
 			return mapToDto(updated);
 		}
@@ -123,8 +131,7 @@ public class PostServiceImpl implements PostService {
 		User user = userRepository.findById(currentUser.getId())
 				.orElseThrow(() -> new ResourceNotFoundException(USER));
 
-		Category category = categoryRepository.findById(postRequest.getCategoryId())
-				.orElseThrow(() -> new ResourceNotFoundException(CATEGORY));
+		Category category = categoryService.getCategoryByEnum(postRequest.getCategoryEnum());
 
 		List<Tag> tags = postRequest.getTags().stream()
 				.map(tagName -> {
@@ -137,8 +144,12 @@ public class PostServiceImpl implements PostService {
 		post.setTitle(postRequest.getTitle());
 		post.setBody(postRequest.getBody());
 		post.setUser(user);
+		post.setDescription(postRequest.getDescription());
 		post.setCategory(category);
 		post.setTags(tags);
+
+		Photo photo = photoService.addPhoto(postRequest.getMultipartFile());
+		post.setPhoto(photo);
 
 		Post savedPost = postRepository.save(post);
 		return mapToDto(savedPost);

@@ -1,6 +1,7 @@
 package dev.samuelGJ.real_blog.service.impl;
 
 
+import dev.samuelGJ.real_blog.exception.BlogApiException;
 import dev.samuelGJ.real_blog.exception.ResourceNotFoundException;
 import dev.samuelGJ.real_blog.exception.UnauthorizedException;
 import dev.samuelGJ.real_blog.model.Album;
@@ -98,6 +99,11 @@ public class PhotoServiceImpl implements PhotoService {
 	}
 
 	@Override
+	public PhotoResponse createPhoto(MultipartFile multipartFile){
+		 return fromPhotoToDto(addPhoto(multipartFile));
+	}
+
+	@Override
 	public ApiResponse deletePhoto(Long id, UserPrincipal currentUser) {
 
 		if (photoRepository.existsById(id) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
@@ -120,8 +126,10 @@ public class PhotoServiceImpl implements PhotoService {
 	}
 
 	private Photo cloudinaryService(MultipartFile multipartFile) {
-
-		return fromDtoToPhoto(cloudinaryService.uploadFile(multipartFile));
-
+		PhotoResponse photoResponse = cloudinaryService.uploadFile(multipartFile);
+		if (photoResponse == null) {
+			throw new BlogApiException("Failed to upload file to Cloudinary");
+		}
+		return fromDtoToPhoto(photoResponse);
 	}
 }

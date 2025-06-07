@@ -18,7 +18,7 @@ public class EntityMapper {
                 .authorId(post.getUser() != null ? post.getUser().getId() : null)
                 .authorName(post.getUser() != null ? post.getUser().getFullName() : null)
                 .categoryId(post.getCategory() != null ? post.getCategory().getId() : null)
-                .categoryName(post.getCategory() != null ? post.getCategory().getName() : null)
+                .categoryEnum(post.getCategory() != null ? post.getCategory().getCategoryEnum() : null)
                 .tagNames(post.getTags() != null
                         ? post.getTags().stream().map(Tag::getName).toList()
                         : List.of())
