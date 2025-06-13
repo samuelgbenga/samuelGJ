@@ -1,5 +1,8 @@
 package dev.samuelGJ.real_blog.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.samuelGJ.real_blog.model.audit.UserDateAudit;
 import dev.samuelGJ.real_blog.model.user.User;
@@ -13,8 +16,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Table(name = "todos", uniqueConstraints = { @UniqueConstraint(columnNames = { "title" }) })
-public class Todo extends UserDateAudit {
+@Table(name = "projects", uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
+public class Project extends UserDateAudit {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,11 +26,18 @@ public class Todo extends UserDateAudit {
 	private Long id;
 
 	@NotBlank
-	@Column(name = "title")
-	private String title;
+	@Column(name = "name")
+	private String name;
 
-	@Column(name = "completed")
-	private Boolean completed;
+	@Column(name = "programming_language")
+	private String programmingLanguage;
+
+
+	private List<String> frameworks = new ArrayList<>();
+
+	private String url;
+
+	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")

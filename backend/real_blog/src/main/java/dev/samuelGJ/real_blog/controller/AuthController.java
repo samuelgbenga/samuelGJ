@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import dev.samuelGJ.real_blog.exception.InvalidCredentialsException;
+import dev.samuelGJ.real_blog.exception.BlogApiException;
 
 import java.net.URI;
 
@@ -29,9 +31,10 @@ public class AuthController {
 	public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		try {
 			return ResponseEntity.ok(authService.signIn(loginRequest));
+		} catch (InvalidCredentialsException e) {
+			throw e;
 		} catch (Exception e) {
-			// TODO: handle exception
-			throw new RuntimeException(e.getMessage());
+			throw new BlogApiException("Authentication failed: " + e.getMessage());
 		}
 	}
 

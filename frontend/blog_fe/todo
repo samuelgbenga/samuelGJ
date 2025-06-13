@@ -36,6 +36,37 @@
       </aside>
 
 
+(Done)
 - My next assigment is you
       - IMPLEMENT SKELENTON INSTEAD OF THAT NONESNENNCE IMAGE LOADER THAT GPT GAVE ME
       - AND A PLACHOLDER PLACE HOLDER STRING TO BE REPLACED AFTER SUCCEFULL UPLOAD TO MAKE THE PACING OPTIMISTIC. 
+
+(done)
+- draft-autosave functionalities = save triger to local storage while typing.
+- button to save to draft instead of publishing 
+
+
+-(now)
+- implement all the create for functionalities for the remaining to stuff
+- projects first 
+- certification second
+
+
+(later)
+- edit, delete, read functionalites.
+
+(later)
+- beautify the frontend.
+- Global style, color, theme.
+
+(later)
+- Problem i was able to access secured frontend area in because i have token in my browser local storage 
+- which has expired by the way:
+- so next is to make sure that doesnt happenend (or i could come back to that later)
+
+(later)
+- implement news later
+
+
+
+

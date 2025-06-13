@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import dev.samuelGJ.real_blog.enums.CategoryEnum;
+import dev.samuelGJ.real_blog.enums.PostStatus;
 
 @Data
 public class PostRequest {
@@ -28,6 +29,9 @@ public class PostRequest {
 
 	@NotNull
 	private CategoryEnum categoryEnum;
+
+	@NotNull
+	private PostStatus postStatus;
 
 	private List<String> tags;
 

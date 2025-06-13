@@ -2,6 +2,7 @@ package dev.samuelGJ.real_blog.service.impl;
 
 import dev.samuelGJ.real_blog.exception.AppException;
 import dev.samuelGJ.real_blog.exception.BlogApiException;
+import dev.samuelGJ.real_blog.exception.InvalidCredentialsException;
 import dev.samuelGJ.real_blog.model.role.Role;
 import dev.samuelGJ.real_blog.model.role.RoleName;
 import dev.samuelGJ.real_blog.model.user.User;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.AuthenticationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,14 +87,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtAuthenticationResponse signIn(LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtTokenProvider.generateToken(authentication);
 
-        String jwt = jwtTokenProvider.generateToken(authentication);
-
-         return  new JwtAuthenticationResponse(jwt);
+            return new JwtAuthenticationResponse(jwt);
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException();
+        }
     }
 }

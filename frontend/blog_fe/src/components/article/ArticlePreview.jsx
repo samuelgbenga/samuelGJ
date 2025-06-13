@@ -5,6 +5,7 @@ import { PATHS } from "../../route/route";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { multipartInstance } from "../../api/apiClient";
 import { useArticles } from "../../hooks/useArticles";
+import { POST_STATUS } from "../../utils/constants";
 
 export default function ArticlePreview() {
   const [articleData, setArticleData] = useState(null);
@@ -62,7 +63,7 @@ export default function ArticlePreview() {
     setImage(file);
   };
 
-  const handlePublish = async () => {
+  const handlePublish = async (postStatus) => {
     const formData = new FormData();
 
     formData.append("title", articleData.title);
@@ -71,6 +72,7 @@ export default function ArticlePreview() {
     formData.append("description", description);
     formData.append("tags", tags);
     formData.append("multipartFile", image);
+    formData.append("postStatus", postStatus);
 
     try {
       const response = await postArticle(formData);
@@ -113,7 +115,13 @@ export default function ArticlePreview() {
               Back to Editor
             </button>
             <button
-              onClick={handlePublish}
+              onClick={() => handlePublish(POST_STATUS.DRAFT)}
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            >
+             Draft Article
+            </button>
+            <button
+              onClick={() => handlePublish(POST_STATUS.PUBLISHED)}
               className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
             >
               Publish Article

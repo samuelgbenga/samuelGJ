@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import dev.samuelGJ.real_blog.enums.PostStatus;
 import dev.samuelGJ.real_blog.model.audit.UserDateAudit;
 import dev.samuelGJ.real_blog.model.user.User;
 import lombok.Data;
@@ -37,6 +38,10 @@ public class Post extends UserDateAudit {
 	@Column(name = "description")
 	private String description;
 
+	@Column(name="post_status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PostStatus postStatus;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -55,5 +60,7 @@ public class Post extends UserDateAudit {
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "photo_id")
 	private Photo photo;
+
+
 
 }

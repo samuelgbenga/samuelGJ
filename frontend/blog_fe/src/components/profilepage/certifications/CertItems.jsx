@@ -2,7 +2,7 @@ import React from "react";
 
 function CertItems({ item }) {
   const renderIcon = () => {
-    return (
+      return (
       <div className="w-12 h-12 rounded-full bg-[#2a2a2a] flex items-center justify-center flex-shrink-0 overflow-hidden">
         <img
           src="/vite.svg"
@@ -12,8 +12,8 @@ function CertItems({ item }) {
             e.target.src = "/golvialogo.png"; // Fallback image
           }}
         />
-      </div>
-    );
+        </div>
+      );
   };
 
   return (

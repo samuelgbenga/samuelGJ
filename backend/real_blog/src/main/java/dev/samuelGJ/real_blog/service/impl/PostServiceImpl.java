@@ -146,6 +146,7 @@ public class PostServiceImpl implements PostService {
 		post.setUser(user);
 		post.setDescription(postRequest.getDescription());
 		post.setCategory(category);
+		post.setPostStatus(postRequest.getPostStatus());
 		post.setTags(tags);
 
 		Photo photo = photoService.addPhoto(postRequest.getMultipartFile());

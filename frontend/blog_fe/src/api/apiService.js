@@ -55,5 +55,23 @@ export const post_article = async (formData) => {
 };
 
 
+// MAKE PROJECT BABY
+export const create_project = async (formData) => {
+  try {
+    const response = await apiClient.post(
+      API_ENDPOINTS.PROJECTS.CREATE,
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error creating Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+
 
 

@@ -53,7 +53,7 @@ public class User extends DateAudit {
 	private List<Role> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Todo> todos = new ArrayList<>();
+	private List<Project> todos = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Album> albums = new ArrayList<>();

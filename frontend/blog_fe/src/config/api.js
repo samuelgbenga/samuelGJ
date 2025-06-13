@@ -4,8 +4,8 @@ const API_VERSION = "/api/v1";
 
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: `${API_BASE_URL}/auth/signIn`,
-    REGISTER: `${API_BASE_URL}/auth/signup`,
+    LOGIN: `${API_BASE_URL + API_VERSION}/auth/signIn`,
+    REGISTER: `${API_BASE_URL + API_VERSION}/auth/signup`,
   },
   ARTICLES: {
     LIST: `${API_BASE_URL + API_VERSION}/articles`,
