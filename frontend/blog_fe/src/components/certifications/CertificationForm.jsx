@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
+import { useCertifications } from "../../hooks/useCertifications";
 
 export default function CertificationForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     organization: "",
+    description: "",
     issueDate: "",
+    expireDate: "",
     logoUrl: null,
   });
   const [errors, setErrors] = useState({});
   const [previewUrl, setPreviewUrl] = useState(null);
+  const { postCert, isLoading, error } = useCertifications();
 
   const validateForm = () => {
     const newErrors = {};
@@ -20,6 +24,10 @@ export default function CertificationForm() {
     }
     if (!formData.organization.trim()) {
       newErrors.organization = "Organization name is required";
+    }
+    if (!formData.description.trim()) {
+      newErrors.description =
+        "Certification Description is required is required";
     }
     if (!formData.issueDate) {
       newErrors.issueDate = "Issue date is required";
@@ -71,22 +79,20 @@ export default function CertificationForm() {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("title", formData.title);
-      formDataToSend.append("organization", formData.organization);
+      formDataToSend.append("name", formData.title);
+      formDataToSend.append("issuer", formData.organization);
       formDataToSend.append("issueDate", formData.issueDate);
-      formDataToSend.append("logo", formData.logoUrl);
+      formDataToSend.append("expireDate", formData.expireDate);
+      formDataToSend.append("multipartFile", formData.logoUrl);
+      formDataToSend.append("description", formData.description);
 
       // TODO: Add your API endpoint for certification creation
-      // const response = await fetch('http://localhost:8080/api/certifications', {
-      //   method: 'POST',
-      //   body: formDataToSend,
-      // });
+      const response = await postCert(formDataToSend);
 
-      // if (response.ok) {
-      //   navigate(PATHS.HOME);
-      // }
-      console.log("Creating certification:", formData);
-      navigate(PATHS.HOME);
+      if (response) {
+        console.log(response);
+        navigate(PATHS.ADMIN.CERTIFICATION);
+      }
     } catch (error) {
       console.error("Failed to create certification:", error);
     }
@@ -116,7 +122,7 @@ export default function CertificationForm() {
   }, [previewUrl]);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gray-100 py-8 text-black">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold mb-6">Add New Certification</h1>
 
@@ -168,6 +174,28 @@ export default function CertificationForm() {
               <p className="mt-1 text-sm text-red-500">{errors.organization}</p>
             )}
           </div>
+          {/* Certification Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Organization
+            </label>
+            <textarea
+              type="text"
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.description ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-500">{errors.description}</p>
+            )}
+          </div>
 
           {/* Issue Date */}
           <div>
@@ -189,6 +217,29 @@ export default function CertificationForm() {
             />
             {errors.issueDate && (
               <p className="mt-1 text-sm text-red-500">{errors.issueDate}</p>
+            )}
+          </div>
+
+          {/* Expire Date */}
+          <div>
+            <label
+              htmlFor="expireDate"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Expire Date
+            </label>
+            <input
+              type="date"
+              id="expireDate"
+              name="expireDate"
+              value={formData.expireDate}
+              onChange={handleChange}
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.expireDate ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.expireDate && (
+              <p className="mt-1 text-sm text-red-500">{errors.expireDate}</p>
             )}
           </div>
 
@@ -244,9 +295,10 @@ export default function CertificationForm() {
             </button>
             <button
               type="submit"
+              disabled={isLoading}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Add Certification
+              {`${isLoading ? "Loading....." : "Add Certification"}`}
             </button>
           </div>
         </form>

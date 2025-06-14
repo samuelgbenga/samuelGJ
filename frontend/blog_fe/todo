@@ -4,37 +4,6 @@
 
 
 
- <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Logo/Brand */}
-        <div className="h-16 flex items-center justify-center ">
-          <div className="text-sm font-bold text-gray-800">Admin Panel</div>
-        </div>
-
-        {/* Navigation Items */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {sidebarItems.map((item) => (
-            <SidebarItem
-              key={item.id}
-              icon={item.icon}
-              text={item.id}
-              isActive={activeItem === item.id}
-              onClick={() => setActiveItem(item.id)}
-            />
-          ))}
-        </nav>
-
-        {/* Logout Button */}
-        <div className="p-3 border-t border-gray-200">
-          <SidebarItem
-            icon={ArrowRightOnRectangleIcon}
-            text="Log Out"
-            isActive={false}
-            onClick={() => console.log("Logout clicked")}
-            isLogout
-          />
-        </div>
-      </aside>
-
 
 (Done)
 - My next assigment is you
@@ -46,7 +15,7 @@
 - button to save to draft instead of publishing 
 
 
--(now)
+-(done)
 - implement all the create for functionalities for the remaining to stuff
 - projects first 
 - certification second
@@ -67,6 +36,12 @@
 (later)
 - implement news later
 
+
+(consider)
+- Certification Expire field
+
+(study)
+- why base64 for image convertion - saving or 
 
 
 

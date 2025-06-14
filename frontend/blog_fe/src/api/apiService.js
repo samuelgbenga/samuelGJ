@@ -73,5 +73,23 @@ export const create_project = async (formData) => {
 };
 
 
+// Post Certifications
+export const post_cert = async (formData) => {
+  try {
+    const response = await multipartInstance.post(
+      API_ENDPOINTS.CERTIFICATIONS.CREATE,
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error creating Cert:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+
 
 

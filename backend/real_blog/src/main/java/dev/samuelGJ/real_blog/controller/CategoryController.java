@@ -33,9 +33,10 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@GetMapping
+	@PreAuthorize("hasRole('USER')")
 	public PagedResponse<CategoryResponseDto> getAllCategories(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size, @CurrentUser UserPrincipal currentUser) {
 		return categoryService.getAllCategories(page, size);
 	}
 
@@ -48,6 +49,7 @@ public class CategoryController {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable(name = "id") Long id) {
 		return categoryService.getCategory(id);
 	}

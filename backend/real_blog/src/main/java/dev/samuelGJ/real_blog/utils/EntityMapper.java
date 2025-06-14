@@ -9,6 +9,9 @@ import dev.samuelGJ.real_blog.payload.request.ProjectRequest;
 import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.payload.response.ProjectResponseDto;
+import dev.samuelGJ.real_blog.model.Certification;
+import dev.samuelGJ.real_blog.payload.request.CertificationRequestDto;
+import dev.samuelGJ.real_blog.payload.response.CertificationResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,12 +83,36 @@ public class EntityMapper {
     public static PhotoResponse fromPhotoToDto(Photo photo){
         PhotoResponse photoResponse = new PhotoResponse(photo.getId(), photo.getUrl(),
                 photo.getThumbnailUrl());
-
         photoResponse.setCreatedBy(photo.getCreatedBy());
         photoResponse.setUpdatedBy(photo.getUpdatedBy());
         photoResponse.setCreatedAt(photo.getCreatedAt());
         photoResponse.setUpdatedAt(photo.getUpdatedAt());
         return photoResponse;
+    }
+
+    public static Certification dtoToEntity(CertificationRequestDto dto) {
+        Certification certification = new Certification();
+        certification.setName(dto.name());
+        certification.setIssuer(dto.issuer());
+        certification.setIssueDate(dto.issueDate());
+        certification.setExpireDate(dto.expireDate());
+        certification.setDescription(dto.description());
+        return certification;
+    }
+
+    public static CertificationResponseDto entityToDto(Certification certification) {
+        return new CertificationResponseDto(
+            certification.getId(),
+            certification.getName(),
+            certification.getIssuer(),
+            certification.getDescription(),
+            certification.getIssueDate(),
+            certification.getExpireDate(),
+            certification.getCredentialUrl(),
+            new UserSummary(certification.getUser().getId(), certification.getUser().getUsername(), certification.getUser().getFirstName(), certification.getUser().getLastName()),
+            certification.getCreatedAt(),
+            certification.getUpdatedAt()
+        );
     }
 
 }

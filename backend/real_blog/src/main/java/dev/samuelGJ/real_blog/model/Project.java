@@ -15,7 +15,9 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "projects", uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 public class Project extends UserDateAudit {
 
@@ -25,7 +27,6 @@ public class Project extends UserDateAudit {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
 	@Column(name = "name")
 	private String name;
 
