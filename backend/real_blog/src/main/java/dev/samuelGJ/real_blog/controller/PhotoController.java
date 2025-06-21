@@ -51,7 +51,7 @@ public class PhotoController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PhotoResponse> getPhoto(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<PhotoResponse> getPhoto(@PathVariable(name = "id") String id) {
 		PhotoResponse photoResponse = photoService.getPhoto(id);
 
 		return new ResponseEntity< >(photoResponse, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class PhotoController {
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<PhotoResponse> updatePhoto(@PathVariable(name = "id") Long id,
+	public ResponseEntity<PhotoResponse> updatePhoto(@PathVariable(name = "id") String id,
 			@Valid @RequestBody PhotoRequest photoRequest, @CurrentUser UserPrincipal currentUser) {
 
 		PhotoResponse photoResponse = photoService.updatePhoto(id, photoRequest, currentUser);
@@ -69,7 +69,7 @@ public class PhotoController {
 
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse> deletePhoto(@PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<ApiResponse> deletePhoto(@PathVariable(name = "id") String id, @CurrentUser UserPrincipal currentUser) {
 		ApiResponse apiResponse = photoService.deletePhoto(id, currentUser);
 
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);

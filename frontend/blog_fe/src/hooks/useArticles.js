@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { post_article, post_photo } from "../api/apiService";
+import { post_article, post_photo, read_article_list } from "../api/apiService";
 
 export const useArticles = () => {
   const [photoData, setPhotoData] = useState(null);
   const [articleData, setArticleData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [artcleListData, setArticleListData] = useState(null);
 
   const postPhoto = async (formData) => {
     //  console.log("Login started...");
@@ -31,7 +32,6 @@ export const useArticles = () => {
     }
   };
 
-
   const postArticle = async (formData) => {
     //  console.log("Login started...");
     setIsLoading(true);
@@ -39,12 +39,36 @@ export const useArticles = () => {
     try {
       const response = await post_article(formData);
       //  console.log("Login successful:", response);
-     
+
       setArticleData(response);
       return response;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || "An error occurred during Article Posting";
+        err.response?.data?.message ||
+        "An error occurred during Article Posting";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
+  const readArticleList = async () => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await read_article_list();
+      //  console.log("Login successful:", response);
+
+      setArticleListData(response.content);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Article Posting";
       //  console.log("Login failed:", errorMessage);
       setError(errorMessage);
       throw errorMessage;
@@ -59,7 +83,9 @@ export const useArticles = () => {
     error,
     isLoading,
     articleData,
+    artcleListData,
     postPhoto,
     postArticle,
+    readArticleList,
   };
 };

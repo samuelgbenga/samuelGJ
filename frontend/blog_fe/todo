@@ -20,9 +20,26 @@
 - projects first 
 - certification second
 
+- (now)
+Store the data transition on Local storage so that every changes will be tracked even as i move
+from one page to another.
+for example. while in the ArticlePreview page let say i want to do some more editing in the body
+i click on back to edit button, when i am done with the edit and go back to the Article preview
+all my previous updated like category settings etc should be intact.
+
+- what i want now is that every content i edited on the preview page remains even while i navigate to
+ edit the content in the markdown editor same with the EditPost page.
+ how i intend to do that is to retain the content in a state/session storage while the Marddown editor change or update the content.
+
+- tally the content for markdown
+- draft and publich
+- update photo only
 
 (later)
 - edit, delete, read functionalites.
+
+-(later)
+- implement loader
 
 (later)
 - beautify the frontend.
@@ -36,12 +53,27 @@
 (later)
 - implement news later
 
+(LATER)
+- route to go back to where you are  coming from.
+
 
 (consider)
 - Certification Expire field
 
 (study)
 - why base64 for image convertion - saving or 
+
+
+
+
+- Field Out Reaching presentation (customers empathy)
+- Landing page design for waitlist
+- Friends to reach out to.
+- Get the ours each one of us will dedicate to each deliverables.
+- organization installation/registration (funding)
+- Update Linked in profile to show commitment ()
+- search for communities you can be part of and reach out.
+- Landing page questionaires- buyer, farmers, partnership (logistics, ngo, etc) 
 
 
 

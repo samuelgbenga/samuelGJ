@@ -2,7 +2,9 @@ package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
+import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.payload.request.PostRequest;
+import dev.samuelGJ.real_blog.payload.request.PostUpdateRequest;
 import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
@@ -23,7 +25,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -78,10 +83,10 @@ public class PostController {
 		return new ResponseEntity< >(post, HttpStatus.OK);
 	}
 
-	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PutMapping(value = "/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<PostResponseDto> updatePost(@PathVariable(name = "id") Long id,
-			@Valid @RequestBody PostRequest newPostRequest, @CurrentUser UserPrincipal currentUser) {
+			@RequestBody PostUpdateRequest newPostRequest, @CurrentUser UserPrincipal currentUser) {
 		PostResponseDto post = postService.updatePost(id, newPostRequest, currentUser);
 
 		return new ResponseEntity< >(post, HttpStatus.OK);
@@ -94,4 +99,15 @@ public class PostController {
 
 		return new ResponseEntity< >(apiResponse, HttpStatus.OK);
 	}
+
+	@PutMapping(value="/update_photo/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PostResponseDto> updateAlbum( @PathVariable(name = "id") Long id,
+            @RequestPart("multipartFiles") MultipartFile multipartFiles,
+            @CurrentUser UserPrincipal currentUser) {
+				
+				PostResponseDto response = postService.updatePostPhoto(id, multipartFiles, currentUser);
+
+        return ResponseEntity.ok( response) ;
+    }
 }

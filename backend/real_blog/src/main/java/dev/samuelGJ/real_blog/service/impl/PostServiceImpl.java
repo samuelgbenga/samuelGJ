@@ -12,6 +12,7 @@ import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.payload.request.PostRequest;
+import dev.samuelGJ.real_blog.payload.request.PostUpdateRequest;
 import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.repository.CategoryRepository;
 import dev.samuelGJ.real_blog.repository.PostRepository;
@@ -24,10 +25,13 @@ import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.constant.AppConstants;
 import dev.samuelGJ.real_blog.utils.EntityMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +39,7 @@ import static dev.samuelGJ.real_blog.constant.AppConstants.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
@@ -91,25 +96,72 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostResponseDto updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
+	public PostResponseDto updatePost(Long id, PostUpdateRequest newPostRequest, UserPrincipal currentUser) {
 		Post post = postRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(POST));
-		Category category = categoryService.getCategoryByEnum(newPostRequest.getCategoryEnum());
 
-		if (post.getUser().getId().equals(currentUser.getId()) ||
-				currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
-			post.setTitle(newPostRequest.getTitle());
-			post.setBody(newPostRequest.getBody());
-			post.setCategory(category);
-
-
-
-
-			Post updated = postRepository.save(post);
-			return mapToDto(updated);
+		if (!post.getUser().getId().equals(currentUser.getId()) &&
+				!currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
+			throw new UnauthorizedException("You don't have permission to edit this post");
 		}
 
-		throw new UnauthorizedException("You don't have permission to edit this post");
+		// Update category if provided
+		if (newPostRequest.getCategoryEnum() != null) {
+			Category category = categoryService.getCategoryByEnum(newPostRequest.getCategoryEnum());
+			post.setCategory(category);
+		}
+
+		// Update tags if provided
+		if (newPostRequest.getTags() != null && !newPostRequest.getTags().isEmpty()) {
+			List<Tag> tags = newPostRequest.getTags().stream()
+				.map(tagName -> {
+					Tag tag = tagRepository.findByName(tagName);
+					return tag != null ? tag : tagRepository.save(new Tag(tagName));
+				})
+				.collect(Collectors.toList());
+			post.setTags(tags);
+		}
+
+		// Update basic fields if provided
+		if (newPostRequest.getTitle() != null && !newPostRequest.getTitle().trim().isEmpty()) {
+			post.setTitle(newPostRequest.getTitle());
+		}
+		if (newPostRequest.getBody() != null && !newPostRequest.getBody().trim().isEmpty()) {
+			post.setBody(newPostRequest.getBody());
+		}
+		if (newPostRequest.getDescription() != null && !newPostRequest.getDescription().trim().isEmpty()) {
+			post.setDescription(newPostRequest.getDescription());
+		}
+		if (newPostRequest.getPostStatus() != null) {
+			post.setPostStatus(newPostRequest.getPostStatus());
+		}
+
+		Post updated = postRepository.save(post);
+		return mapToDto(updated);
+	}
+
+	@Override
+	public PostResponseDto updatePostPhoto(Long postId, MultipartFile photoFile, UserPrincipal currentUser) {
+		Post post = postRepository.findById(postId)
+				.orElseThrow(() -> new ResourceNotFoundException(POST));
+
+		if (!post.getUser().getId().equals(currentUser.getId()) &&
+				!currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.name()))) {
+			throw new UnauthorizedException("You don't have permission to edit this post's photo");
+		}
+
+		if (photoFile != null && !photoFile.isEmpty()) {
+			// Delete the old photo if it exists
+			if (post.getPhoto() != null && post.getPhoto().getId() != null) {
+				photoService.deletePhoto(post.getPhoto().getId(), currentUser);
+			}
+
+			Photo newPhoto = photoService.addPhoto(photoFile);
+			post.setPhoto(newPhoto);
+		}
+
+		Post updatedPost = postRepository.save(post);
+		return mapToDto(updatedPost);
 	}
 
 	@Override

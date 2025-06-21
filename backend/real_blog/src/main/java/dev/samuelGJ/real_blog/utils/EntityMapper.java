@@ -28,6 +28,7 @@ public class EntityMapper {
                 .categoryId(post.getCategory() != null ? post.getCategory().getId() : null)
                 .categoryEnum(post.getCategory() != null ? post.getCategory().getCategoryEnum() : null)
                 .postStatus(post.getPostStatus())
+                .photo(post.getPhoto())
                 .tagNames(post.getTags() != null
                         ? post.getTags().stream().map(Tag::getName).toList()
                         : List.of())

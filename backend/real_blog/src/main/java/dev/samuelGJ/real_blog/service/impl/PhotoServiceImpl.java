@@ -67,14 +67,14 @@ public class PhotoServiceImpl implements PhotoService {
 	}
 
 	@Override
-	public PhotoResponse getPhoto(Long id) {
+	public PhotoResponse getPhoto(String id) {
 		Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PHOTO));
 
 		return fromPhotoToDto(photo);
 	}
 
 	@Override
-	public PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser) {
+	public PhotoResponse updatePhoto(String id, PhotoRequest photoRequest, UserPrincipal currentUser) {
 
 	return null;
 
@@ -104,7 +104,7 @@ public class PhotoServiceImpl implements PhotoService {
 	}
 
 	@Override
-	public ApiResponse deletePhoto(Long id, UserPrincipal currentUser) {
+	public ApiResponse deletePhoto(String id, UserPrincipal currentUser) {
 
 		if (photoRepository.existsById(id) || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
 			photoRepository.deleteById(id);

@@ -9,11 +9,55 @@ import { POST_STATUS } from "../../utils/constants";
 
 export default function ArticlePreview() {
   const [articleData, setArticleData] = useState(null);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(() => {
+    const savedSidebar = sessionStorage.getItem("articlePreviewSidebar");
+    if (savedSidebar) {
+      try {
+        const { tags } = JSON.parse(savedSidebar);
+        return tags || [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
   const [currentTag, setCurrentTag] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [displayImage, setDisplayImage] = useState("");
+  const [description, setDescription] = useState(() => {
+    const savedSidebar = sessionStorage.getItem("articlePreviewSidebar");
+    if (savedSidebar) {
+      try {
+        const { description } = JSON.parse(savedSidebar);
+        return description || "";
+      } catch {
+        return "";
+      }
+    }
+    return "";
+  });
+  const [category, setCategory] = useState(() => {
+    const savedSidebar = sessionStorage.getItem("articlePreviewSidebar");
+    if (savedSidebar) {
+      try {
+        const { category } = JSON.parse(savedSidebar);
+        return category || "";
+      } catch {
+        return "";
+      }
+    }
+    return "";
+  });
+  const [displayImage, setDisplayImage] = useState(() => {
+    const savedSidebar = sessionStorage.getItem("articlePreviewSidebar");
+    if (savedSidebar) {
+      try {
+        const { displayImage } = JSON.parse(savedSidebar);
+        return displayImage || "";
+      } catch {
+        return "";
+      }
+    }
+    return "";
+  });
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const { postArticle, isLoading } = useArticles();
@@ -31,13 +75,22 @@ export default function ArticlePreview() {
   ];
 
   useEffect(() => {
-    const draftArticle = localStorage.getItem("draftArticle");
+    const draftArticle = sessionStorage.getItem("draftArticle");
     if (!draftArticle) {
       navigate(PATHS.ARTICLE.CREATE);
       return;
     }
     setArticleData(JSON.parse(draftArticle));
   }, [navigate]);
+
+  // Save sidebar state to sessionStorage whenever any field changes
+  useEffect(() => {
+    const sidebarState = { tags, description, category, displayImage };
+    sessionStorage.setItem(
+      "articlePreviewSidebar",
+      JSON.stringify(sidebarState)
+    );
+  }, [tags, description, category, displayImage]);
 
   const handleTagAdd = (e) => {
     if (
@@ -79,7 +132,8 @@ export default function ArticlePreview() {
 
       if (response) {
         console.log(response);
-        localStorage.removeItem("draftArticle");
+        sessionStorage.removeItem("draftArticle");
+        sessionStorage.removeItem("articlePreviewSidebar");
         navigate(PATHS.ADMIN.DASHBOARD);
       } else {
         console.error("Invalid response format:", response);
@@ -87,6 +141,22 @@ export default function ArticlePreview() {
     } catch (error) {
       console.error("Failed to publish article:", error);
     }
+  };
+
+  const handleGoBack = () => {
+    sessionStorage.removeItem("draftArticle");
+    sessionStorage.removeItem("articlePreviewSidebar");
+    navigate(PATHS.ADMIN.DASHBOARD);
+  };
+
+  const handleBackToEditor = () => {
+    // Save sidebar state before navigating
+    const sidebarState = { tags, description, category, displayImage };
+    sessionStorage.setItem(
+      "articlePreviewSidebar",
+      JSON.stringify(sidebarState)
+    );
+    navigate(PATHS.ARTICLE.CREATE);
   };
 
   if (!articleData || isLoading) {
@@ -109,7 +179,7 @@ export default function ArticlePreview() {
           <h1 className="text-2xl font-bold text-white">Article Preview</h1>
           <div className="space-x-4">
             <button
-              onClick={() => navigate(PATHS.ARTICLE.CREATE)}
+              onClick={() => handleBackToEditor()}
               className="px-4 py-2 border border-gray-600 text-gray-300 rounded-md hover:bg-gray-800 hover:text-white transition-colors"
             >
               Back to Editor
@@ -118,13 +188,19 @@ export default function ArticlePreview() {
               onClick={() => handlePublish(POST_STATUS.DRAFT)}
               className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
             >
-             Draft Article
+              Draft Article
             </button>
             <button
               onClick={() => handlePublish(POST_STATUS.PUBLISHED)}
               className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
             >
               Publish Article
+            </button>
+            <button
+              onClick={() => handleGoBack()}
+              className="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-green-600"
+            >
+              Cancle Article
             </button>
           </div>
         </div>

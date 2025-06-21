@@ -80,6 +80,14 @@ export function Routes() {
       ),
     },
     {
+      path: PATHS.ARTICLE.EDIT,
+      element: (
+        <ProtectedRoute>
+          <EditArticlePage />
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: PATHS.PROJECT.CREATE,
       element: (
         <ProtectedRoute>
@@ -103,14 +111,7 @@ export function Routes() {
         </ProtectedRoute>
       ),
     },
-    {
-      path: PATHS.ARTICLE.EDIT,
-      element: (
-        <ProtectedRoute>
-          <EditArticlePage />
-        </ProtectedRoute>
-      ),
-    },
+
     {
       path: PATHS.PROJECT.EDIT,
       element: (

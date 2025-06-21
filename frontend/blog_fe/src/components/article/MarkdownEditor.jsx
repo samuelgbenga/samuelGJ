@@ -39,8 +39,10 @@ export default function MarkdownEditor() {
   const [articleTitle, setArticleTitle] = useState("");
   const [uploadingImageId, setUploadingImageId] = useState(null);
   const navigate = useNavigate();
+  const [isEdit, setIsEdit] = useState(false);
   const { postPhoto, isLoading, error } = useArticles();
   const previewRef = useRef(null);
+  const previousPathRef = useRef(null);
 
   // Auto-scroll preview when content changes
   useEffect(() => {
@@ -51,16 +53,44 @@ export default function MarkdownEditor() {
 
   // Load draft article when component mounts
   useEffect(() => {
-    const draftArticle = localStorage.getItem("draftArticle");
+    if (previousPathRef.current === null) {
+      const previousPath = sessionStorage.getItem("previousPath");
+      previousPathRef.current = previousPath;
+      sessionStorage.removeItem("previousPath");
+      if (previousPath && previousPath.includes("/edit")) {
+        console.log("ENTERING FROM: The Edit Preview Page");
+      } else {
+        console.log("ENTERING FROM: A different page (e.g., Dashboard)");
+      }
+    }
+
+    const draftArticle = sessionStorage.getItem("draftArticle");
+    const draftEditArticle = sessionStorage.getItem("draftEditArticle");
     if (draftArticle) {
       try {
         const { content, title } = JSON.parse(draftArticle);
         setMarkdownInput(content || "");
         setArticleTitle(title || "");
+        sessionStorage.removeItem("draftEditArticle");
       } catch (error) {
         console.error("Error loading draft article:", error);
         // Clear invalid draft data
-        localStorage.removeItem("draftArticle");
+        sessionStorage.removeItem("draftArticle");
+      }
+    } else if (draftEditArticle) {
+      try {
+        const { body: content, title } = JSON.parse(draftEditArticle);
+        setMarkdownInput(content || "");
+        setArticleTitle(title || "");
+        setIsEdit(true);
+        console.log("i entered here");
+        sessionStorage.removeItem("draftArticle");
+      } catch (error) {
+        console.error("Error loading draft article:", error);
+        // Clear invalid draft data
+        sessionStorage.removeItem("draftEditArticle");
+        setIsEdit(false);
+        navigate(PATHS.ADMIN.DASHBOARD);
       }
     }
   }, []);
@@ -68,12 +98,29 @@ export default function MarkdownEditor() {
   // Auto-save draft article whenever content or title changes
   const saveDraft = useCallback(
     debounce((title, content) => {
-      const articleData = {
-        title,
-        content,
-        createdAt: new Date().toISOString(),
-      };
-      localStorage.setItem("draftArticle", JSON.stringify(articleData));
+      const draftEditArticle = sessionStorage.getItem("draftEditArticle");
+      if (draftEditArticle) {
+        const articleData = {
+          title,
+          body: content,
+          createdAt: new Date().toISOString(),
+        };
+
+        const existing = JSON.parse(draftEditArticle);
+        const merged = { ...existing, ...articleData };
+        sessionStorage.setItem("draftEditArticle", JSON.stringify(merged));
+      } else {
+        const articleData = {
+          title,
+          content,
+          createdAt: new Date().toISOString(),
+        };
+
+        const draftArticle = sessionStorage.getItem("draftArticle");
+        const existing = draftArticle ? JSON.parse(draftArticle) : {};
+        const merged = { ...existing, ...articleData };
+        sessionStorage.setItem("draftArticle", JSON.stringify(merged));
+      }
     }, 1000), // Save after 1 second of no changes
     []
   );
@@ -193,8 +240,13 @@ export default function MarkdownEditor() {
     //   content: markdownInput,
     //   createdAt: new Date().toISOString(),
     // };
-    // localStorage.setItem("draftArticle", JSON.stringify(articleData));
-    navigate(PATHS.ARTICLE.PREVIEW);
+    //localStorage.setItem("draftArticle", JSON.stringify(articleData));
+    if (isEdit) {
+      navigate(PATHS.ARTICLE.EDIT);
+    } else if (!isEdit) {
+      navigate(PATHS.ARTICLE.PREVIEW);
+    }
+    // console.log(isEdit);
   };
 
   // useEffect(() => {

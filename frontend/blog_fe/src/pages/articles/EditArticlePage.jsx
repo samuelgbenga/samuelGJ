@@ -1,7 +1,12 @@
 import React from "react";
+import EditArticlePreview from "../../components/article/EditArticlePreview";
 
 const EditArticlePage = () => {
-  return <div>EditArticlePage</div>;
+  return (
+    <div>
+      <EditArticlePreview />
+    </div>
+  );
 };
 
 export default EditArticlePage;

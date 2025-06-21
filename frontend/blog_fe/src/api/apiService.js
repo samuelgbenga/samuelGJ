@@ -1,6 +1,7 @@
 import { API_ENDPOINTS } from "../config/api";
 import apiClient, { multipartInstance } from "./apiClient";
 
+
 // auth Service
 export const login = async (credentials) => {
   try {
@@ -50,6 +51,22 @@ export const post_article = async (formData) => {
     return response.data;
   } catch (error) {
     console.error("Error creating Article:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// READ POST
+export const read_article_list = async () => {
+  try {
+    const response = await apiClient.get(
+      API_ENDPOINTS.ARTICLES.LIST,
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Reading Article list:", error);
     throw error; // Re-throw the error to be handled by the hook
   }
 };

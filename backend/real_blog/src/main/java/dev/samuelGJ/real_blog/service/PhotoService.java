@@ -12,15 +12,15 @@ public interface PhotoService {
 
 	PagedResponse<PhotoResponse> getAllPhotos(int page, int size);
 
-	PhotoResponse getPhoto(Long id);
+	PhotoResponse getPhoto(String id);
 
-	PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser);
+	PhotoResponse updatePhoto(String id, PhotoRequest photoRequest, UserPrincipal currentUser);
 
 	PhotoResponse addPhoto(PhotoRequest photoRequest, UserPrincipal currentUser);
 
 	Photo addPhoto(MultipartFile multipartFile);
 
-	ApiResponse deletePhoto(Long id, UserPrincipal currentUser);
+	ApiResponse deletePhoto(String id, UserPrincipal currentUser);
 
 	PhotoResponse createPhoto(MultipartFile multipartFile);
 

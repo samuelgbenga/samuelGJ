@@ -3,7 +3,7 @@ import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 import { USER } from "../utils/constants";
 
 const axiosInstance = axios.create({
-  baseURL: API_ENDPOINTS.AUTH.LOGIN,
+  baseURL: API_BASE_URL,
   //httpsAgent: false, // Disable HTTPS this is only for development
   headers: {
     "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 // Create a separate instance for multipart/form-data
 const multipartInstance = axios.create({
-  baseURL: API_ENDPOINTS.ARTICLES.CREATE_PHOTO,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "multipart/form-data",
   },

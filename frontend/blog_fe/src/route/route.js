@@ -16,10 +16,10 @@ export const PATHS = {
   ARTICLE: {
     CREATE: "/create/article",
     PREVIEW: "/article/preview",
-    EDIT: "/edit/article/:id",
+    EDIT: "/article/edit/:id",
     READ: "/article/:id",
   },
-  PROJECT: { CREATE: "/create/project", EDIT: "/edit/project/:id" },
+  PROJECT: { CREATE: "/create/project", EDIT:  "/edit/project/:id" },
   CERTIFICATION: {
     CREATE: "/create/certification",
     EDIT: "/edit/certification/:id",
