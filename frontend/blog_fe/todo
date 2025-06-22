@@ -20,13 +20,14 @@
 - projects first 
 - certification second
 
-- (now)
+- (done)
 Store the data transition on Local storage so that every changes will be tracked even as i move
 from one page to another.
 for example. while in the ArticlePreview page let say i want to do some more editing in the body
 i click on back to edit button, when i am done with the edit and go back to the Article preview
 all my previous updated like category settings etc should be intact.
 
+(done)
 - what i want now is that every content i edited on the preview page remains even while i navigate to
  edit the content in the markdown editor same with the EditPost page.
  how i intend to do that is to retain the content in a state/session storage while the Marddown editor change or update the content.
@@ -35,8 +36,20 @@ all my previous updated like category settings etc should be intact.
 - draft and publich
 - update photo only
 
-(later)
+(now)
 - edit, delete, read functionalites.
+
+(later)
+- Draft not draft issue later from the frontend not backend.
+
+(later)
+- proper error handling for frontend and backend. 
+- like missing important data
+
+(later)
+- for loader: i need a ripple effect loader
+(late)
+- include ask e.g are you sure you want to make this changes
 
 -(later)
 - implement loader
@@ -55,6 +68,12 @@ all my previous updated like category settings etc should be intact.
 
 (LATER)
 - route to go back to where you are  coming from.
+
+(later)
+- proper error handling
+
+(later)
+- image preview before upload
 
 
 (consider)

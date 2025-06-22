@@ -10,10 +10,11 @@ export const API_ENDPOINTS = {
   ARTICLES: {
     LIST: `${API_VERSION}/posts`,
     CREATE: `${API_VERSION}/posts`,
-    UPDATE: (id) => `${API_VERSION}/articles/${id}`,
-    DELETE: (id) => `${API_VERSION}/articles/${id}`,
-    GET: (id) => `${API_VERSION}/articles/${id}`,
+    UPDATE: (id) => `${API_VERSION}/posts/${id}`,
+    DELETE: (id) => `${API_VERSION}/posts/${id}`,
+    GET: (id) => `${API_VERSION}/posts/${id}`,
     CREATE_PHOTO: `${API_VERSION}/photos`,
+    UPDATE_PHOTO: (id) => `${API_VERSION}/posts/update_photo/${id}`,
   },
   PROJECTS: {
     LIST: `${API_VERSION}/projects`,

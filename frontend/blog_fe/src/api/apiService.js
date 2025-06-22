@@ -38,6 +38,24 @@ export const post_photo = async (formData) => {
   }
 };
 
+// ARTICLE APIS
+// MAKE PHOTO UPDATE
+export const post_photo_update = async (formData, id) => {
+  try {
+    const response = await multipartInstance.put(
+      API_ENDPOINTS.ARTICLES.UPDATE_PHOTO(id),
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Updating Photo:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
 // MAKE POST
 export const post_article = async (formData) => {
   try {
@@ -55,6 +73,23 @@ export const post_article = async (formData) => {
   }
 };
 
+// MAKE POST UPDATE
+export const post_article_update = async (formData, id) => {
+  try {
+    const response = await apiClient.put(
+      API_ENDPOINTS.ARTICLES.UPDATE(id),
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Updating Article:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
 // READ POST
 export const read_article_list = async () => {
   try {
@@ -67,6 +102,22 @@ export const read_article_list = async () => {
     return response.data;
   } catch (error) {
     console.error("Error Reading Article list:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// DELETE POST
+export const delete_article = async (id) => {
+  try {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.ARTICLES.DELETE(id),
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Deleting Article:", error);
     throw error; // Re-throw the error to be handled by the hook
   }
 };

@@ -4,14 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 
 const DashboardPage = () => {
-  const { isLoading, artcleListData, error, readArticleList } = useArticles();
+  const {
+    isLoading,
+    articleListData,
+    error,
+    readArticleList,
+    deleteArticle,
+    setArticleListData,
+  } = useArticles();
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchArticleList = async () => {
       try {
-        const response = await readArticleList();
-        if (response) console.log(response.content);
+         await readArticleList();
       } catch (err) {
         console.log("the err:", err);
         console.log("the error:", error);
@@ -28,8 +35,19 @@ const DashboardPage = () => {
     navigate(PATHS.ARTICLE.EDIT.replace(":id", article.id));
   };
 
-  const handleDelete = (articleId) => {
+  const handleDelete = async (articleId) => {
     console.log("Delete article:", articleId);
+    try {
+      const response = await deleteArticle(articleId);
+      if (response) {
+        setArticleListData((prev) =>
+          prev.filter((item) => item.id !== articleId)
+        );
+      }
+    } catch (err) {
+      console.log(err);
+      console.log(error);
+    }
     // Add your delete logic here
   };
 
@@ -42,7 +60,7 @@ const DashboardPage = () => {
         <p>Error loading articles</p>
       ) : (
         <div className="space-y-2">
-          {artcleListData?.map((article) => (
+          {articleListData?.map((article) => (
             <div
               key={article.id}
               className="p-4 bg-white rounded shadow flex justify-between items-center"

@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { post_article, post_photo, read_article_list } from "../api/apiService";
+import {
+  delete_article,
+  post_article,
+  post_article_update,
+  post_photo,
+  post_photo_update,
+  read_article_list,
+} from "../api/apiService";
 
 export const useArticles = () => {
   const [photoData, setPhotoData] = useState(null);
+  const [photoUpdateData, setPhotoUpdateData] = useState(null);
   const [articleData, setArticleData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [artcleListData, setArticleListData] = useState(null);
+  const [articleListData, setArticleListData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
 
   const postPhoto = async (formData) => {
     //  console.log("Login started...");
@@ -23,6 +32,30 @@ export const useArticles = () => {
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "An error occurred during Photo Upload";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
+  const postPhotoUpdate = async (formData, id) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await post_photo_update(formData, id);
+      //  console.log("Login successful:", response);
+      // Set localStorage first
+      //localStorage.setItem(USER, JSON.stringify(response));
+      // Then update state
+      setPhotoUpdateData(response.photo);
+      return response.photo;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || "An error occurred during Photo Update";
       //  console.log("Login failed:", errorMessage);
       setError(errorMessage);
       throw errorMessage;
@@ -55,6 +88,29 @@ export const useArticles = () => {
     }
   };
 
+  const updateArticle = async (formData, id) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await post_article_update(formData, id);
+      //  console.log("Login successful:", response);
+
+      setArticleData(response);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Article Update";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
   const readArticleList = async () => {
     //  console.log("Login started...");
     setIsLoading(true);
@@ -78,12 +134,41 @@ export const useArticles = () => {
     }
   };
 
+  // DELETE ARTICLE
+  const deleteArticle = async (id) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await delete_article(id);
+      //  console.log("Login successful:", response);
+
+      setDeleteData(response);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || "An error occurred deleting Article";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
   return {
     photoData,
+    photoUpdateData,
     error,
     isLoading,
     articleData,
-    artcleListData,
+    articleListData,
+    setArticleListData,
+    deleteData,
+    deleteArticle,
+    updateArticle,
+    postPhotoUpdate,
     postPhoto,
     postArticle,
     readArticleList,
