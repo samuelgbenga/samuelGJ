@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -10,12 +10,31 @@ export default function ProjectForm() {
     name: "",
     language: "",
     frameworks: [],
-    githubLink: "",
+    url: "",
     description: "",
   });
   const [currentFramework, setCurrentFramework] = useState("");
   const [errors, setErrors] = useState({});
-  const { isLoading, error, createProject, projectData } = useProjects();
+  const { isLoading, error, createProject, editProject } = useProjects();
+  const [isEdit, setIsEdit] = useState(false);
+  const [projectId, setProjectId] = useState(null);
+
+  // Load editProject from sessionStorage if it exists
+  useEffect(() => {
+    const editProject = sessionStorage.getItem("editProject");
+    if (editProject) {
+      const project = JSON.parse(editProject);
+      setFormData({
+        name: project.name || "",
+        language: project.language || "",
+        frameworks: project.frameworks || [],
+        url: project.url || "",
+        description: project.description || "",
+      });
+      setProjectId(project.id);
+      setIsEdit(true);
+    }
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -30,10 +49,10 @@ export default function ProjectForm() {
     if (formData.frameworks.length === 0) {
       newErrors.frameworks = "At least one framework/library is required";
     }
-    if (!formData.githubLink.trim()) {
-      newErrors.githubLink = "GitHub link is required";
-    } else if (!isValidUrl(formData.githubLink)) {
-      newErrors.githubLink = "Please enter a valid URL";
+    if (!formData.url.trim()) {
+      newErrors.url = "Project URL is required";
+    } else if (!isValidUrl(formData.url)) {
+      newErrors.url = "Please enter a valid URL";
     }
     if (!formData.description.trim()) {
       newErrors.description = "Project description is required";
@@ -83,13 +102,17 @@ export default function ProjectForm() {
 
     try {
       //TODO: Add your API endpoint for project creation
-      const response = await createProject(formData);
-
-      if (response) {
-       
-        console.log("Project created");
-        navigate(PATHS.ADMIN.PROJECT);
+      if (isEdit) {
+        await editProject(projectId, formData);
+        console.log("Edited");
+        sessionStorage.removeItem("editProject");
+      } else {
+        await createProject(formData);
+        console.log("created A new");
       }
+
+      navigate(PATHS.ADMIN.DASHBOARD)
+
     } catch (err) {
       console.error("Failed to create project:", err);
       console.error(error);
@@ -110,10 +133,17 @@ export default function ProjectForm() {
     }
   };
 
+  const handleCancle = () => {
+    sessionStorage.removeItem("editProject");
+    navigate(PATHS.ADMIN.PROJECT);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-8 text-black">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6">Create New Project</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          {isEdit ? "Edit Project" : "Create New Project"}
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Language Input */}
@@ -208,27 +238,27 @@ export default function ProjectForm() {
             </div>
           </div>
 
-          {/* GitHub Link Input */}
+          {/* Project URL Input */}
           <div>
             <label
-              htmlFor="githubLink"
+              htmlFor="url"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              GitHub Link or Project URL
+              Project URL
             </label>
             <input
               type="url"
-              id="githubLink"
-              name="githubLink"
-              value={formData.githubLink}
+              id="url"
+              name="url"
+              value={formData.url}
               onChange={handleChange}
               placeholder="https://github.com/username/repo or https://project-url.com"
               className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.githubLink ? "border-red-500" : "border-gray-300"
+                errors.url ? "border-red-500" : "border-gray-300"
               }`}
             />
-            {errors.githubLink && (
-              <p className="mt-1 text-sm text-red-500">{errors.githubLink}</p>
+            {errors.url && (
+              <p className="mt-1 text-sm text-red-500">{errors.url}</p>
             )}
           </div>
 
@@ -260,7 +290,7 @@ export default function ProjectForm() {
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              onClick={() => navigate(PATHS.ADMIN.PROJECT)}
+              onClick={() => handleCancle()}
               className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Cancel
@@ -270,7 +300,13 @@ export default function ProjectForm() {
               disabled={isLoading}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              {`${isLoading ? "Loading..." : "Create Project"}`}
+              {`${
+                isLoading
+                  ? "Loading..."
+                  : isEdit
+                  ? "Save Changes"
+                  : "Create Project"
+              }`}
             </button>
           </div>
         </form>

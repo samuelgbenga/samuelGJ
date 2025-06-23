@@ -6,6 +6,7 @@ import dev.samuelGJ.real_blog.model.Certification;
 import dev.samuelGJ.real_blog.model.Photo;
 import dev.samuelGJ.real_blog.model.user.User;
 import dev.samuelGJ.real_blog.payload.request.CertificationRequestDto;
+import dev.samuelGJ.real_blog.payload.request.CertificationUpdateRequest;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.CertificationResponseDto;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
@@ -65,7 +66,7 @@ public class CertificationServiceImpl implements CertificationService {
     }
 
     @Override
-    public CertificationResponseDto update(UserPrincipal currentUser, Long id, CertificationRequestDto request) {
+    public CertificationResponseDto update(UserPrincipal currentUser, Long id, CertificationUpdateRequest request) {
         Certification certification = certificationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Certification not found"));
         
@@ -77,8 +78,9 @@ public class CertificationServiceImpl implements CertificationService {
         certification.setIssuer(request.issuer());
         certification.setIssueDate(request.issueDate());
         certification.setExpireDate(request.expireDate());
-        Photo photo =  photoService.addPhoto(request.multipartFile());
-        certification.setCredentialUrl(photo.getUrl());
+        certification.setDescription(request.description());
+        // Photo photo =  photoService.addPhoto(request.multipartFile());
+        // certification.setCredentialUrl(photo.getUrl());
 
         return EntityMapper.entityToDto(certificationRepository.save(certification));
     }

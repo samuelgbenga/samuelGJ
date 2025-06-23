@@ -1,6 +1,7 @@
 package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.payload.request.CertificationRequestDto;
+import dev.samuelGJ.real_blog.payload.request.CertificationUpdateRequest;
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.CertificationResponseDto;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
@@ -48,11 +49,11 @@ public class CertificationController {
         return new ResponseEntity<>(certifications, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CertificationResponseDto> update(
             @PathVariable(value = "id") Long id,
-            @Valid @ModelAttribute CertificationRequestDto request,
+            @Valid @RequestBody CertificationUpdateRequest request,
             @CurrentUser UserPrincipal currentUser) {
         CertificationResponseDto certification = certificationService.update(currentUser, id, request);
         return new ResponseEntity<>(certification, HttpStatus.OK);

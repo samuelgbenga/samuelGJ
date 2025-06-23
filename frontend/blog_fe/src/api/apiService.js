@@ -158,6 +158,102 @@ export const post_cert = async (formData) => {
   }
 };
 
+// READ Projects
+export const read_project_list = async () => {
+  try {
+    const response = await apiClient.get(
+      API_ENDPOINTS.PROJECTS.LIST,
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Reading Project list:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
 
+// Delete the Project
+export const delete_project = async (id) => {
+  try {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.PROJECTS.DELETE(id),
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Deleting Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// edit the Project
+export const edit_project = async (id, formData) => {
+  try {
+    const response = await apiClient.put(
+      API_ENDPOINTS.PROJECTS.UPDATE(id),
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Editing Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// READ Certifications
+export const read_certification_list = async () => {
+  try {
+    const response = await apiClient.get(
+      API_ENDPOINTS.CERTIFICATIONS.LIST,
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Reading Certification list:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// Delete the Project
+export const delete_cert = async (id) => {
+  try {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.CERTIFICATIONS.DELETE(id),
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Deleting Certification:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// Delete the Project
+export const edit_cert = async (id, formData) => {
+  try {
+    const response = await apiClient.put(
+      API_ENDPOINTS.CERTIFICATIONS.UPDATE(id),
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Updating Certification:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
 
 

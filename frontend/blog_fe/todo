@@ -40,6 +40,11 @@ all my previous updated like category settings etc should be intact.
 - edit, delete, read functionalites.
 
 (later)
+- add photo to project ( project need photos too a physical demo of the project)
+- videos, and mulitiple pictures to further demonstrate the project 
+
+
+(later)
 - Draft not draft issue later from the frontend not backend.
 
 (later)
@@ -74,6 +79,10 @@ all my previous updated like category settings etc should be intact.
 
 (later)
 - image preview before upload
+
+(later)
+- once the error type is missing token or token expired
+- redirect to landing page and remove the token from local storage
 
 
 (consider)

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { useCertifications } from "../../hooks/useCertifications";
@@ -6,24 +6,45 @@ import { useCertifications } from "../../hooks/useCertifications";
 export default function CertificationForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: "",
-    organization: "",
+    name: "",
+    issuer: "",
     description: "",
     issueDate: "",
-    expireDate: "",
-    logoUrl: null,
+    expiryDate: "",
+    credentialUrl: "",
   });
   const [errors, setErrors] = useState({});
   const [previewUrl, setPreviewUrl] = useState(null);
-  const { postCert, isLoading, error } = useCertifications();
+  const [isEdit, setIsEdit] = useState(false);
+  const { postCert, isLoading, error, editCert } = useCertifications();
+  const [certId, setCertId] = useState(null);
+
+  useEffect(() => {
+    const editCertificate = sessionStorage.getItem("editCertificate");
+    if (editCertificate) {
+      const cert = JSON.parse(editCertificate);
+      setFormData({
+        name: cert.name || "",
+        issuer: cert.issuer || "",
+        description: cert.description || "",
+        issueDate: cert.issueDate || "",
+        expiryDate: cert.expiryDate || "",
+        credentialUrl: cert.credentialUrl || "",
+      });
+      setCertId(cert.id);
+      console.log(cert.id);
+      console.log(cert);
+      setIsEdit(true);
+    }
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.title.trim()) {
-      newErrors.title = "Certification title is required";
+    if (!formData.name.trim()) {
+      newErrors.name = "Certification title is required";
     }
-    if (!formData.organization.trim()) {
-      newErrors.organization = "Organization name is required";
+    if (!formData.issuer.trim()) {
+      newErrors.issuer = "Organization name is required";
     }
     if (!formData.description.trim()) {
       newErrors.description =
@@ -32,8 +53,8 @@ export default function CertificationForm() {
     if (!formData.issueDate) {
       newErrors.issueDate = "Issue date is required";
     }
-    if (!formData.logoUrl) {
-      newErrors.logoUrl = "Organization logo is required";
+    if (!formData.credentialUrl) {
+      newErrors.credentialUrl = "Credential URL is required";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -46,7 +67,7 @@ export default function CertificationForm() {
       if (!file.type.startsWith("image/")) {
         setErrors((prev) => ({
           ...prev,
-          logoUrl: "Please upload an image file",
+          credentialUrl: "Please upload an image file",
         }));
         return;
       }
@@ -55,7 +76,7 @@ export default function CertificationForm() {
       if (file.size > 2 * 1024 * 1024) {
         setErrors((prev) => ({
           ...prev,
-          logoUrl: "Image size should be less than 2MB",
+          credentialUrl: "Image size should be less than 2MB",
         }));
         return;
       }
@@ -64,11 +85,11 @@ export default function CertificationForm() {
       setPreviewUrl(url);
       setFormData((prev) => ({
         ...prev,
-        logoUrl: file,
+        credentialUrl: file,
       }));
       setErrors((prev) => ({
         ...prev,
-        logoUrl: "",
+        credentialUrl: "",
       }));
     }
   };
@@ -79,21 +100,38 @@ export default function CertificationForm() {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.title);
-      formDataToSend.append("issuer", formData.organization);
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("issuer", formData.issuer);
       formDataToSend.append("issueDate", formData.issueDate);
-      formDataToSend.append("expireDate", formData.expireDate);
-      formDataToSend.append("multipartFile", formData.logoUrl);
+      formDataToSend.append("expireDate", formData.expiryDate);
+      formDataToSend.append("multipartFile", formData.credentialUrl);
       formDataToSend.append("description", formData.description);
 
       // TODO: Add your API endpoint for certification creation
-      const response = await postCert(formDataToSend);
+      if (isEdit) {
+        const request = {
+          name: formData.name,
+          issuer: formData.issuer,
+          issueDate: formData.issueDate,
+          expiryDate: formData.expiryDate,
+          description: formData.description,
+        };
 
-      if (response) {
-        console.log(response);
-        navigate(PATHS.ADMIN.CERTIFICATION);
+        console.log(certId, request);
+
+        const response = await editCert(certId, request);
+        sessionStorage.removeItem("editCertificate");
+        navigate(PATHS.ADMIN.DASHBOARD);
+      } else {
+        const response = await postCert(formDataToSend);
+
+        if (response) {
+          console.log(response);
+          navigate(PATHS.ADMIN.DASHBOARD);
+        }
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to create certification:", err);
       console.error("Failed to create certification:", error);
     }
   };
@@ -112,6 +150,11 @@ export default function CertificationForm() {
     }
   };
 
+  const handleCancle = () => {
+    sessionStorage.removeItem("editCertificate");
+    navigate(PATHS.ADMIN.DASHBOARD);
+  };
+
   // Cleanup preview URL when component unmounts
   React.useEffect(() => {
     return () => {
@@ -124,54 +167,56 @@ export default function CertificationForm() {
   return (
     <div className="min-h-screen bg-gray-100 py-8 text-black">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6">Add New Certification</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          {isEdit ? "Edit Certification" : "Add New Certification"}
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Certification Title */}
           <div>
             <label
-              htmlFor="title"
+              htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
               Certification Title
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
-              value={formData.title}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               placeholder="e.g., AWS Certified Solutions Architect"
               className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.title ? "border-red-500" : "border-gray-300"
+                errors.name ? "border-red-500" : "border-gray-300"
               }`}
             />
-            {errors.title && (
-              <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
             )}
           </div>
 
           {/* Organization Name */}
           <div>
             <label
-              htmlFor="organization"
+              htmlFor="issuer"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
               Organization
             </label>
             <input
               type="text"
-              id="organization"
-              name="organization"
-              value={formData.organization}
+              id="issuer"
+              name="issuer"
+              value={formData.issuer}
               onChange={handleChange}
               placeholder="e.g., Amazon Web Services"
               className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.organization ? "border-red-500" : "border-gray-300"
+                errors.issuer ? "border-red-500" : "border-gray-300"
               }`}
             />
-            {errors.organization && (
-              <p className="mt-1 text-sm text-red-500">{errors.organization}</p>
+            {errors.issuer && (
+              <p className="mt-1 text-sm text-red-500">{errors.issuer}</p>
             )}
           </div>
           {/* Certification Description */}
@@ -180,7 +225,7 @@ export default function CertificationForm() {
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Organization
+              Description
             </label>
             <textarea
               type="text"
@@ -223,72 +268,77 @@ export default function CertificationForm() {
           {/* Expire Date */}
           <div>
             <label
-              htmlFor="expireDate"
+              htmlFor="expiryDate"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
               Expire Date
             </label>
             <input
               type="date"
-              id="expireDate"
-              name="expireDate"
-              value={formData.expireDate}
+              id="expiryDate"
+              name="expiryDate"
+              value={formData.expiryDate}
               onChange={handleChange}
               className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.expireDate ? "border-red-500" : "border-gray-300"
+                errors.expiryDate ? "border-red-500" : "border-gray-300"
               }`}
             />
-            {errors.expireDate && (
-              <p className="mt-1 text-sm text-red-500">{errors.expireDate}</p>
+            {errors.expiryDate && (
+              <p className="mt-1 text-sm text-red-500">{errors.expiryDate}</p>
             )}
           </div>
 
           {/* Organization Logo Upload */}
-          <div>
-            <label
-              htmlFor="logoUrl"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Organization Logo
-            </label>
-            <div className="mt-1 flex items-center space-x-4">
-              <input
-                type="file"
-                id="logoUrl"
-                name="logoUrl"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
+          {!isEdit && (
+            <div>
               <label
-                htmlFor="logoUrl"
-                className="px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+                htmlFor="credentialUrl"
+                className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Choose Image
+                Organization Logo
               </label>
-              {previewUrl && (
-                <div className="relative w-16 h-16">
-                  <img
-                    src={previewUrl}
-                    alt="Organization logo preview"
-                    className="w-full h-full object-contain rounded-md"
-                  />
-                </div>
-              )}
-            </div>
-            {errors.logoUrl && (
-              <p className="mt-1 text-sm text-red-500">{errors.logoUrl}</p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">
-              Upload organization logo (max 2MB, PNG/JPG)
-            </p>
-          </div>
 
+              <div className="mt-1 flex items-center space-x-4">
+                <input
+                  type="file"
+                  id="credentialUrl"
+                  name="credentialUrl"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="credentialUrl"
+                  className="px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
+                >
+                  Choose Image
+                </label>
+                {previewUrl && (
+                  <div className="relative w-16 h-16">
+                    <img
+                      src={previewUrl}
+                      alt="Organization logo preview"
+                      className="w-full h-full object-contain rounded-md"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {errors.credentialUrl && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.credentialUrl}
+                </p>
+              )}
+              <p className="mt-1 text-sm text-gray-500">
+                Upload organization logo (max 2MB, PNG/JPG)
+              </p>
+            </div>
+          )}
           {/* Submit Buttons */}
           <div className="flex justify-end space-x-4">
             <button
               type="button"
-              onClick={() => navigate(PATHS.HOME)}
+              onClick={() => handleCancle()}
               className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
             >
               Cancel
@@ -298,7 +348,13 @@ export default function CertificationForm() {
               disabled={isLoading}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              {`${isLoading ? "Loading....." : "Add Certification"}`}
+              {`${
+                isLoading
+                  ? "Loading....."
+                  : isEdit
+                  ? "Save Change"
+                  : "Add Certification"
+              }`}
             </button>
           </div>
         </form>
