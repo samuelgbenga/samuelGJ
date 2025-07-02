@@ -40,8 +40,8 @@ const DashboardPage = () => {
     const fetchArticleList = async () => {
       try {
         await readArticleList();
-        await readProjectList();
-        const response = await readCertificationList();
+        const response = await readProjectList();
+        await readCertificationList();
         console.log(response);
       } catch (err) {
         console.log("the err:", err);

@@ -44,4 +44,8 @@ public class Project extends UserDateAudit {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "project_id")
+	private List<Photo> photos = new ArrayList<>();
+
 }

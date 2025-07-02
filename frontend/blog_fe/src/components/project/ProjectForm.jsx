@@ -19,6 +19,10 @@ export default function ProjectForm() {
   const [isEdit, setIsEdit] = useState(false);
   const [projectId, setProjectId] = useState(null);
 
+  // Multiple files state
+  const [files, setFiles] = useState([]);
+  const [filePreviews, setFilePreviews] = useState([]);
+
   // Load editProject from sessionStorage if it exists
   useEffect(() => {
     const editProject = sessionStorage.getItem("editProject");
@@ -96,23 +100,55 @@ export default function ProjectForm() {
     }));
   };
 
+  // Multiple files handlers
+  const handleFilesChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles((prev) => [...prev, ...selectedFiles]);
+    // Generate previews for new files and append to existing previews
+    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setFilePreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeFile = (idx) => {
+    setFiles((prev) => prev.filter((_, i) => i !== idx));
+    setFilePreviews((prev) => prev.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     try {
-      //TODO: Add your API endpoint for project creation
+      if (files.length > 0) {
+        const formDataToSend = new FormData();
+        // Append all form fields
+        Object.entries(formData).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => formDataToSend.append(key, v));
+          } else {
+            formDataToSend.append(key, value);
+          }
+        });
+        // Append files
+        files.forEach((file) => formDataToSend.append("multipartFiles", file));
+
+        if (isEdit) {
+          await editProject(projectId, formDataToSend);
+          sessionStorage.removeItem("editProject");
+        } else {
+          await createProject(formDataToSend);
+        }
+        navigate(PATHS.ADMIN.DASHBOARD);
+        return;
+      }
+      // If no files, use normal formData
       if (isEdit) {
         await editProject(projectId, formData);
-        console.log("Edited");
         sessionStorage.removeItem("editProject");
       } else {
         await createProject(formData);
-        console.log("created A new");
       }
-
-      navigate(PATHS.ADMIN.DASHBOARD)
-
+      navigate(PATHS.ADMIN.DASHBOARD);
     } catch (err) {
       console.error("Failed to create project:", err);
       console.error(error);
@@ -286,6 +322,38 @@ export default function ProjectForm() {
             )}
           </div>
 
+          {/* Project Images Input */}
+         { !isEdit && <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Project Images (you can select multiple)
+            </label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFilesChange}
+              className="w-full px-4 py-2 border rounded-md"
+            />
+            <div className="flex flex-wrap gap-2 mt-2">
+              {filePreviews.map((src, idx) => (
+                <div key={idx} className="relative">
+                  <img
+                    src={src}
+                    alt={`preview-${idx}`}
+                    className="h-20 w-20 object-cover rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFile(idx)}
+                    className="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full p-1"
+                  >
+                    <XMarkIcon className="h-4 w-4 text-red-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>}
+
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <button
@@ -300,13 +368,15 @@ export default function ProjectForm() {
               disabled={isLoading}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              {`${
-                isLoading
-                  ? "Loading..."
-                  : isEdit
-                  ? "Save Changes"
-                  : "Create Project"
-              }`}
+              {`
+                ${
+                  isLoading
+                    ? "Loading..."
+                    : isEdit
+                    ? "Save Changes"
+                    : "Create Project"
+                }
+              `}
             </button>
           </div>
         </form>

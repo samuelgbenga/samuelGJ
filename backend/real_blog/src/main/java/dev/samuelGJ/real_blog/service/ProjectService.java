@@ -19,4 +19,6 @@ public interface ProjectService {
 
 	ApiResponse delete(Long id, UserPrincipal currentUser);
 
+	ApiResponse deleteProjectPhoto(Long projectId, String photoId, UserPrincipal currentUser);
+
 }

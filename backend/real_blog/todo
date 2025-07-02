@@ -32,3 +32,8 @@ June 13:
 
 - revamp to return user summary/profile on every response dto that requires user info.
 - revamp to include update dto in the Entity util mapper
+
+(later)
+
+- proper error handling for frontend and backend.
+- like missing important data

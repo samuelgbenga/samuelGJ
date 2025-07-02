@@ -8,6 +8,7 @@ import dev.samuelGJ.real_blog.payload.response.ProjectResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.ProjectService;
+import org.springframework.http.MediaType;
 import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +48,9 @@ public class ProjectController {
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}
 
-	@PostMapping
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ProjectResponseDto> create(@Valid @RequestBody ProjectRequest request, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<ProjectResponseDto> create(@Valid @ModelAttribute ProjectRequest request, @CurrentUser UserPrincipal currentUser) {
 		ProjectResponseDto project = service.create(request, currentUser);
 		return new ResponseEntity<>(project, HttpStatus.CREATED);
 	}
@@ -75,6 +76,13 @@ public class ProjectController {
 		ApiResponse apiResponse = service.delete(id, currentUser);
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{projectId}/photos")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse> deleteProjectPhoto(@PathVariable Long projectId, @RequestParam String photoId, @CurrentUser UserPrincipal currentUser) {
+		ApiResponse response = service.deleteProjectPhoto(projectId, photoId, currentUser);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

@@ -27,4 +27,6 @@ public class ProjectResponseDto {
     private String description;
 
     private UserSummary userSummary;
+
+    private List<PhotoResponse> photo = new ArrayList<>();
 }

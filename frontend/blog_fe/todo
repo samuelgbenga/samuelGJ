@@ -36,53 +36,49 @@ all my previous updated like category settings etc should be intact.
 - draft and publich
 - update photo only
 
-(now)
+(done)
 - edit, delete, read functionalites.
 
-(later)
+(done)
 - add photo to project ( project need photos too a physical demo of the project)
 - videos, and mulitiple pictures to further demonstrate the project 
 
 
-(later)
+(done)
 - Draft not draft issue later from the frontend not backend.
 
-(later)
-- proper error handling for frontend and backend. 
-- like missing important data
+(done)
+- imag should be able to selecte differently in the image selection in the project
+
 
 (later)
-- for loader: i need a ripple effect loader
+- for loader: i need a ripple effect loader and skeleton
 (late)
-- include ask e.g are you sure you want to make this changes
-
--(later)
-- implement loader
-
-(later)
-- beautify the frontend.
-- Global style, color, theme.
+- include ask e.g are you sure you want to make this changes or deletet this task
 
 (later)
 - Problem i was able to access secured frontend area in because i have token in my browser local storage 
 - which has expired by the way:
 - so next is to make sure that doesnt happenend (or i could come back to that later)
+- once the error type is missing token or token expired
+- redirect to landing page and remove the token from local storage
 
 (later)
-- implement news later
+- beautify the frontend.
+- Global style, color, theme.
 
-(LATER)
-- route to go back to where you are  coming from.
 
-(later)
-- proper error handling
+
 
 (later)
 - image preview before upload
 
 (later)
-- once the error type is missing token or token expired
-- redirect to landing page and remove the token from local storage
+- implement news letter
+
+(later)
+- proper error handling for frontend and backend. 
+- like missing important data
 
 
 (consider)
@@ -102,6 +98,9 @@ all my previous updated like category settings etc should be intact.
 - Update Linked in profile to show commitment ()
 - search for communities you can be part of and reach out.
 - Landing page questionaires- buyer, farmers, partnership (logistics, ngo, etc) 
+
+
+
 
 
 

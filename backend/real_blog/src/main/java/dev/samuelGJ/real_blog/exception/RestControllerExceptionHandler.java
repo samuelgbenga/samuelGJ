@@ -101,6 +101,26 @@ public class RestControllerExceptionHandler {
 				HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler({ IllegalArgumentException.class })
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+		List<String> messages = new ArrayList<>(1);
+		messages.add("Bad request: " + ex.getMessage());
+		return new ResponseEntity<>(new ExceptionResponse(messages, HttpStatus.BAD_REQUEST.getReasonPhrase(),
+				HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseBody
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public ResponseEntity<ExceptionResponse> handleAllUncaughtException(Exception ex) {
+		List<String> messages = new ArrayList<>(1);
+		messages.add("An unexpected error occurred: " + ex.getMessage());
+		return new ResponseEntity<>(new ExceptionResponse(messages, HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+				HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 	private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message, Map<String, Object> errors) {
 		Map<String, Object> body = new HashMap<>();
 		body.put("timestamp", LocalDateTime.now());

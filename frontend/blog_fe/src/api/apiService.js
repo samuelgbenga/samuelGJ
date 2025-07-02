@@ -126,7 +126,7 @@ export const delete_article = async (id) => {
 // MAKE PROJECT BABY
 export const create_project = async (formData) => {
   try {
-    const response = await apiClient.post(
+    const response = await multipartInstance.post(
       API_ENDPOINTS.PROJECTS.CREATE,
       formData
     );
