@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
+  add_photo_update,
   create_project,
   delete_project,
+  delete_project_photo,
   edit_project,
   read_project_list,
 } from "../api/apiService";
@@ -12,6 +14,7 @@ export const useProjects = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [projectListData, setProjectListData] = useState([]);
 
+  // create project
   const createProject = async (formData) => {
     //  console.log("Login started...");
     setIsLoading(true);
@@ -37,6 +40,7 @@ export const useProjects = () => {
     }
   };
 
+  // read project list
   const readProjectList = async () => {
     //  console.log("Login started...");
     setIsLoading(true);
@@ -69,7 +73,7 @@ export const useProjects = () => {
       const response = await delete_project(id);
       //  console.log("Login successful:", response);
 
-     // setProjectListData(response);
+      // setProjectListData(response);
       return response;
     } catch (err) {
       const errorMessage =
@@ -108,6 +112,53 @@ export const useProjects = () => {
     }
   };
 
+  // delete photo from project
+  const deletePhotoFromProject = async (id, photoId) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await delete_project_photo(id, photoId);
+      //  console.log("Login successful:", response);
+      // setProjectListData(response);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Deleting Photo from Project";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
+  // add photo to project
+  const addPhotoToProject = async (id, formData) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await add_photo_update(id, formData);
+      //  console.log("Login successful:", response);
+
+      setProjectData(response);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Update Photo to Project";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
   return {
     projectData,
     error,
@@ -118,5 +169,7 @@ export const useProjects = () => {
     setProjectListData,
     createProject,
     readProjectList,
+    deletePhotoFromProject,
+    addPhotoToProject,
   };
 };

@@ -6,6 +6,9 @@ import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
 import dev.samuelGJ.real_blog.payload.response.ProjectResponseDto;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface ProjectService {
 
@@ -20,5 +23,7 @@ public interface ProjectService {
 	ApiResponse delete(Long id, UserPrincipal currentUser);
 
 	ApiResponse deleteProjectPhoto(Long projectId, String photoId, UserPrincipal currentUser);
+
+	ProjectResponseDto addPhotosToProject(Long projectId, List<MultipartFile> multipartFiles, UserPrincipal currentUser);
 
 }

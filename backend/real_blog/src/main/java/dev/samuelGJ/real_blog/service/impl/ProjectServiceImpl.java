@@ -27,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -132,4 +133,25 @@ public class ProjectServiceImpl implements ProjectService {
         cloudinaryService.deleteFile(photoId);
         return new ApiResponse(true, "Photo deleted from project and Cloudinary");
     }
+
+    @Override
+    public ProjectResponseDto addPhotosToProject(Long projectId, List<MultipartFile> multipartFiles, UserPrincipal currentUser) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
+        if (!project.getCreatedBy().equals(currentUser.getId())) {
+            throw new UnauthorizedException("You don't have permission to update this project");
+        }
+        if (multipartFiles == null || multipartFiles.isEmpty()) {
+            throw new BadRequestException("No files provided");
+        }
+        List<Photo> newPhotos = new ArrayList<>();
+        for (MultipartFile file : multipartFiles) {
+            Photo photo = photoService.addPhoto(file);
+            newPhotos.add(photo);
+        }
+        project.getPhotos().addAll(newPhotos);
+        Project updatedProject = projectRepository.save(project);
+        return EntityMapper.entityToDto(updatedProject);
+    }
+
 }

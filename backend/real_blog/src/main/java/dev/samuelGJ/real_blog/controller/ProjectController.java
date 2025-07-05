@@ -24,15 +24,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
 public class ProjectController {
-
 
 	private final ProjectService service;
 
@@ -78,10 +79,20 @@ public class ProjectController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{projectId}/photos")
+	@DeleteMapping("/{projectId}/delete_photos")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> deleteProjectPhoto(@PathVariable Long projectId, @RequestParam String photoId, @CurrentUser UserPrincipal currentUser) {
 		ApiResponse response = service.deleteProjectPhoto(projectId, photoId, currentUser);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/{projectId}/add_photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ProjectResponseDto> addPhotosToProject(
+			@PathVariable Long projectId,
+			@RequestPart("multipartFiles") List<MultipartFile> multipartFiles,
+			@CurrentUser UserPrincipal currentUser) {
+		ProjectResponseDto response = service.addPhotosToProject(projectId, multipartFiles, currentUser);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

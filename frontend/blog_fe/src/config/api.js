@@ -22,6 +22,8 @@ export const API_ENDPOINTS = {
     UPDATE: (id) => `${API_VERSION}/projects/${id}`,
     DELETE: (id) => `${API_VERSION}/projects/${id}`,
     GET: (id) => `${API_VERSION}/projects/${id}`,
+    ADD_PHOTO: (id) => `${API_VERSION}/projects/${id}/add_photos`,
+    DELETE_PHOTO: (id, photoId) => `${API_VERSION}/projects/${id}/delete_photos?photoId=${photoId}`,
   },
   CERTIFICATIONS: {
     LIST: `${API_VERSION}/certifications`,

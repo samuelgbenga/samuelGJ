@@ -1,7 +1,6 @@
 import { API_ENDPOINTS } from "../config/api";
 import apiClient, { multipartInstance } from "./apiClient";
 
-
 // auth Service
 export const login = async (credentials) => {
   try {
@@ -18,7 +17,6 @@ export const login = async (credentials) => {
     throw error; // Re-throw the error to be handled by the hook
   }
 };
-
 
 // ARTICLE APIS
 // MAKE PHOTO
@@ -93,9 +91,7 @@ export const post_article_update = async (formData, id) => {
 // READ POST
 export const read_article_list = async () => {
   try {
-    const response = await apiClient.get(
-      API_ENDPOINTS.ARTICLES.LIST,
-    );
+    const response = await apiClient.get(API_ENDPOINTS.ARTICLES.LIST);
     if (!response.data) {
       throw new Error("No data received from server");
     }
@@ -109,9 +105,7 @@ export const read_article_list = async () => {
 // DELETE POST
 export const delete_article = async (id) => {
   try {
-    const response = await apiClient.delete(
-      API_ENDPOINTS.ARTICLES.DELETE(id),
-    );
+    const response = await apiClient.delete(API_ENDPOINTS.ARTICLES.DELETE(id));
     if (!response.data) {
       throw new Error("No data received from server");
     }
@@ -121,7 +115,6 @@ export const delete_article = async (id) => {
     throw error; // Re-throw the error to be handled by the hook
   }
 };
-
 
 // MAKE PROJECT BABY
 export const create_project = async (formData) => {
@@ -139,7 +132,6 @@ export const create_project = async (formData) => {
     throw error; // Re-throw the error to be handled by the hook
   }
 };
-
 
 // Post Certifications
 export const post_cert = async (formData) => {
@@ -161,9 +153,7 @@ export const post_cert = async (formData) => {
 // READ Projects
 export const read_project_list = async () => {
   try {
-    const response = await apiClient.get(
-      API_ENDPOINTS.PROJECTS.LIST,
-    );
+    const response = await apiClient.get(API_ENDPOINTS.PROJECTS.LIST);
     if (!response.data) {
       throw new Error("No data received from server");
     }
@@ -177,9 +167,7 @@ export const read_project_list = async () => {
 // Delete the Project
 export const delete_project = async (id) => {
   try {
-    const response = await apiClient.delete(
-      API_ENDPOINTS.PROJECTS.DELETE(id),
-    );
+    const response = await apiClient.delete(API_ENDPOINTS.PROJECTS.DELETE(id));
     if (!response.data) {
       throw new Error("No data received from server");
     }
@@ -207,12 +195,27 @@ export const edit_project = async (id, formData) => {
   }
 };
 
+// add photo update to project
+export const add_photo_update = async (id, formData) => {
+  try {
+    const response = await multipartInstance.put(
+      API_ENDPOINTS.PROJECTS.ADD_PHOTO(id),
+      formData
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Upating photo to Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
 // READ Certifications
 export const read_certification_list = async () => {
   try {
-    const response = await apiClient.get(
-      API_ENDPOINTS.CERTIFICATIONS.LIST,
-    );
+    const response = await apiClient.get(API_ENDPOINTS.CERTIFICATIONS.LIST);
     if (!response.data) {
       throw new Error("No data received from server");
     }
@@ -227,7 +230,7 @@ export const read_certification_list = async () => {
 export const delete_cert = async (id) => {
   try {
     const response = await apiClient.delete(
-      API_ENDPOINTS.CERTIFICATIONS.DELETE(id),
+      API_ENDPOINTS.CERTIFICATIONS.DELETE(id)
     );
     if (!response.data) {
       throw new Error("No data received from server");
@@ -239,7 +242,7 @@ export const delete_cert = async (id) => {
   }
 };
 
-// Delete the Project
+// Update a Certification
 export const edit_cert = async (id, formData) => {
   try {
     const response = await apiClient.put(
@@ -256,4 +259,18 @@ export const edit_cert = async (id, formData) => {
   }
 };
 
-
+// Delete the Project
+export const delete_project_photo = async (id, photoId) => {
+  try {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.PROJECTS.DELETE_PHOTO(id, photoId)
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Delete Photo from Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};

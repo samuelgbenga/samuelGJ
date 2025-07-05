@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useProjects } from "../../hooks/useProjects";
+import EditPhotoForm from "./EditPhotoForm";
 
 export default function ProjectForm() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function ProjectForm() {
   // Multiple files state
   const [files, setFiles] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]);
+  const [editFiles, setEditFiles] = useState([]);
 
   // Load editProject from sessionStorage if it exists
   useEffect(() => {
@@ -35,6 +37,7 @@ export default function ProjectForm() {
         url: project.url || "",
         description: project.description || "",
       });
+      setEditFiles(project.photo);
       setProjectId(project.id);
       setIsEdit(true);
     }
@@ -323,7 +326,7 @@ export default function ProjectForm() {
           </div>
 
           {/* Project Images Input */}
-         { !isEdit && <div>
+         { isEdit ? <EditPhotoForm editFiles={editFiles} projectId={projectId} /> : <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Project Images (you can select multiple)
             </label>
