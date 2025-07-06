@@ -51,12 +51,15 @@ all my previous updated like category settings etc should be intact.
 - imag should be able to selecte differently in the image selection in the project
 
 
-(later)
+(now)
 - beautify the frontend.
 - Global style, color, theme.
 - for loader: i need a ripple effect loader and skeleton
 - include ask e.g are you sure you want to make this changes or deletet this task
-
+   -- Break down 
+   - working on the left side of the profile page
+   - Hello Hi my name is Samuel Gbenga Josep Motion/animation
+   
 (later)
 - Problem i was able to access secured frontend area in because i have token in my browser local storage 
 - which has expired by the way:

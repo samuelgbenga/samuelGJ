@@ -20,6 +20,43 @@ const certificationsData = [
     source: "StaffEng — with David Noël-Romas, Alex Kessinger",
     date: "MARCH 30, 2021",
   },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  // {
+  //   type: "play",
+  //   title: "StaffEng",
+  //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
+  //   date: "MARCH 30, 2021",
+  // },
+  
 ];
 
 export const CertItemList = () => {
