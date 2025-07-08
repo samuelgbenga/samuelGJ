@@ -27,7 +27,6 @@ public class PostResponseDto extends UserDateAuditPayload {
     private Long authorId;
 
 
-
     private CategoryEnum categoryEnum;      // From Category
     private Long categoryId;
 
@@ -35,6 +34,8 @@ public class PostResponseDto extends UserDateAuditPayload {
 
     private List<String> tagNames;    // From Tags
     private int totalComments;        // From Comments
+
+    private int claps;
 
     private Photo photo;
 

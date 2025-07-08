@@ -13,6 +13,7 @@ export default function ProjectForm() {
     frameworks: [],
     url: "",
     description: "",
+    stars: "",
   });
   const [currentFramework, setCurrentFramework] = useState("");
   const [errors, setErrors] = useState({});
@@ -36,6 +37,7 @@ export default function ProjectForm() {
         frameworks: project.frameworks || [],
         url: project.url || "",
         description: project.description || "",
+        stars: project.stars ? parseInt(project.stars, 10) : "",
       });
       setEditFiles(project.photo);
       setProjectId(project.id);
@@ -63,6 +65,11 @@ export default function ProjectForm() {
     }
     if (!formData.description.trim()) {
       newErrors.description = "Project description is required";
+    }
+    if (formData.stars === "" || formData.stars === null) {
+      newErrors.stars = "Number of stars is required";
+    } else if (isNaN(formData.stars) || formData.stars < 0) {
+      newErrors.stars = "Please enter a valid number of stars";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -162,7 +169,8 @@ export default function ProjectForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        name === "stars" ? (value === "" ? "" : parseInt(value, 10)) : value,
     }));
     if (errors[name]) {
       setErrors((prev) => ({
@@ -301,6 +309,31 @@ export default function ProjectForm() {
             )}
           </div>
 
+          {/* Stars Input */}
+          <div>
+            <label
+              htmlFor="stars"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Number of Stars
+            </label>
+            <input
+              type="number"
+              id="stars"
+              name="stars"
+              value={formData.stars}
+              onChange={handleChange}
+              placeholder="Enter number of stars (e.g., 150)"
+              min="0"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.stars ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.stars && (
+              <p className="mt-1 text-sm text-red-500">{errors.stars}</p>
+            )}
+          </div>
+
           {/* Project Description Textarea */}
           <div>
             <label
@@ -326,36 +359,40 @@ export default function ProjectForm() {
           </div>
 
           {/* Project Images Input */}
-         { isEdit ? <EditPhotoForm editFiles={editFiles} projectId={projectId} /> : <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Project Images (you can select multiple)
-            </label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFilesChange}
-              className="w-full px-4 py-2 border rounded-md"
-            />
-            <div className="flex flex-wrap gap-2 mt-2">
-              {filePreviews.map((src, idx) => (
-                <div key={idx} className="relative">
-                  <img
-                    src={src}
-                    alt={`preview-${idx}`}
-                    className="h-20 w-20 object-cover rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeFile(idx)}
-                    className="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full p-1"
-                  >
-                    <XMarkIcon className="h-4 w-4 text-red-500" />
-                  </button>
-                </div>
-              ))}
+          {isEdit ? (
+            <EditPhotoForm editFiles={editFiles} projectId={projectId} />
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Project Images (you can select multiple)
+              </label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFilesChange}
+                className="w-full px-4 py-2 border rounded-md"
+              />
+              <div className="flex flex-wrap gap-2 mt-2">
+                {filePreviews.map((src, idx) => (
+                  <div key={idx} className="relative">
+                    <img
+                      src={src}
+                      alt={`preview-${idx}`}
+                      className="h-20 w-20 object-cover rounded"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeFile(idx)}
+                      className="absolute top-0 right-0 bg-white bg-opacity-80 rounded-full p-1"
+                    >
+                      <XMarkIcon className="h-4 w-4 text-red-500" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">

@@ -28,10 +28,17 @@ June 13:
 - the frontend should intercept and display something on the user side.
 - but they should know where the error is coming from.
 
+
+(now)
+- stars of project (gitub stars) should be a single number that can be updated
+accessible without authentication
+- clap on articles - (medium claps) same as github
+
 (Later)
 
 - revamp to return user summary/profile on every response dto that requires user info.
 - revamp to include update dto in the Entity util mapper
+- validate url for projects (it is already implmented in the frontend still need to be done in the backend)
 
 (later)
 

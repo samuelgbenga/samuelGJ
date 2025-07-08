@@ -37,11 +37,25 @@ const blogsData = [
 ];
 
 export const BlogList = () => {
+  const leftColumn = blogsData.filter((_, i) => i % 2 === 0);
+  const rightColumn = blogsData.filter((_, i) => i % 2 === 1);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {blogsData.map((blog, index) => (
-        <BlogItem key={index} blog={blog} />
-      ))}
+    <div className="flex gap-4">
+      {/* Left Column */}
+      <div className="flex-1 flex flex-col gap-4">
+        {leftColumn.map((blog, idx) => (
+          <BlogItem key={idx * 2} blog={blog} />
+        ))}
+      </div>
+      {/* Right Column */}
+      <div className="flex-1 flex flex-col gap-4">
+        {rightColumn.map((blog, idx) => (
+          <div key={idx * 2 + 1} className={idx === 0 ? "mt-4 md:mt-8" : ""}>
+            <BlogItem blog={blog} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

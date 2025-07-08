@@ -13,16 +13,24 @@ export default function ProfileLeft({ visibleSections }) {
   };
 
   return (
-    <div className="fixed h-screen w-1/2 top-0 left-0 p-20 ">
+    <div className="fixed h-screen w-1/2 top-0 left-0 p-20 font-['Tektur'] ">
       {/* Profile Section */}
 
       <h1 className="text-5xl font-bold mb-8 relative overflow-hidden">
         <div className="relative">
           <div className="relative h-30">
             <div className="absolute top-0 left-0 animate-hi-appear">
-              Hi <img src={wave} alt="waving gif" height={36} width={36} className="inline"/>  <PetalsHi />
+              Hi{" "}
+              <img
+                src={wave}
+                alt="waving gif"
+                height={36}
+                width={36}
+                className="inline"
+              />{" "}
+              <PetalsHi />
             </div>
-            <div className="absolute top-0 left-0 animate-myname-appear">
+            <div className="absolute top-15 left-0 animate-myname-appear">
               My name is
             </div>
             <div className="absolute top-0 left-0 animate-name-appear">
@@ -42,48 +50,48 @@ export default function ProfileLeft({ visibleSections }) {
       <nav>
         <ul>
           <li
-            className={`mb-4 text-[#8CBF75] text-lg font-bold cursor-pointer ${
+            className={`mb-4 text-[#8CBF75]  text-lg font-bold cursor-pointer flex w-8 ${
               visibleSections.Projects && "text-white"
-            }  hover:text-white transition-colors`}
+            }  diagonal-shake`}
             onClick={() => scrollToSection("projects-section")}
           >
-            <div
-              className={`mr-2 inline-block ${
+            <span
+              className={` ${
                 visibleSections.Projects ? "text-white" : "text-[#8CBF75]"
               }`}
             >
               -
-            </div>{" "}
+            </span>{" "}
             PROJECTS
           </li>
           <li
-            className={`mb-4 text-[#8CBF75] text-lg font-bold cursor-pointer ${
+            className={`mb-4 text-[#8CBF75] text-lg font-bold cursor-pointer flex w-8  ${
               visibleSections.Articles && "text-white"
-            }  hover:text-white transition-colors`}
+            }  diagonal-shake`}
             onClick={() => scrollToSection("articles-section")}
           >
-            <div
-              className={`mr-2 inline-block ${
+            <span
+              className={` ${
                 visibleSections.Articles ? "text-white" : "text-[#8CBF75]"
               }`}
             >
               -
-            </div>{" "}
+            </span>{" "}
             ARTICLES
           </li>
           <li
-            className={`mb-4 text-[#8CBF75] text-lg font-bold cursor-pointer ${
+            className={`mb-4 text-[#8CBF75] text-lg font-bold cursor-pointer flex w-8  ${
               visibleSections.Certifications && "text-white"
-            }  hover:text-white transition-colors`}
+            }  diagonal-shake`}
             onClick={() => scrollToSection("certifications-section")}
           >
-            <div
-              className={`mr-2 inline-block ${
+            <span
+              className={` ${
                 visibleSections.Certifications ? "text-white" : "text-[#8CBF75]"
               }`}
             >
               -
-            </div>{" "}
+            </span>{" "}
             CERTIFICATIONS
           </li>
         </ul>
@@ -93,23 +101,25 @@ export default function ProfileLeft({ visibleSections }) {
       <div className="mt-30 flex items-center justify-between">
         <a
           href="#"
-          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-2xl"
+          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
         >
           <FaLinkedin />
         </a>
         <a
           href="#"
-          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-2xl"
+          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
         >
           <FaTwitter />
         </a>
         <a
           href="#"
-          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-2xl"
+          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
         >
           <FaGithub />
         </a>
         <Petals1 />
+        <Petals2 />
+        <Petals3 />
       </div>
     </div>
   );
@@ -236,6 +246,66 @@ const Petals1 = () => {
   );
 };
 
+const Petals2 = () => {
+  return (
+    <>
+      <svg
+        className="absolute left-102 bottom-84 font-bold text-[#8CBF75] text-xl diagonal-shake inline-block cursor-pointer"
+        width="12"
+        height="12"
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {[...Array(6)].map((_, i) => {
+          const angle = (i * 360) / 6;
+          return (
+            <ellipse
+              key={i}
+              cx="50"
+              cy="30"
+              rx="15"
+              ry="30"
+              fill="#8CBF75"
+              transform={`rotate(${angle} 50 50)`}
+            />
+          );
+        })}
+      </svg>
+    </>
+  );
+};
+
+const Petals3 = () => {
+  return (
+    <>
+      <svg
+        className="absolute left-60 bottom-69 font-bold text-[#8CBF75] text-xl diagonal-shake inline-block cursor-pointer"
+        width="11"
+        height="11"
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {[...Array(6)].map((_, i) => {
+          const angle = (i * 360) / 6;
+          return (
+            <ellipse
+              key={i}
+              cx="50"
+              cy="30"
+              rx="15"
+              ry="30"
+              fill="#8CBF75"
+              opacity="0.3"
+              transform={`rotate(${angle} 50 50)`}
+            />
+          );
+        })}
+      </svg>
+    </>
+  );
+};
 const CloseQoute = () => {
   return (
     <>
@@ -291,13 +361,12 @@ const Paragraph = () => {
         on tech and life, sharing insights you'll actually enjoy reading. And
         yes — before I forget,{" "}
         <span className="font-bold text-[#8CBF75] text-xl diagonal-shake inline-block cursor-pointer">
-          Jesus is coming
+          Jesus love you.
         </span>
       </p>
     </>
   );
 };
-
 
 // Add loading under the my name is
 // the blank/idle pacing should be dealth with

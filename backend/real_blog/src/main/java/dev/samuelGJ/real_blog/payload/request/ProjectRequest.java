@@ -20,6 +20,8 @@ public record ProjectRequest(
     @NotBlank
     String description,
 
+    int stars,
+
     List<MultipartFile> multipartFiles
 ) {
     public ProjectRequest {

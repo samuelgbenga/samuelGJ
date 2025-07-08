@@ -51,9 +51,12 @@ public class EntityMapper {
         dto.setFrameworks(entity.getFrameworks() != null ? new ArrayList<>(entity.getFrameworks()) : new ArrayList<>());
         dto.setUrl(entity.getUrl());
         dto.setDescription(entity.getDescription());
+        dto.setStars(entity.getStars());
         List<PhotoResponse> photoResponses = entity.getPhotos().stream().map(EntityMapper::fromPhotoToDto).toList();
         dto.setPhoto(entity.getPhotos() != null ? new ArrayList<>(photoResponses) : new ArrayList<>());
         
+        
+
         if (entity.getUser() != null) {
             UserSummary userSummary = new UserSummary(
                 entity.getUser().getId(),
@@ -78,6 +81,7 @@ public class EntityMapper {
         entity.setFrameworks(dto.frameworks() != null ? new ArrayList<>(dto.frameworks()) : new ArrayList<>());
         entity.setUrl(dto.url());
         entity.setDescription(dto.description());
+        entity.setStars(dto.stars());
         // Note: User is not set here as it should be set by the service layer
         // to maintain proper entity relationships and security
 

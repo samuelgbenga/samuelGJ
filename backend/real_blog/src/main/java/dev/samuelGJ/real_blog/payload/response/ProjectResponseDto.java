@@ -24,6 +24,8 @@ public class ProjectResponseDto {
 
     private String url;
 
+    private int stars;
+
     private String description;
 
     private UserSummary userSummary;

@@ -2,12 +2,12 @@ package dev.samuelGJ.real_blog.controller;
 
 import dev.samuelGJ.real_blog.payload.response.ApiResponse;
 import dev.samuelGJ.real_blog.payload.response.PagedResponse;
-import dev.samuelGJ.real_blog.payload.response.PhotoResponse;
 import dev.samuelGJ.real_blog.payload.request.PostRequest;
 import dev.samuelGJ.real_blog.payload.request.PostUpdateRequest;
 import dev.samuelGJ.real_blog.payload.response.PostResponseDto;
 import dev.samuelGJ.real_blog.security.CurrentUser;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
+import dev.samuelGJ.real_blog.service.ClapService;
 import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.constant.AppConstants;
 import jakarta.validation.Valid;
@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 
 
 @RestController
@@ -37,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
 
 	private final PostService postService;
+
+	private final ClapService clapService;
 
 	@GetMapping
 	public ResponseEntity<PagedResponse<PostResponseDto>> getAllPosts(
@@ -110,4 +112,23 @@ public class PostController {
 
         return ResponseEntity.ok( response) ;
     }
+
+	@PostMapping("/{postId}/clap")
+	public ResponseEntity<ApiResponse> addClapToPost(
+			@PathVariable Long postId,
+			@RequestParam String anonymousId) {
+		boolean success = clapService.addClap(anonymousId, postId);
+		
+		if (success) {
+			return new ResponseEntity<>(new ApiResponse(true, "Clap added successfully"), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(new ApiResponse(false, "Maximum claps reached (7) for this user on this post"), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@GetMapping("/{postId}/claps")
+	public ResponseEntity<Integer> getTotalClapsForPost(@PathVariable Long postId) {
+		int totalClaps = clapService.getTotalClapsByPostId(postId);
+		return new ResponseEntity<>(totalClaps, HttpStatus.OK);
+	}
 }

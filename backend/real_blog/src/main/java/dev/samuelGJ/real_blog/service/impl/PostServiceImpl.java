@@ -20,6 +20,7 @@ import dev.samuelGJ.real_blog.repository.TagRepository;
 import dev.samuelGJ.real_blog.repository.UserRepository;
 import dev.samuelGJ.real_blog.security.UserPrincipal;
 import dev.samuelGJ.real_blog.service.CategoryService;
+import dev.samuelGJ.real_blog.service.ClapService;
 import dev.samuelGJ.real_blog.service.PhotoService;
 import dev.samuelGJ.real_blog.service.PostService;
 import dev.samuelGJ.real_blog.constant.AppConstants;
@@ -44,10 +45,10 @@ public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
-	private final CategoryRepository categoryRepository;
 	private final TagRepository tagRepository;
 	private final CategoryService categoryService;
 	private final PhotoService photoService;
+	private final ClapService clapService;
 
 	@Override
 	public PagedResponse<PostResponseDto> getAllPosts(int page, int size) {
@@ -56,8 +57,8 @@ public class PostServiceImpl implements PostService {
 		Page<Post> posts = postRepository.findAll(pageable);
 		List<PostResponseDto> content = posts.isEmpty()
 				? Collections.emptyList()
-				: posts.getContent().stream().map(this::mapToDto).toList();
-
+				: getPostResponseList(posts);
+		
 		return new PagedResponse<>(content, posts.getNumber(), posts.getSize(),
 				posts.getTotalElements(), posts.getTotalPages(), posts.isLast());
 	}
@@ -68,7 +69,7 @@ public class PostServiceImpl implements PostService {
 		User user = userRepository.getUserByName(username);
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 		Page<Post> posts = postRepository.findByCreatedBy(user.getId(), pageable);
-		List<PostResponseDto> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent().stream().map(this::mapToDto).toList();
+		List<PostResponseDto> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : getPostResponseList(posts);
 
 		return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
 				posts.getTotalPages(), posts.isLast());
@@ -79,7 +80,7 @@ public class PostServiceImpl implements PostService {
 		validatePageNumberAndSize(page, size);
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 		Page<Post> posts = postRepository.findByCategory(id, pageable);
-		List<PostResponseDto> content = posts.isEmpty() ? Collections.emptyList() : posts.getContent().stream().map(this::mapToDto).toList();
+		List<PostResponseDto> content = posts.isEmpty() ? Collections.emptyList() : getPostResponseList(posts);
 
 		return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
 				posts.getTotalPages(), posts.isLast());
@@ -90,7 +91,7 @@ public class PostServiceImpl implements PostService {
 		validatePageNumberAndSize(page, size);
 		Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 		Page<Post> posts = postRepository.findByTagsId(tagId, pageable);
-		List<PostResponseDto> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : posts.getContent().stream().map(this::mapToDto).toList();
+		List<PostResponseDto> content = posts.getNumberOfElements() == 0 ? Collections.emptyList() : getPostResponseList(posts);
 		return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
 				posts.getTotalPages(), posts.isLast());
 	}
@@ -224,6 +225,27 @@ public class PostServiceImpl implements PostService {
 	}
 
 	private PostResponseDto mapToDto(Post post) {
-		return EntityMapper.mapToPostResponse(post);
+		PostResponseDto dto = EntityMapper.mapToPostResponse(post);
+
+		dto.setClaps(clapService.getTotalClapsByPostId(post.getId()));
+
+		return dto;
+	}
+
+
+	private List<PostResponseDto> getPostResponseList(Page<Post> posts) {
+		List<PostResponseDto> content = new ArrayList<>();
+		if (!posts.isEmpty()) {
+			for (Post post : posts.getContent()) {
+				PostResponseDto dto = mapToDto(post);
+				// Add additional logic here, e.g.:
+				 int totalClaps = clapService.getTotalClapsByPostId(post.getId());
+				 dto.setClaps(totalClaps);
+				content.add(dto);
+			}
+		}
+		return content;
 	}
 }
+
+

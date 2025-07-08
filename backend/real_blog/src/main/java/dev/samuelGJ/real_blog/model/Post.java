@@ -61,6 +61,7 @@ public class Post extends UserDateAudit {
 	@JoinColumn(name = "photo_id")
 	private Photo photo;
 
-
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Clap> claps = new ArrayList<>();
 
 }

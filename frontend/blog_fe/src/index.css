@@ -60,11 +60,11 @@
 
 @keyframes hi-appear {
   0%,
-  10% {
+  5% {
     transform: translateY(0);
     opacity: 0;
   }
-  15%,
+  10%,
   45% {
     transform: translateY(0);
     opacity: 1;
@@ -79,18 +79,22 @@
 @keyframes myname-appear {
   0%,
   50% {
-    transform: translateY(0);
     opacity: 0;
-  }
-  55%,
-  85% {
     transform: translateY(0);
+  }
+  60% {
     opacity: 1;
-  }
-  90%,
-  100% {
     transform: translateY(0);
+  }
+  65%,
+  75% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  85%,
+  100% {
     opacity: 0;
+    transform: translateY(0);
   }
 }
 
@@ -108,23 +112,23 @@
 }
 
 .animate-slide-up-from-line {
-  animation: slide-up-from-line 60s ease-out 3 forwards;
+  animation: slide-up-from-line 30s ease-out 3 forwards;
 }
 
 .animate-line-disappear {
-  animation: line-disappear 60s ease-out 3 forwards;
+  animation: line-disappear 30s ease-out 3 forwards;
 }
 
 .animate-hi-appear {
-  animation: hi-appear 60s ease-out 3 forwards;
+  animation: hi-appear 30s ease-out 3 forwards;
 }
 
 .animate-myname-appear {
-  animation: myname-appear 60s ease-out 3 forwards;
+  animation: myname-appear 30s ease-out 3 forwards;
 }
 
 .animate-name-appear {
-  animation: name-appear 60s ease-out 3 forwards;
+  animation: name-appear 30s ease-out 3 forwards;
 }
 
 :root {

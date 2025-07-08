@@ -51,6 +51,9 @@ all my previous updated like category settings etc should be intact.
 - imag should be able to selecte differently in the image selection in the project
 
 
+(done)
+- done with the profile page for now
+
 (now)
 - beautify the frontend.
 - Global style, color, theme.
@@ -59,7 +62,7 @@ all my previous updated like category settings etc should be intact.
    -- Break down 
    - working on the left side of the profile page
    - Hello Hi my name is Samuel Gbenga Josep Motion/animation
-   
+
 (later)
 - Problem i was able to access secured frontend area in because i have token in my browser local storage 
 - which has expired by the way:

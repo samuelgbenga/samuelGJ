@@ -47,7 +47,7 @@ function ProfilePage() {
             direction = "from top (scrolling down)";
           }
 
-         // console.log(`${sectionName} section entered the screen ${direction}`);
+          // console.log(`${sectionName} section entered the screen ${direction}`);
 
           // Update the visibleSections state
           const newVisibleSections = {
@@ -114,9 +114,9 @@ function ProfilePage() {
             <section id="projects-section" className="">
               <h2
                 ref={projectsHeadingRef}
-                className="text-3xl font-bold mb-8 text-white"
+                className="text-3xl font-bold mb-8 text-white font-['Tektur']"
               >
-                Projects
+                PROJECTS
               </h2>
               <ProjectsList />
             </section>
@@ -124,9 +124,9 @@ function ProfilePage() {
             <section id="articles-section">
               <h2
                 ref={articlesHeadingRef}
-                className="text-3xl font-bold mb-8 text-white"
+                className="text-3xl font-bold mb-8 text-white font-['Tektur']"
               >
-                Articles
+                ARTICLES
               </h2>
               <BlogList />
             </section>
@@ -134,9 +134,9 @@ function ProfilePage() {
             <section id="certifications-section">
               <h2
                 ref={certificationsHeadingRef}
-                className="text-3xl font-bold mb-8 text-white"
+                className="text-3xl font-bold mb-8 text-white font-['Tektur']"
               >
-                Certifications
+                CERTIFICATIONS
               </h2>
               <CertItemList />
             </section>

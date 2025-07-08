@@ -40,6 +40,8 @@ public class Project extends UserDateAudit {
 
 	private String description;
 
+	private int stars;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;

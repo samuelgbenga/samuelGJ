@@ -3,17 +3,27 @@ import { Link } from "react-router-dom";
 
 const BlogItem = ({ blog }) => {
   return (
-    <article className="bg-[#1c1c1c] rounded-lg overflow-hidden transition-transform hover:scale-[1.02] hover:shadow-lg">
-      <div className="relative h-48 w-full">
-        <img
-          src={blog.image}
-          alt={blog.title}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.target.src = "/images/blog/placeholder.jpg"; // Fallback image
-          }}
-        />
-        <div className="absolute top-4 left-4">
+    <article className="relative bg-white/5 cursor-pointer backdrop-blur-sm shadow-lg overflow-hidden transition-transform hover:scale-[1.08] hover:shadow-xl font-['Tektur'] min-w-[200px] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/10 before:to-transparent before:opacity-30 before:pointer-events-none">
+      <ContentItem blog={blog} />
+    </article>
+  );
+};
+
+export default BlogItem;
+
+const ContentItem = ({ blog }) => {
+  return (
+    <>
+      <div
+        className="relative h-48 w-full overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1)), url(${blog.image})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute top-4 left-4 z-10">
           <span className="px-3 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
             {blog.category}
           </span>
@@ -40,8 +50,6 @@ const BlogItem = ({ blog }) => {
           </Link>
         </div>
       </div>
-    </article>
+    </>
   );
 };
-
-export default BlogItem;
