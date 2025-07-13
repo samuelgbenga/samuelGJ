@@ -16,7 +16,7 @@ public interface ProjectService {
 
 	ProjectResponseDto get(Long id, UserPrincipal currentUser);
 
-	PagedResponse<ProjectResponseDto> getAll(UserPrincipal currentUser, int page, int size);
+	PagedResponse<ProjectResponseDto> getAll(int page, int size);
 
 	ProjectResponseDto update(Long id, ProjectRequest dto, UserPrincipal currentUser);
 

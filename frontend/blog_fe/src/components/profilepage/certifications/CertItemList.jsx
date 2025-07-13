@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CertItems from "./CertItems";
+import { useCertifications } from "../../../hooks/useCertifications";
 
 const certificationsData = [
   {
@@ -56,13 +57,27 @@ const certificationsData = [
   //   source: "StaffEng — with David Noël-Romas, Alex Kessinger",
   //   date: "MARCH 30, 2021",
   // },
-  
 ];
 
 export const CertItemList = () => {
+  const { isLoading, error, certListData, readCertificationList } =
+    useCertifications();
+
+  useEffect(() => {
+    const fetchCertList = async () => {
+      await readCertificationList();
+    };
+    fetchCertList();
+    certListData && console.log(certListData);
+  }, []);
+
+  useEffect(() => {
+    console.log(certListData);
+  }, [certListData]);
+
   return (
     <div className="mt-2">
-      {certificationsData.map((item, index) => (
+      {certListData.map((item, index) => (
         <CertItems key={index} item={item} />
       ))}
     </div>

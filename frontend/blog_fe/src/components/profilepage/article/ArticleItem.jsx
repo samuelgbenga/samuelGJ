@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { formatDateToDMY } from "../../../utils/timeConverter";
 
 const BlogItem = ({ blog }) => {
   return (
@@ -17,7 +18,7 @@ const ContentItem = ({ blog }) => {
       <div
         className="relative h-48 w-full overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1)), url(${blog.image})`,
+          backgroundImage: `linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.1)), url(${blog.photo.url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -25,13 +26,13 @@ const ContentItem = ({ blog }) => {
       >
         <div className="absolute top-4 left-4 z-10">
           <span className="px-3 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
-            {blog.category}
+            {blog.categoryEnum}
           </span>
         </div>
       </div>
 
       <div className="p-6">
-        <div className="text-sm text-gray-400 mb-2">{blog.date}</div>
+        <div className="text-sm text-gray-400 mb-2">{formatDateToDMY(blog.createdAt)}</div>
         <h3 className="text-xl font-bold text-white mb-3 leading-tight hover:text-blue-400 transition-colors">
           <Link
             to={`/article/${blog.title.toLowerCase().replace(/\s+/g, "-")}`}
@@ -39,7 +40,7 @@ const ContentItem = ({ blog }) => {
             {blog.title}
           </Link>
         </h3>
-        <p className="text-base text-gray-400 line-clamp-3">{blog.excerpt}</p>
+        <p className="text-base text-gray-400 line-clamp-3">{blog.description}</p>
 
         <div className="mt-4 flex items-center justify-between">
           <Link

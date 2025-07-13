@@ -40,11 +40,11 @@ public class ProjectController {
 	@GetMapping
 	//@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<PagedResponse<ProjectResponseDto>> getAll(
-			@CurrentUser UserPrincipal currentUser,
+			
 			@RequestParam(value = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) {
 
-		PagedResponse<ProjectResponseDto> response = service.getAll(currentUser, page, size);
+		PagedResponse<ProjectResponseDto> response = service.getAll( page, size);
 
 		return new ResponseEntity< >(response, HttpStatus.OK);
 	}

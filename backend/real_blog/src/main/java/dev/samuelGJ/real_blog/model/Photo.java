@@ -26,6 +26,13 @@ public class Photo extends UserDateAudit {
 	@Column(name = "thumbnail_url")
 	private String thumbnailUrl;
 
+	public Photo(  String url) {
+
+		this.id = UUID.randomUUID().toString();
+		this.url = url;
+
+	}
+
 	public Photo(  String url, String thumbnailUrl) {
 
 		this.id = UUID.randomUUID().toString();

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    Page<Project> findByCreatedBy(Long userId, Pageable pageable);
+    Page<Project> findAll( Pageable pageable);
 } 

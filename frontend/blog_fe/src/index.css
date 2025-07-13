@@ -112,23 +112,23 @@
 }
 
 .animate-slide-up-from-line {
-  animation: slide-up-from-line 30s ease-out 3 forwards;
+  animation: slide-up-from-line 30s ease-out infinite forwards;
 }
 
 .animate-line-disappear {
-  animation: line-disappear 30s ease-out 3 forwards;
+  animation: line-disappear 30s ease-out infinite forwards;
 }
 
 .animate-hi-appear {
-  animation: hi-appear 30s ease-out 3 forwards;
+  animation: hi-appear 30s ease-out infinite forwards;
 }
 
 .animate-myname-appear {
-  animation: myname-appear 30s ease-out 3 forwards;
+  animation: myname-appear 30s ease-out infinite forwards;
 }
 
 .animate-name-appear {
-  animation: name-appear 30s ease-out 3 forwards;
+  animation: name-appear 30s ease-out infinite forwards;
 }
 
 :root {

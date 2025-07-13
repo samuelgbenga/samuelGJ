@@ -56,9 +56,9 @@ public class CertificationServiceImpl implements CertificationService {
     }
 
     @Override
-    public PagedResponse<CertificationResponseDto> getAll(UserPrincipal currentUser, int page, int size) {
+    public PagedResponse<CertificationResponseDto> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Certification> certifications = certificationRepository.findByCreatedBy(currentUser.getId(), pageable);
+        Page<Certification> certifications = certificationRepository.findAll(pageable);
         return new PagedResponse<>(certifications.getContent().stream()
             .map(EntityMapper::entityToDto)
             .toList(), certifications.getNumber(), certifications.getSize(), 

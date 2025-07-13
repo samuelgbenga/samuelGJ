@@ -16,7 +16,7 @@ public interface CertificationService {
 
     CertificationResponseDto get(UserPrincipal currentUser, Long id);
 
-    PagedResponse<CertificationResponseDto> getAll(UserPrincipal currentUser, int page, int size);
+    PagedResponse<CertificationResponseDto> getAll( int page, int size);
 
     ApiResponse delete(UserPrincipal currentUser, Long id);
     

@@ -42,10 +42,9 @@ public class CertificationController {
 
     @GetMapping
     public ResponseEntity<PagedResponse<CertificationResponseDto>> getAll(
-            @CurrentUser UserPrincipal currentUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PagedResponse<CertificationResponseDto> certifications = certificationService.getAll(currentUser, page, size);
+        PagedResponse<CertificationResponseDto> certifications = certificationService.getAll( page, size);
         return new ResponseEntity<>(certifications, HttpStatus.OK);
     }
 

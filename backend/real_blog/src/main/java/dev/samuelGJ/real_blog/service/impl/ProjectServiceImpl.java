@@ -69,9 +69,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public PagedResponse<ProjectResponseDto> getAll(UserPrincipal currentUser, int page, int size) {
+    public PagedResponse<ProjectResponseDto> getAll( int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Project> projects = projectRepository.findByCreatedBy(currentUser.getId(), pageable);
+        Page<Project> projects = projectRepository.findAll(pageable);
         return new PagedResponse<>(projects.getContent().stream()
             .map(EntityMapper::entityToDto)
             .toList(), projects.getNumber(), projects.getSize(), projects.getTotalElements(),
