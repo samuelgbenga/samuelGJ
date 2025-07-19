@@ -14,9 +14,9 @@ export const BlogList = () => {
     articleListData && console.log(articleListData);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(articleListData)
-  // }, [articleListData])
+  useEffect(() => {
+    console.log(articleListData)
+  }, [articleListData])
 
   const leftColumn = articleListData
     ? articleListData.filter((_, i) => i % 2 === 0)

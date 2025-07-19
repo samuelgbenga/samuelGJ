@@ -5,7 +5,7 @@ import { FaHandsClapping } from "react-icons/fa6";
 
 const BlogItem = ({ blog }) => {
   return (
-    <article className="relative bg-white/5 cursor-pointer backdrop-blur-sm shadow-lg overflow-hidden transition-transform hover:scale-[1.08] hover:shadow-xl font-['Tektur'] min-w-[200px] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/10 before:to-transparent before:opacity-30 before:pointer-events-none">
+    <article className="relative bg-white/5 cursor-pointer backdrop-blur-sm shadow-lg overflow-hidden transition-transform hover:scale-[1.05] hover:shadow-xl font-['Tektur'] min-w-[200px] before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-t before:from-white/10 before:to-transparent before:opacity-30 before:pointer-events-none">
       <ContentItem blog={blog} />
     </article>
   );
@@ -36,7 +36,7 @@ const ContentItem = ({ blog }) => {
         }}
       >
         <div className="absolute top-4 left-4 z-10">
-          <span className="px-3 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
+          <span className="px-3 py-1 text-xs font-medium bg-green-500 text-white rounded-full">
             {blog.categoryEnum.replace(/_/g, " ")}
           </span>
         </div>
@@ -56,7 +56,7 @@ const ContentItem = ({ blog }) => {
         <div className="mt-4 flex items-center justify-between">
           <Link
             onClick={handleArticleClick}
-            className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+            className="text-green-400 hover:text-green-300 text-sm font-medium"
           >
             Read more →
           </Link>

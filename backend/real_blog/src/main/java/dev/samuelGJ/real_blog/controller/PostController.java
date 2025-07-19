@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -113,16 +114,16 @@ public class PostController {
         return ResponseEntity.ok( response) ;
     }
 
-	@PostMapping("/{postId}/clap")
+	@PutMapping("/{postId}/clap")
 	public ResponseEntity<ApiResponse> addClapToPost(
 			@PathVariable Long postId,
-			@RequestParam String anonymousId) {
+			@RequestHeader("X-Anonymous-ID") String anonymousId) {
 		boolean success = clapService.addClap(anonymousId, postId);
 		
 		if (success) {
 			return new ResponseEntity<>(new ApiResponse(true, "Clap added successfully"), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(new ApiResponse(false, "Maximum claps reached (7) for this user on this post"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new ApiResponse(false, "Maximum claps reached (7) for this user on this post"), HttpStatus.OK);
 		}
 	}
 

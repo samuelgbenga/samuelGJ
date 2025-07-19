@@ -58,13 +58,13 @@ export const CertItemList = () => {
     // certListData && console.log(certListData);
   }, []);
 
-  useEffect(() => {
-    console.log(certListData);
-  }, [certListData]);
+  // useEffect(() => {
+  //   console.log(certListData);
+  // }, [certListData]);
 
   return (
     <div className="mt-2">
-      {isLoading
+      {isLoading || certListData.length == 0
         ? Array.from({ length: 3 }).map((_, idx) => (
             <CertItemSkeleton key={idx} />
           ))

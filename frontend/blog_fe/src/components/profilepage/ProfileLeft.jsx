@@ -359,7 +359,7 @@ const Paragraph = () => {
           articles{" "}
         </span>{" "}
         on tech and life, sharing insights you'll actually enjoy reading. And
-        yes — before I forget,{" "}
+        yes — Lesth I forget,{" "}
         <span className="font-bold text-[#8CBF75] text-xl diagonal-shake inline-block cursor-pointer">
           Jesus love you.
         </span>

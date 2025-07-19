@@ -15,6 +15,9 @@ export const API_ENDPOINTS = {
     GET: (id) => `${API_VERSION}/posts/${id}`,
     CREATE_PHOTO: `${API_VERSION}/photos`,
     UPDATE_PHOTO: (id) => `${API_VERSION}/posts/update_photo/${id}`,
+    CLAP:(postId) => `${API_VERSION}/posts/${postId}/clap`,
+    GET_COMMENTS : (postId) => `${API_VERSION}/posts/${postId}/comments`,
+    
   },
   PROJECTS: {
     LIST: `${API_VERSION}/projects`,

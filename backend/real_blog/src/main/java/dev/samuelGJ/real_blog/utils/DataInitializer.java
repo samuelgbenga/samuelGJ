@@ -25,6 +25,8 @@ import dev.samuelGJ.real_blog.model.Post;
 import dev.samuelGJ.real_blog.repository.PostRepository;
 import dev.samuelGJ.real_blog.model.Certification;
 import dev.samuelGJ.real_blog.repository.CertificationRepository;
+import dev.samuelGJ.real_blog.model.Comment;
+import dev.samuelGJ.real_blog.repository.CommentRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class DataInitializer {
     private final ProjectRepository projectRepository;
     private final PostRepository postRepository;
     private final CertificationRepository certificationRepository;
+    private final CommentRepository commentRepository;
 
     @PostConstruct
     public void init() {
@@ -138,9 +141,25 @@ public class DataInitializer {
                 Photo photo = new Photo(photoUrl);
                 post.setPhoto(photo);
                 // Optionally add tags if any exist
-                postRepository.save(post);
+                Post savedPost = postRepository.save(post);
+                // Add sample comments for this post
+                initializeCommentsForPost(savedPost, owner, i);
             }
-            log.info("Initialized 5 sample posts");
+            log.info("Initialized 5 sample posts with comments");
+        }
+    }
+
+    private void initializeCommentsForPost(Post post, User owner, int postIndex) {
+        for (int j = 1; j <= 2; j++) {
+            Comment comment = new Comment();
+            comment.setBody("Sample comment " + j + " for post " + postIndex);
+            comment.setPost(post);
+            comment.setUsername("user"+j);
+            comment.setDepth(0);
+            comment.setPath(""); // Set to non-null value before first save
+            Comment savedComment = commentRepository.save(comment);
+            savedComment.setPath(savedComment.getId().toString());
+            commentRepository.save(savedComment);
         }
     }
 

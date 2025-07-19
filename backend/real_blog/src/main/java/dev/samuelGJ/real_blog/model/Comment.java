@@ -32,9 +32,8 @@ public class Comment extends UserDateAudit {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    
+    private String  username;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

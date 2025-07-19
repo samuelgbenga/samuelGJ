@@ -1,12 +1,15 @@
 import axios from "axios";
-import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { API_BASE_URL } from "../config/api";
 import { USER } from "../utils/constants";
+import { getOrCreateAnonymousId } from "../utils/idGenerator";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   //httpsAgent: false, // Disable HTTPS this is only for development
   headers: {
     "Content-Type": "application/json",
+    "X-Anonymous-ID": getOrCreateAnonymousId().id,
+    "X-Anonymous-Name": getOrCreateAnonymousId().username
   },
   //withCredentials: true, // include cookies for Spring Security if needed
 });
@@ -22,7 +25,7 @@ const multipartInstance = axios.create({
 // Add interceptors to both instances
 [axiosInstance, multipartInstance].forEach((instance) => {
   // Request interceptor
-  console.log("from interceptor");
+  //console.log("from interceptor");
   instance.interceptors.request.use(
     (config) => {
       const admin = localStorage.getItem(USER)

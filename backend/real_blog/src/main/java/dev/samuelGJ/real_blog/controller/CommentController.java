@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,8 +48,8 @@ public class CommentController {
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<CommentResponseDto> addComment(@Valid @RequestBody CommentRequest commentRequest,
-			@PathVariable(name = "postId") Long postId, @CurrentUser UserPrincipal currentUser) {
-		CommentResponseDto newComment = commentService.addComment(commentRequest, postId, currentUser);
+			@PathVariable(name = "postId") Long postId, @RequestHeader("X-Anonymous-Name") String username) {
+		CommentResponseDto newComment = commentService.addComment(commentRequest, postId, username);
 
 		return new ResponseEntity<>(newComment, HttpStatus.CREATED);
 	}
@@ -62,22 +63,21 @@ public class CommentController {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Comment> updateComment(@PathVariable(name = "postId") Long postId,
 			@PathVariable(name = "id") Long id, @Valid @RequestBody CommentRequest commentRequest,
-			@CurrentUser UserPrincipal currentUser) {
+			@RequestHeader("X-Anonymous-Name") String username) {
 
-		Comment updatedComment = commentService.updateComment(postId, id, commentRequest, currentUser);
+		Comment updatedComment = commentService.updateComment(postId, id, commentRequest, username);
 
 		return new ResponseEntity<>(updatedComment, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<ApiResponse> deleteComment(@PathVariable(name = "postId") Long postId,
-													 @PathVariable(name = "id") Long id, @CurrentUser UserPrincipal currentUser) {
+													 @PathVariable(name = "id") Long id,
+													 @RequestHeader("X-Anonymous-Name") String username) {
 
-		ApiResponse response = commentService.deleteComment(postId, id, currentUser);
+		ApiResponse response = commentService.deleteComment(postId, id, username);
 
 		HttpStatus status = response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 

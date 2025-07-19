@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
   delete_article,
+  get_comments,
   post_article,
   post_article_update,
+  post_clap,
   post_photo,
   post_photo_update,
   read_article_list,
@@ -16,6 +18,7 @@ export const useArticles = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [articleListData, setArticleListData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
+  const [comments, setComments] = useState([]);
 
   const postPhoto = async (formData) => {
     //  console.log("Login started...");
@@ -157,6 +160,52 @@ export const useArticles = () => {
     }
   };
 
+
+  const putClap = async (postId) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await post_clap
+      (postId);
+      //  console.log("Login successful:", response);
+
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Clapping to Posting";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
+  const getComments = async (postId) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await get_comments(postId);
+      //  console.log("Login successful:", response);
+      setComments(response.content);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Clapping to Posting";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
   return {
     photoData,
     photoUpdateData,
@@ -164,8 +213,11 @@ export const useArticles = () => {
     isLoading,
     articleData,
     articleListData,
+    comments,
     setArticleListData,
     deleteData,
+    getComments,
+    putClap,
     deleteArticle,
     updateArticle,
     postPhotoUpdate,

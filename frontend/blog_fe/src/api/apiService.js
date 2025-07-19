@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from "../config/api";
+import axiosInstance from "./apiClient";
 import apiClient, { multipartInstance } from "./apiClient";
 
 // auth Service
@@ -271,6 +272,38 @@ export const delete_project_photo = async (id, photoId) => {
     return response.data;
   } catch (error) {
     console.error("Error Delete Photo from Project:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+
+// Post Certifications
+export const post_clap = async (postId) => {
+  try {
+    const response = await axiosInstance.put(
+      API_ENDPOINTS.ARTICLES.CLAP(postId),
+      
+    );
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error  during clap:", error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};
+
+// GET COMMENTS
+export const get_comments = async (postId) => {
+  try {
+    const response = await apiClient.get(API_ENDPOINTS.ARTICLES.GET_COMMENTS(postId));
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Reading Comments list: for " + postId, error);
     throw error; // Re-throw the error to be handled by the hook
   }
 };

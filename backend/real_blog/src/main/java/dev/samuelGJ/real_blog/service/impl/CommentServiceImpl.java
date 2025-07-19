@@ -72,17 +72,16 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public CommentResponseDto addComment(CommentRequest commentRequest, Long postId, UserPrincipal currentUser) {
+	public CommentResponseDto addComment(CommentRequest commentRequest, Long postId, String username) {
 
 
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new EntityNotFoundException("Post not found"));
-		User user = userRepository.findById(currentUser.getId())
-				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+		
 
 		Comment comment = new Comment();
 		comment.setPost(post);
-		comment.setUser(user);
+		comment.setUsername(username);
 		comment.setBody(commentRequest.getBody());
 
 		if (commentRequest.getParentId() != null) {
@@ -123,7 +122,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public Comment updateComment(Long postId, Long id, CommentRequest commentRequest,
-			UserPrincipal currentUser) {
+	String username) {
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException(POST_STR));
 		Comment comment = commentRepository.findById(id)
@@ -133,17 +132,18 @@ public class CommentServiceImpl implements CommentService {
 			throw new BlogApiException( COMMENT_DOES_NOT_BELONG_TO_POST);
 		}
 
-		if (comment.getUser().getId().equals(currentUser.getId())
-				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+	
+		if(username.equals(comment.getUsername())){
 			comment.setBody(commentRequest.getBody());
 			return commentRepository.save(comment);
 		}
-
-		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + "update" + THIS_COMMENT);
+			
+		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + " Update this comment");
+		
 	}
 
 	@Override
-	public ApiResponse deleteComment(Long postId, Long id, UserPrincipal currentUser) {
+	public ApiResponse deleteComment(Long postId, Long id, String username) {
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException(POST_STR));
 		Comment comment = commentRepository.findById(id)
@@ -153,13 +153,11 @@ public class CommentServiceImpl implements CommentService {
 			return new ApiResponse(Boolean.FALSE, COMMENT_DOES_NOT_BELONG_TO_POST);
 		}
 
-		if (comment.getUser().getId().equals(currentUser.getId())
-				|| currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+		if(username.equals(comment.getUsername())){
 			commentRepository.deleteById(comment.getId());
 			return new ApiResponse(Boolean.TRUE, "You successfully deleted comment");
 		}
-
-		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + "delete" + THIS_COMMENT);
+		throw new BlogApiException( YOU_DON_T_HAVE_PERMISSION_TO + " Delete this comment");
 	}
 
 
@@ -186,7 +184,6 @@ public class CommentServiceImpl implements CommentService {
 
 	private CommentResponseDto fromCommentToDto(Comment comment) {
 		CommentResponseDto dto = modelMapper.map(comment, CommentResponseDto.class);
-		dto.setUserSummary(modelMapper.map(comment.getUser(), UserSummary.class));
 		return dto;
 	}
 

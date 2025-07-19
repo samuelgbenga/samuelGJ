@@ -72,13 +72,20 @@ all my previous updated like category settings etc should be intact.
 - display clap int he article item card
 - properly formate the article to make it work
 
+(done)
+- loader for certification
 
-(now)
+(done)
 - make the clap work 
+
+(partially done)
 - make the comment section work
 
 (later)
-- loader for certification
+- Alert pop ups for errors and exceptions instead of console log
+
+(later)
+- include session expiration mechanism
 
 (later)
 - Problem i was able to access secured frontend area in because i have token in my browser local storage 
