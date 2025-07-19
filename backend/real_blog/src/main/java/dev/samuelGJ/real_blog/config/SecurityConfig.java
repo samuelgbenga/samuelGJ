@@ -2,7 +2,6 @@ package dev.samuelGJ.real_blog.config;
 
 import dev.samuelGJ.real_blog.security.JwtAuthenticationEntryPoint;
 import dev.samuelGJ.real_blog.security.JwtAuthenticationFilter;
-import dev.samuelGJ.real_blog.service.impl.CustomUserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
-	private final CustomUserDetailsServiceImpl customUserDetailsService;
+
 	private final JwtAuthenticationEntryPoint unauthorizedHandler;
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 

@@ -8,3 +8,12 @@ export function formatDateToDMY(isoString) {
     return `${day}/${month}/${year}`;
   }
   
+
+  export function formatDateToSDMY(date){
+  return  new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+
+  }

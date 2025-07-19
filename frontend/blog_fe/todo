@@ -62,11 +62,20 @@ all my previous updated like category settings etc should be intact.
    - working on the left side of the profile page
    - Hello Hi my name is Samuel Gbenga Josep Motion/animation
 
-(now)
+(done partialy)
 - for loader: i need a ripple effect loader and skeleton
 
-(later)
+(done partialy)
 - Read a single Article. (thats all for now)
+
+(later)
+- display clap int he article item card
+- properly formate the article to make it work
+- make the clap work 
+- make the comment section work
+
+(later)
+- loader for certification
 
 (later)
 - Problem i was able to access secured frontend area in because i have token in my browser local storage 
