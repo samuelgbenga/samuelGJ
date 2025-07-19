@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaRegHandPaper, FaHandPaper } from "react-icons/fa";
 import { formatDateToSDMY } from "../../utils/timeConverter";
+import { FaHandsClapping } from "react-icons/fa6";
+import { Skeleton } from "@mui/material";
+
+
 
 function SingleArticlePage() {
   const [blog, setBlog] = useState();
@@ -29,6 +32,7 @@ function SingleArticlePage() {
       const parsedBlog = JSON.parse(currentArticle);
       setBlog(parsedBlog);
       setClaps(parsedBlog.claps || 0);
+      setHasClapped((parsedBlog.claps || 0) > 1);
       console.log("Parsed blog:", parsedBlog);
     } catch (error) {
       console.error("Error parsing blog data:", error);
@@ -37,31 +41,25 @@ function SingleArticlePage() {
   }, [navigate]);
 
   const handleClap = () => {
-    if (!hasClapped) {
-      setClaps((prev) => prev + 1);
-      setHasClapped(true);
-    } else {
-      setClaps((prev) => prev - 1);
-      setHasClapped(false);
-    }
+    setClaps((prev) => prev + 1);
+    setHasClapped(true);
   };
 
+  // Replace the loading state with the skeleton loader
   if (!blog) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-xl text-gray-600 dark:text-gray-400">
-          Loading...
-        </div>
-      </div>
-    );
+    return <ArticleSkeletonLoader />;
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#151515]">
+    <div className="min-h-screen bg-white dark:bg-[#151515] flex items-center justify-center">
       {/* Article Header */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-2xl mx-auto w-full">
+        {/* Title */}
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white my-6 leading-tight">
+          {blog.title}
+        </h1>
         {/* Featured Image */}
-        <div className="w-full h-96 md:h-[500px] relative overflow-hidden">
+        <div className="w-full max-w-xl mx-auto h-60 md:h-72 relative overflow-hidden rounded-lg mb-6">
           <img
             src={blog.photo.url}
             alt={blog.title}
@@ -71,12 +69,7 @@ function SingleArticlePage() {
         </div>
 
         {/* Article Content */}
-        <div className="px-6 md:px-8 py-8">
-          {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            {blog.title}
-          </h1>
-
+        <div className="px-6 md:px-8 py-8 text-center">
           {/* Article Meta */}
           <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center space-x-4">
@@ -88,61 +81,68 @@ function SingleArticlePage() {
                     .join("")}
                 </span>
               </div>
-              <div>
-                <p className="text-gray-900 dark:text-white font-medium">
-                  {blog.authorName}
-                </p>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  {formatDateToSDMY(blog.createdAt)}
+              <div className="h-12">
+                <p className="text-gray-900 text-left dark:text-white font-medium">
+                  {blog.authorName} <br />
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">
+                    {formatDateToSDMY(blog.createdAt)}
+                  </span>
                 </p>
               </div>
             </div>
 
             {/* Category Badge */}
-            <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+            <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full ml-4">
               {blog.categoryEnum.replace(/_/g, " ")}
             </span>
           </div>
 
           {/* Article Body */}
-          <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
+          <div className="prose prose-lg dark:prose-invert max-w-none mb-6 text-left">
             <ReactMarkdown>{blog.body}</ReactMarkdown>
           </div>
 
+          {/* Tags Section */}
+          {blog.tagNames && blog.tagNames.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {blog.tagNames.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="inline-block px-3 py-1 text-xs font-semibold bg-gray-500 rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Clap Section */}
-          <div className="flex items-center justify-center py-8 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col items-center space-y-2">
-              <button
+
+          <div className="flex  items-center  mb-1 gap-3">
+            <div className="flex items-center  gap-1 my-5">
+              <div
                 onClick={handleClap}
-                className={`p-4 rounded-full transition-all duration-200 ${
+                className={`transition-all duration-200 ${
                   hasClapped
-                    ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    ? "  text-white "
+                    : " text-gray-600 dark:text-gray-400 hover:text-gray-700"
                 }`}
               >
-                {hasClapped ? (
-                  <FaHandPaper className="text-2xl" />
-                ) : (
-                  <FaRegHandPaper className="text-2xl" />
-                )}
-              </button>
-              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                {claps} {claps === 1 ? "clap" : "claps"}
+                <FaHandsClapping className="text-lg cursor-pointer" />
+              </div>
+              <span className="text-sm text-gray-600 font-medium">{claps}</span>
+            </div>
+            <div>•</div>
+            <div className="text-sm">
+              <span className="">
+                comments{" "}
+                <span className="text-gray-600"> {blog.totalComments} </span>{" "}
               </span>
             </div>
           </div>
 
           {/* Article Footer */}
-          <div className="flex items-center justify-between pt-8 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
-              <span>{blog.totalComments} comments</span>
-              <span>•</span>
-              <span>{blog.tagNames.length} tags</span>
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Status: {blog.postStatus}
-            </div>
-          </div>
+          <div className="flex items-center justify-center pt-8 border-t border-gray-200 dark:border-gray-700"></div>
         </div>
       </div>
     </div>
@@ -150,3 +150,118 @@ function SingleArticlePage() {
 }
 
 export default SingleArticlePage;
+
+const ArticleSkeletonLoader = () => (
+  <div className="min-h-screen bg-white dark:bg-[#151515] flex items-center justify-center">
+    <div className="max-w-2xl mx-auto w-full">
+      <Skeleton
+        variant="text"
+        width="70%"
+        height={48}
+        className="my-6"
+        sx={{ bgcolor: "grey.900" }}
+      />
+      <Skeleton
+        variant="rectangular"
+        width="100%"
+        height={180}
+        className="mb-6 rounded-lg"
+        sx={{ bgcolor: "grey.900", borderRadius: 2 }}
+      />
+      <div className="px-6 md:px-8 py-8 text-center">
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-4">
+            <Skeleton
+              variant="circular"
+              width={48}
+              height={48}
+              sx={{ bgcolor: "grey.900" }}
+            />
+            <div className="h-12 flex flex-col justify-center">
+              <Skeleton
+                variant="text"
+                width={120}
+                height={24}
+                sx={{ bgcolor: "grey.900" }}
+              />
+              <Skeleton
+                variant="text"
+                width={80}
+                height={16}
+                sx={{ bgcolor: "grey.900" }}
+              />
+            </div>
+          </div>
+          <Skeleton
+            variant="rounded"
+            width={100}
+            height={28}
+            sx={{ bgcolor: "grey.900" }}
+          />
+        </div>
+        <div className="prose prose-lg dark:prose-invert max-w-none mb-6 text-left">
+          <Skeleton
+            variant="text"
+            width="100%"
+            height={32}
+            sx={{ bgcolor: "grey.900", mb: 1 }}
+          />
+          <Skeleton
+            variant="text"
+            width="90%"
+            height={32}
+            sx={{ bgcolor: "grey.900", mb: 1 }}
+          />
+          <Skeleton
+            variant="text"
+            width="95%"
+            height={32}
+            sx={{ bgcolor: "grey.900", mb: 1 }}
+          />
+          <Skeleton
+            variant="text"
+            width="80%"
+            height={32}
+            sx={{ bgcolor: "grey.900", mb: 1 }}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {Array.from({ length: 3 }).map((_, idx) => (
+            <Skeleton
+              key={idx}
+              variant="rounded"
+              width={60}
+              height={24}
+              sx={{ bgcolor: "grey.900" }}
+            />
+          ))}
+        </div>
+        <div className="flex items-center mb-1 gap-3">
+          <div className="flex items-center gap-1 my-5">
+            <Skeleton
+              variant="circular"
+              width={32}
+              height={32}
+              sx={{ bgcolor: "grey.900" }}
+            />
+            <Skeleton
+              variant="text"
+              width={32}
+              height={20}
+              sx={{ bgcolor: "grey.900" }}
+            />
+          </div>
+          <div>•</div>
+          <div className="text-sm">
+            <Skeleton
+              variant="text"
+              width={60}
+              height={20}
+              sx={{ bgcolor: "grey.900" }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);

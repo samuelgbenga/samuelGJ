@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { formatDateToDMY } from "../../../utils/timeConverter";
+import { FaHandsClapping } from "react-icons/fa6";
 
 const BlogItem = ({ blog }) => {
   return (
@@ -59,6 +60,11 @@ const ContentItem = ({ blog }) => {
           >
             Read more →
           </Link>
+          <div className="text-gray-600 flex gap-1 items-center text-sm">
+            
+            <FaHandsClapping/>
+            <div className="text-sm">{blog.claps}</div>
+          </div>
         </div>
       </div>
     </>
