@@ -46,7 +46,6 @@ public class CommentController {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<CommentResponseDto> addComment(@Valid @RequestBody CommentRequest commentRequest,
 			@PathVariable(name = "postId") Long postId, @RequestHeader("X-Anonymous-Name") String username) {
 		CommentResponseDto newComment = commentService.addComment(commentRequest, postId, username);

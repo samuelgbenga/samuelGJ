@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  comment,
   delete_article,
   get_comments,
   post_article,
@@ -196,7 +197,30 @@ export const useArticles = () => {
     } catch (err) {
       const errorMessage =
         err.response?.data?.message ||
-        "An error occurred during Clapping to Posting";
+        "An error occurred getting comments to Posting";
+      //  console.log("Login failed:", errorMessage);
+      setError(errorMessage);
+      throw errorMessage;
+    } finally {
+      setIsLoading(false);
+      //  console.log("Login finished, loading set to false");
+    }
+  };
+
+
+    const makeComment = async (postId, formData) => {
+    //  console.log("Login started...");
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await comment(postId, formData);
+      //  console.log("Login successful:", response);
+     // setComments(response.content);
+      return response;
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred during Commenting to Posting";
       //  console.log("Login failed:", errorMessage);
       setError(errorMessage);
       throw errorMessage;
@@ -216,6 +240,7 @@ export const useArticles = () => {
     comments,
     setArticleListData,
     deleteData,
+    makeComment,
     getComments,
     putClap,
     deleteArticle,

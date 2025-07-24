@@ -16,7 +16,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 @Getter
 @Setter
 @JsonIgnoreProperties(
-		value = { "createdBY", "updatedBy" },
+		value = { "createdBy", "updatedBy" },
 		allowGetters = true
 )
 public abstract class UserDateAudit extends DateAudit {

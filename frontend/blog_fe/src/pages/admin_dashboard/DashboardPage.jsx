@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { useProjects } from "../../hooks/useProjects";
 import { useCertifications } from "../../hooks/useCertifications";
+import { usePreserveScroll } from "../../utils/scrollconfig";
 
 const DashboardPage = () => {
   const {
@@ -34,6 +35,8 @@ const DashboardPage = () => {
     
   } = useCertifications();
 
+    const { saveScroll, restoreScroll } = usePreserveScroll();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +63,7 @@ const DashboardPage = () => {
   };
 
   const handleDelete = async (articleId) => {
+    saveScroll();
     console.log("Delete article:", articleId);
     try {
       const response = await deleteArticle(articleId);
@@ -67,6 +71,7 @@ const DashboardPage = () => {
         setArticleListData((prev) =>
           prev.filter((item) => item.id !== articleId)
         );
+          restoreScroll();
       }
     } catch (err) {
       console.log(err);
@@ -76,6 +81,7 @@ const DashboardPage = () => {
   };
 
   const handleDeleteProject = async (id) => {
+     saveScroll();
     console.log("Delete project:", id);
     try {
       const response = await deleteProject(id);
@@ -83,6 +89,7 @@ const DashboardPage = () => {
         setProjectListData((prev) =>
           Array.isArray(prev) && prev.filter((item) => item.id !== id)
         );
+          restoreScroll();
       }
     } catch (err) {
       console.log(err);
@@ -103,6 +110,7 @@ const DashboardPage = () => {
   };
 
   const handleDeleteCertificate = async (id) => {
+     saveScroll();
     console.log("Delete Certification:", id);
     try {
       const response = await deleteCert(id);
@@ -110,6 +118,7 @@ const DashboardPage = () => {
         setCertListData((prev) =>
           Array.isArray(prev) ? prev.filter((item) => item.id !== id) : []
         );
+          restoreScroll();
       }
     } catch (err) {
       console.log(err);

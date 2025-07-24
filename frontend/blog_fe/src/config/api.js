@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
     UPDATE_PHOTO: (id) => `${API_VERSION}/posts/update_photo/${id}`,
     CLAP:(postId) => `${API_VERSION}/posts/${postId}/clap`,
     GET_COMMENTS : (postId) => `${API_VERSION}/posts/${postId}/comments`,
+    COMMENT: (postId) => `${API_VERSION}/posts/${postId}/comments`,
     
   },
   PROJECTS: {

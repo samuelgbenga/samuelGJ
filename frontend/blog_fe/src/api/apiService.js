@@ -307,3 +307,17 @@ export const get_comments = async (postId) => {
     throw error; // Re-throw the error to be handled by the hook
   }
 };
+
+// COMMENTS
+export const comment = async (postId, formData) => {
+  try {
+    const response = await apiClient.post(API_ENDPOINTS.ARTICLES.COMMENT(postId), formData);
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error Commenting : for " + postId, error);
+    throw error; // Re-throw the error to be handled by the hook
+  }
+};

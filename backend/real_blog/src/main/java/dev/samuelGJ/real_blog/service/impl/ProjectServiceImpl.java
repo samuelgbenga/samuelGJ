@@ -83,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
         
-        if (!project.getCreatedBy().equals(currentUser.getId())) {
+        if (!project.getUser().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You don't have permission to update this project");
         }
 
@@ -102,7 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
         
-        if (!project.getCreatedBy().equals(currentUser.getId())) {
+        if (!project.getUser().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You don't have permission to delete this project");
         }
 
@@ -114,7 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ApiResponse deleteProjectPhoto(Long projectId, String photoId, UserPrincipal currentUser) {
         Project project = projectRepository.findById(projectId)
             .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
-        if (!project.getCreatedBy().equals(currentUser.getId())) {
+        if (!project.getUser().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You don't have permission to update this project");
         }
         Photo photoToRemove = null;

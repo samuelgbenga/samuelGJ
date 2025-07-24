@@ -81,6 +81,12 @@ all my previous updated like category settings etc should be intact.
 (partially done)
 - make the comment section work
 
+
+(later)
+- unify the anonymouse user into one new entity and upon experiation date
+- assign a new id to the same anonymouse user. on the backend so you 
+- will have to create a new anonymous user entity.
+
 (later)
 - Alert pop ups for errors and exceptions instead of console log
 

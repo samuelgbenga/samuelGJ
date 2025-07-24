@@ -90,7 +90,7 @@ public class CertificationServiceImpl implements CertificationService {
         Certification certification = certificationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Certification not found"));
         
-        if (!certification.getCreatedBy().equals(currentUser.getId())) {
+        if (!certification.getUser().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You don't have permission to delete this certification");
         }
 

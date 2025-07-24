@@ -14,7 +14,8 @@ function SingleArticlePage() {
   const [hasClapped, setHasClapped] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const { putClap, error, comments, getComments } = useArticles();
+  const { putClap, error, comments, getComments, makeComment } = useArticles();
+  const [comment, setComment] = useState("");
 
   // Console log the article ID
   // console.log("Article ID:", id);
@@ -47,7 +48,7 @@ function SingleArticlePage() {
     try {
       const response = await getComments(postId);
 
-      response && console.log(response);
+      // response && console.log(response);
     } catch (err) {
       console.log(err);
       console.log(error);
@@ -90,6 +91,34 @@ function SingleArticlePage() {
   // Add back button handler
   const handleBack = () => {
     navigate(-1);
+  };
+
+  // Handle comment form submit
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+
+    const newComment = {
+      body: comment,
+      parentId: null,
+    };
+
+    try {
+      const response = await makeComment(blog.id, newComment);
+
+      if (response) {
+        //console.log(response);
+        handleFetchComment(blog.id);
+        setComment(""); // Clear the comment input after submission
+        setBlog((prev) => ({
+          ...prev,
+          totalComments: (prev.totalComments || 0) + 1, // Increment total comments
+        }));
+      }
+    } catch (err) {
+      console.log(err);
+      console.log(error);
+    }
+    //console.log(comment);
   };
 
   // Replace the loading state with the skeleton loader
@@ -156,7 +185,54 @@ function SingleArticlePage() {
 
           {/* Article Body */}
           <div className="prose prose-lg dark:prose-invert max-w-none mb-6 text-left">
-            <ReactMarkdown>{blog.body}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                h1: ({ node, ...props }) => (
+                  <h1 className="text-white" {...props} />
+                ),
+                h2: ({ node, ...props }) => (
+                  <h2 className="text-white" {...props} />
+                ),
+                h3: ({ node, ...props }) => (
+                  <h3 className="text-white" {...props} />
+                ),
+                p: ({ node, ...props }) => (
+                  <p className="text-gray-300" {...props} />
+                ),
+                a: ({ node, ...props }) => (
+                  <a className="text-blue-400 hover:text-blue-300" {...props} />
+                ),
+                code: ({ node, ...props }) => (
+                  <code
+                    className="bg-gray-800 text-gray-200 px-1 rounded"
+                    {...props}
+                  />
+                ),
+                pre: ({ node, ...props }) => (
+                  <pre
+                    className="bg-gray-800 text-gray-200 p-4 rounded-lg"
+                    {...props}
+                  />
+                ),
+                blockquote: ({ node, ...props }) => (
+                  <blockquote
+                    className="border-l-4 border-gray-600 pl-4 text-gray-400"
+                    {...props}
+                  />
+                ),
+                ul: ({ node, ...props }) => (
+                  <ul className="text-gray-300 list-disc pl-6" {...props} />
+                ),
+                ol: ({ node, ...props }) => (
+                  <ol className="text-gray-300 list-decimal pl-6" {...props} />
+                ),
+                li: ({ node, ...props }) => (
+                  <li className="text-gray-300" {...props} />
+                ),
+              }}
+            >
+              {blog.body}
+            </ReactMarkdown>
           </div>
 
           {/* Tags Section */}
@@ -175,7 +251,7 @@ function SingleArticlePage() {
 
           {/* Clap Section */}
 
-          <div className="flex  items-center  mb-1 gap-3">
+          <div className="flex  items-center  mt-10 gap-3">
             <div className="flex items-center  gap-1 my-5">
               <div
                 onClick={handleClap}
@@ -234,16 +310,15 @@ function SingleArticlePage() {
             )}
           </div>
           {/* Comment Section */}
-          <div className="max-w-2xl mx-auto w-full px-6 md:px-8 py-8 mt-4">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-              Comments
-            </h2>
+          <div className="max-w-2xl mx-auto w-full px-6 md:px-8 py-5 mt-4">
             {/* Comment Form */}
-            <form className="mb-6">
+            <form className="mb-6" onSubmit={handleCommentSubmit}>
               <textarea
                 className="w-full p-3 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#222] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 rows={3}
+                value={comment}
                 placeholder="Add a comment..."
+                onChange={(e) => setComment(e.target.value)}
               />
               <button
                 type="submit"

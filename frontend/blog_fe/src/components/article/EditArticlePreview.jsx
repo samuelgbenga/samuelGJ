@@ -111,10 +111,7 @@ const EditArticlePreview = () => {
 
       // Mock response - replace with actual Cloudinary API call
       console.log("from response:", response);
-      const mockResponse = {
-        url: "https://res.cloudinary.com/dbrqyy9fu/image/upload/v1/my_blog_folder/mock_uploaded_image",
-        id: "my_blog_folder/mock_uploaded_image",
-      };
+     
 
       // Update the article data with new image
       const updatedArticleData = {

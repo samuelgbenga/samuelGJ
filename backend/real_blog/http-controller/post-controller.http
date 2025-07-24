@@ -6,6 +6,18 @@ POST {{baseUrl}}/api/v1/posts
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 Authorization: Bearer {{accessToken}}
 
+
+### Add Comment to Post
+POST {{baseUrl}}/api/v1/posts/1/comments
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-Anonymous-Name: johndoe
+
+{
+  "body": "This is a comment on the post.",
+  "parentId": null
+}
+
 ------WebKitFormBoundary
 Content-Disposition: form-data; name="title"
 
