@@ -20,7 +20,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-[#0e0e0e]">
       {/* Sidebar */}
       <SideBar activeItem={activeItem} setActiveItem={setActiveItem} />
 

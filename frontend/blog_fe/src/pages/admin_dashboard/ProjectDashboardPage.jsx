@@ -4,6 +4,7 @@ import { PATHS } from "../../route/route";
 import { useProjects } from "../../hooks/useProjects";
 import { usePreserveScroll } from "../../utils/scrollconfig";
 import { LuCirclePlus } from "react-icons/lu";
+import SkLoader from "../../components/dashboard/SkLoader";
 
 const ProjectDashboardPage = () => {
   const {
@@ -53,46 +54,59 @@ const ProjectDashboardPage = () => {
   };
 
   return (
-    <div className="p-6 text-black">
-      {" "}
-      <div>
-        {/* Project List Section */}
+    <div className="min-h-screen bg-[#0f0f0f] text-white">
+      <div className="p-6">
+        {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold mt-8 mb-4">Projects</h1>
-          <Link to={PATHS.PROJECT.CREATE} className="text-blue-500 text-2xl">
+          <h1 className="text-2xl font-bold mt-8 mb-4 text-white">Projects</h1>
+          <Link
+            to={PATHS.PROJECT.CREATE}
+            className="text-blue-400 text-2xl hover:text-blue-300"
+          >
             <LuCirclePlus />
           </Link>
         </div>
 
+        {/* Loading / Error / List */}
         {projectIsLoading ? (
-          <p>Loading projects...</p>
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow"
+              >
+                <SkLoader />
+              </div>
+            ))}
+          </div>
         ) : projectError ? (
-          <p>Error loading projects</p>
+          <p className="text-red-400">Error loading projects</p>
         ) : (
-          <div className="space-y-2">
-            {projectListData &&
-              projectListData?.map((project) => (
-                <div
-                  key={project.id}
-                  className="p-4 bg-white rounded shadow flex justify-between items-center"
-                >
-                  <span className="flex-1">{project.name}</span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditProject(project)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteProject(project.id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                    >
-                      Delete {projectIsLoading && "ing..."}
-                    </button>
-                  </div>
+          <div className="space-y-3">
+            {projectListData?.map((project) => (
+              <div
+                key={project.id}
+                className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow flex justify-between items-center"
+              >
+                <span className="flex-1 text-gray-100 font-medium">
+                  {project.name}
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditProject(project)}
+                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProject(project.id)}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                  >
+                    Delete {projectIsLoading && "ing..."}
+                  </button>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         )}
       </div>

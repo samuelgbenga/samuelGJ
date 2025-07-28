@@ -4,6 +4,7 @@ import { PATHS } from "../../route/route";
 import { useArticles } from "../../hooks/useArticles";
 import { usePreserveScroll } from "../../utils/scrollconfig";
 import { LuCirclePlus } from "react-icons/lu";
+import SkLoader from "../../components/dashboard/SkLoader";
 
 const ArticleDashboardPage = () => {
   const {
@@ -58,37 +59,71 @@ const ArticleDashboardPage = () => {
   };
 
   return (
-    <div>
-      <div className="p-6 text-black">
-        <div className="flex justify-between items-center mb-6 ">
-          <h1 className="text-2xl font-bold ">Articles</h1>
-          <div>
-            <Link to={PATHS.ARTICLE.CREATE} className="text-blue-500 text-2xl"><LuCirclePlus /></Link>
-          </div>
+    <div className="min-h-screen bg-[#0f0f0f] text-white">
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-white">Articles</h1>
+          <Link
+            to={PATHS.ARTICLE.CREATE}
+            className="text-blue-400 text-2xl hover:text-blue-300"
+          >
+            <LuCirclePlus />
+          </Link>
         </div>
 
+        {/* Loading / Error / List */}
         {isLoading ? (
-          <p>Loading articles...</p>
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow"
+              >
+                <SkLoader />
+              </div>
+            ))}
+          </div>
         ) : error ? (
-          <p>Error loading articles</p>
+          <p className="text-red-400">Error loading articles</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {articleListData?.map((article) => (
               <div
                 key={article.id}
-                className="p-4 bg-white rounded shadow flex justify-between items-center"
+                className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow flex justify-between items-center"
               >
-                <span className="flex-1">{article.title}</span>
+                {/* Title */}
+                <span className="flex-1 text-gray-100 font-medium">
+                  {article.title}
+                </span>
+
+                {/* Actions */}
                 <div className="flex gap-2">
+                  {/* Status Badge */}
+                  <div
+                    className={`px-3 py-1 rounded-full transition-colors flex items-center text-sm font-semibold tracking-wide ${
+                      article.postStatus === "DRAFT"
+                        ? "bg-red-500/10 text-red-400"
+                        : "bg-green-500/10 text-green-400"
+                    }`}
+                  >
+                    {article.postStatus.charAt(0) +
+                      article.postStatus.slice(1).toLowerCase()}
+                  </div>
+
+                  {/* Edit Button */}
                   <button
                     onClick={() => handleEdit(article)}
-                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                   >
                     Edit
                   </button>
+
+                  {/* Delete Button */}
                   <button
                     onClick={() => handleDelete(article.id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                   >
                     Delete
                   </button>

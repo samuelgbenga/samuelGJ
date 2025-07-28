@@ -5,6 +5,7 @@ import { PATHS } from "../../route/route";
 import { useProjects } from "../../hooks/useProjects";
 import { useCertifications } from "../../hooks/useCertifications";
 import { usePreserveScroll } from "../../utils/scrollconfig";
+import SkLoader from "../../components/dashboard/SkLoader";
 
 const DashboardPage = () => {
   const {
@@ -32,10 +33,9 @@ const DashboardPage = () => {
     setCertListData,
     certListData,
     deleteCert,
-    
   } = useCertifications();
 
-    const { saveScroll, restoreScroll } = usePreserveScroll();
+  const { saveScroll, restoreScroll } = usePreserveScroll();
 
   const navigate = useNavigate();
 
@@ -71,7 +71,7 @@ const DashboardPage = () => {
         setArticleListData((prev) =>
           prev.filter((item) => item.id !== articleId)
         );
-          restoreScroll();
+        restoreScroll();
       }
     } catch (err) {
       console.log(err);
@@ -81,15 +81,15 @@ const DashboardPage = () => {
   };
 
   const handleDeleteProject = async (id) => {
-     saveScroll();
+    saveScroll();
     console.log("Delete project:", id);
     try {
       const response = await deleteProject(id);
       if (response) {
-        setProjectListData((prev) =>
-          Array.isArray(prev) && prev.filter((item) => item.id !== id)
+        setProjectListData(
+          (prev) => Array.isArray(prev) && prev.filter((item) => item.id !== id)
         );
-          restoreScroll();
+        restoreScroll();
       }
     } catch (err) {
       console.log(err);
@@ -105,12 +105,12 @@ const DashboardPage = () => {
   const handleEditCertificate = (cert) => {
     // Placeholder: store cert in sessionStorage and navigate to edit page
     sessionStorage.setItem("editCertificate", JSON.stringify(cert));
-     navigate(PATHS.CERTIFICATION.CREATE);
+    navigate(PATHS.CERTIFICATION.CREATE);
     //]console.log("Edit certificate:", cert.id);
   };
 
   const handleDeleteCertificate = async (id) => {
-     saveScroll();
+    saveScroll();
     console.log("Delete Certification:", id);
     try {
       const response = await deleteCert(id);
@@ -118,7 +118,7 @@ const DashboardPage = () => {
         setCertListData((prev) =>
           Array.isArray(prev) ? prev.filter((item) => item.id !== id) : []
         );
-          restoreScroll();
+        restoreScroll();
       }
     } catch (err) {
       console.log(err);
@@ -127,30 +127,50 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="p-6 text-black">
-      <h1 className="text-2xl font-bold mb-4">Articles</h1>
+    <div className="p-6 bg-[#0e0e0e] text-gray-100 min-h-screen">
+      {/* Articles Section */}
+      <h1 className="text-2xl font-bold mb-4 text-white">Articles</h1>
       {isLoading ? (
-        <p>Loading articles...</p>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow"
+            >
+              <SkLoader />
+            </div>
+          ))}
+        </div>
       ) : error ? (
-        <p>Error loading articles</p>
+        <p className="text-red-400">Error loading articles</p>
       ) : (
         <div className="space-y-2">
           {articleListData?.map((article) => (
             <div
               key={article.id}
-              className="p-4 bg-white rounded shadow flex justify-between items-center"
+              className="p-4 bg-[#1a1a1a] border border-gray-800 rounded-lg shadow flex justify-between items-center"
             >
-              <span className="flex-1">{article.title}</span>
+              <span className="flex-1 text-gray-100">{article.title}</span>
               <div className="flex gap-2">
+                <div
+                  className={`px-3 py-1 rounded-full transition-colors flex items-center text-sm font-semibold tracking-wide ${
+                    article.postStatus === "DRAFT"
+                      ? "text-red-400 bg-red-900/30"
+                      : "text-green-400 bg-green-900/30"
+                  }`}
+                >
+                  {article.postStatus.charAt(0) +
+                    article.postStatus.slice(1).toLowerCase()}
+                </div>
                 <button
                   onClick={() => handleEdit(article)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(article.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 >
                   Delete
                 </button>
@@ -160,32 +180,41 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Project List Section */}
-      <h1 className="text-2xl font-bold mt-8 mb-4">Projects</h1>
+      {/* Projects Section */}
+      <h1 className="text-2xl font-bold mt-8 mb-4 text-white">Projects</h1>
       {projectIsLoading ? (
-        <p>Loading projects...</p>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow"
+            >
+              <SkLoader />
+            </div>
+          ))}
+        </div>
       ) : projectError ? (
-        <p>Error loading projects</p>
+        <p className="text-red-400">Error loading projects</p>
       ) : (
         <div className="space-y-2">
-          {projectListData && projectListData?.map((project) => (
+          {projectListData?.map((project) => (
             <div
               key={project.id}
-              className="p-4 bg-white rounded shadow flex justify-between items-center"
+              className="p-4 bg-[#1a1a1a] border border-gray-800 rounded-lg shadow flex justify-between items-center"
             >
-              <span className="flex-1">{project.name}</span>
+              <span className="flex-1 text-gray-100">{project.name}</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEditProject(project)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteProject(project.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 >
-                  Delete {projectIsLoading && "ing..."}
+                  Delete
                 </button>
               </div>
             </div>
@@ -193,30 +222,39 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Certificate List Section */}
-      <h1 className="text-2xl font-bold mt-8 mb-4">Certificates</h1>
+      {/* Certificates Section */}
+      <h1 className="text-2xl font-bold mt-8 mb-4 text-white">Certificates</h1>
       {certIsLoading ? (
-        <p>Loading certificates...</p>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow"
+            >
+              <SkLoader />
+            </div>
+          ))}
+        </div>
       ) : certError ? (
-        <p>Error loading certificates</p>
+        <p className="text-red-400">Error loading certificates</p>
       ) : (
         <div className="space-y-2">
           {certListData?.map((cert) => (
             <div
               key={cert.id}
-              className="p-4 bg-white rounded shadow flex justify-between items-center"
+              className="p-4 bg-[#1a1a1a] border border-gray-800 rounded-lg shadow flex justify-between items-center"
             >
-              <span className="flex-1">{cert.name}</span>
+              <span className="flex-1 text-gray-100">{cert.name}</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEditCertificate(cert)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteCertificate(cert.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 >
                   Delete
                 </button>

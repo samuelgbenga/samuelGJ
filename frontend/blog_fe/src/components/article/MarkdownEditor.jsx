@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { PATHS } from "../../route/route";
 import { useArticles } from "../../hooks/useArticles";
 import ContentLoader from "react-content-loader";
+import { FiPlus } from "react-icons/fi"; // Add this import at the top
+import { LuCirclePlus } from "react-icons/lu";
 
 // Debounce utility function
 const debounce = (func, wait) => {
@@ -18,22 +20,20 @@ const debounce = (func, wait) => {
   };
 };
 
-// Custom Image Skeleton Loader Component
 const ImageSkeletonLoader = () => (
   <ContentLoader
     speed={2}
-    width={800}
+    width={500}
     height={400}
     viewBox="0 0 800 400"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
+    backgroundColor="#2a2a2a"
+    foregroundColor="#444"
     style={{ margin: "1rem auto", display: "block" }}
   >
-    <rect x="0" y="0" rx="8" ry="8" width="800" height="400" />
+    <rect x="0" y="0" rx="8" ry="8" width="400" height="400" />
   </ContentLoader>
 );
 
-// i will swtich to use uiwjs markdown editor later
 export default function MarkdownEditor() {
   const [markdownInput, setMarkdownInput] = useState("");
   const [articleTitle, setArticleTitle] = useState("");
@@ -44,24 +44,22 @@ export default function MarkdownEditor() {
   const previewRef = useRef(null);
   const previousPathRef = useRef(null);
 
-  // Auto-scroll preview when content changes
+  // Inside your component state
+  const dragRef = useRef(null);
+  const [dragPosition, setDragPosition] = useState({ x: 200, y: 200 }); // initial position
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
     if (previewRef.current) {
       previewRef.current.scrollTop = previewRef.current.scrollHeight;
     }
   }, [markdownInput]);
 
-  // Load draft article when component mounts
   useEffect(() => {
     if (previousPathRef.current === null) {
       const previousPath = sessionStorage.getItem("previousPath");
       previousPathRef.current = previousPath;
       sessionStorage.removeItem("previousPath");
-      if (previousPath && previousPath.includes("/edit")) {
-        console.log("ENTERING FROM: The Edit Preview Page");
-      } else {
-        console.log("ENTERING FROM: A different page (e.g., Dashboard)");
-      }
     }
 
     const draftArticle = sessionStorage.getItem("draftArticle");
@@ -74,7 +72,6 @@ export default function MarkdownEditor() {
         sessionStorage.removeItem("draftEditArticle");
       } catch (error) {
         console.error("Error loading draft article:", error);
-        // Clear invalid draft data
         sessionStorage.removeItem("draftArticle");
       }
     } else if (draftEditArticle) {
@@ -83,11 +80,9 @@ export default function MarkdownEditor() {
         setMarkdownInput(content || "");
         setArticleTitle(title || "");
         setIsEdit(true);
-        console.log("i entered here");
         sessionStorage.removeItem("draftArticle");
       } catch (error) {
         console.error("Error loading draft article:", error);
-        // Clear invalid draft data
         sessionStorage.removeItem("draftEditArticle");
         setIsEdit(false);
         navigate(PATHS.ADMIN.DASHBOARD);
@@ -95,7 +90,6 @@ export default function MarkdownEditor() {
     }
   }, []);
 
-  // Auto-save draft article whenever content or title changes
   const saveDraft = useCallback(
     debounce((title, content) => {
       const draftEditArticle = sessionStorage.getItem("draftEditArticle");
@@ -105,7 +99,6 @@ export default function MarkdownEditor() {
           body: content,
           createdAt: new Date().toISOString(),
         };
-
         const existing = JSON.parse(draftEditArticle);
         const merged = { ...existing, ...articleData };
         sessionStorage.setItem("draftEditArticle", JSON.stringify(merged));
@@ -115,20 +108,46 @@ export default function MarkdownEditor() {
           content,
           createdAt: new Date().toISOString(),
         };
-
         const draftArticle = sessionStorage.getItem("draftArticle");
         const existing = draftArticle ? JSON.parse(draftArticle) : {};
         const merged = { ...existing, ...articleData };
         sessionStorage.setItem("draftArticle", JSON.stringify(merged));
       }
-    }, 1000), // Save after 1 second of no changes
+    }, 1000),
     []
   );
 
-  // Effect to trigger auto-save
   useEffect(() => {
     saveDraft(articleTitle, markdownInput);
   }, [articleTitle, markdownInput, saveDraft]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (dragRef.current?.dataset.dragging === "true") {
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        const scrollX = window.scrollX || document.documentElement.scrollLeft;
+
+        setDragPosition({
+          x: e.clientX - dragOffset.x + scrollX,
+          y: e.clientY - dragOffset.y + scrollY,
+        });
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (dragRef.current) {
+        dragRef.current.dataset.dragging = "false";
+      }
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragOffset]);
 
   const handleImageUpload = async () => {
     const input = document.createElement("input");
@@ -141,24 +160,16 @@ export default function MarkdownEditor() {
 
       const formData = new FormData();
       formData.append("multipartFiles", file);
-
-      // Create a temporary placeholder for the image
       const tempId = `temp_${Date.now()}`;
-      const tempMarkdown = `\n![Uploading...](${tempId})\n`; // Added newlines
+      const tempMarkdown = `\n![Uploading...](${tempId})\n`;
 
-      // Insert placeholder at the end of the current line or start a new line
       const textarea = document.getElementById("markdown-editor");
       const startPos = textarea.selectionStart;
       const endPos = textarea.selectionEnd;
 
-      // Get the current line's content
       const before = markdownInput.substring(0, startPos);
       const after = markdownInput.substring(endPos, markdownInput.length);
-
-      // Check if we're in the middle of a line
       const isInMiddleOfLine = before.split("\n").pop().length > 0;
-
-      // If we're in the middle of a line, add a newline before the image
       const newMarkdown = isInMiddleOfLine
         ? before + "\n" + tempMarkdown + after
         : before + tempMarkdown + after;
@@ -168,10 +179,7 @@ export default function MarkdownEditor() {
 
       try {
         const response = await postPhoto(formData);
-        console.log("Photo upload response:", response);
-
         if (response && response.url) {
-          // Replace the placeholder with the actual image URL
           setMarkdownInput((prevMarkdown) =>
             prevMarkdown.replace(
               tempMarkdown,
@@ -179,19 +187,12 @@ export default function MarkdownEditor() {
             )
           );
         } else {
-          console.error("No image URL found in response:", response);
-          // Remove the placeholder if upload failed
-          // const failedMarkdown = newMarkdown.replace(tempMarkdown, "");
-          // setMarkdownInput(failedMarkdown);
           setMarkdownInput((prevMarkdown) =>
             prevMarkdown.replace(tempMarkdown, "")
           );
         }
       } catch (error) {
         console.error("Upload failed:", error);
-        // Remove the placeholder if upload failed
-        // const failedMarkdown = newMarkdown.replace(tempMarkdown, "");
-        // setMarkdownInput(failedMarkdown);
         setMarkdownInput((prevMarkdown) =>
           prevMarkdown.replace(tempMarkdown, "")
         );
@@ -203,24 +204,16 @@ export default function MarkdownEditor() {
     input.click();
   };
 
-  // Custom image component for ReactMarkdown
   const ImageComponent = ({ node, ...props }) => {
-    // Check if this is the currently uploading image
     const isUploading = props.src === uploadingImageId;
-
-    if (isUploading) {
-      return <ImageSkeletonLoader />;
-    }
-
+    if (isUploading) return <ImageSkeletonLoader />;
     return (
       <img
         {...props}
         alt={props.alt}
         style={{
-          maxWidth: "800px",
+          maxWidth: "400px",
           maxHeight: "400px",
-          width: "auto",
-          height: "auto",
           objectFit: "contain",
           borderRadius: "8px",
           margin: "1rem auto",
@@ -235,114 +228,157 @@ export default function MarkdownEditor() {
       alert("Please enter an article title");
       return;
     }
-    // const articleData = {
-    //   title: articleTitle,
-    //   content: markdownInput,
-    //   createdAt: new Date().toISOString(),
-    // };
-    //localStorage.setItem("draftArticle", JSON.stringify(articleData));
     if (isEdit) {
       navigate(PATHS.ARTICLE.EDIT);
-    } else if (!isEdit) {
+    } else {
       navigate(PATHS.ARTICLE.PREVIEW);
     }
-    // console.log(isEdit);
   };
 
-  // useEffect(() => {
-  //   console.log(imageUrl);
-  // }, [imageUrl]);
-
   return (
-    <div className="flex w-full h-screen items-center overflow-hidden">
-      {/* Editor */}
-      <div className="w-[45%] h-[80%] m-6 outline-none flex flex-col p-5 bg-[#eceeee] border-2 border-gray-300 overflow-hidden overflow-y-auto">
-        <div className="w-full h-10 border-b border-gray-300 flex items-center justify-between text-sm font-medium mb-4">
-          <div>
-            MARKDOWN{" "}
-            <button
+    <div className="flex w-full min-h-screen text-white bg-transparent overscroll-none">
+      {/* Markdown Editor */}
+      <div className="relative w-1/2 p-6 pr-0 border-r border-[#1a1a1a] bg-transparent overscroll-none">
+        <div className="flex items-center justify-center text-sm font-medium mb-4 fixed top-0 left-0 w-1/2 h-16 bg-[#0e0e0e] border-b border-r border-[#1a1a1a] z-10">
+          <div className="text-gray-400 text-3xl font-bold">MARKDOWN</div>
+        </div>
+
+        <input
+          type="text"
+          value={articleTitle}
+          onChange={(e) => setArticleTitle(e.target.value)}
+          placeholder="Enter your article title..."
+          className="w-full mt-10  mb-2 px-4 py-2 text-2xl font-bold bg-transparent border-gray-700 focus:border-blue-500 outline-none text-white placeholder-gray-500"
+        />
+
+
+        <div className="relative w-full h-full">
+          <textarea
+            id="markdown-editor"
+            autoFocus
+            className="w-full h-full p-4 pb-[100px] bg-transparent text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-0 focus:border-none"
+            value={markdownInput}
+            onChange={(e) => setMarkdownInput(e.target.value)}
+          />
+
+          {/* Floating Draggable Upload Button */}
+          <div
+            className="relative group"
+            style={{
+              position: "absolute",
+              top: `${dragPosition.y}px`,
+              left: `${dragPosition.x}px`,
+              zIndex: 50,
+            }}
+          >
+            {/* Tooltip */}
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-nowrap">
+              Upload Image
+            </div>
+
+            {/* Draggable Button */}
+            <span
+              ref={dragRef}
+              onMouseDown={(e) => {
+                const rect = dragRef.current.getBoundingClientRect();
+                const scrollY =
+                  window.scrollY || document.documentElement.scrollTop;
+                const scrollX =
+                  window.scrollX || document.documentElement.scrollLeft;
+
+                setDragOffset({
+                  x: e.clientX - rect.left,
+                  y: e.clientY - rect.top + 130,
+                });
+
+                dragRef.current.dataset.dragging = "true";
+                e.preventDefault();
+              }}
               onClick={handleImageUpload}
-              disabled={isLoading}
-              className={`${
-                isLoading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:text-blue-600"
-              }`}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1a1a1a] text-blue-400 hover:text-blue-500 transition duration-200 shadow-md cursor-move"
+              title="Upload Image"
             >
-              {isLoading ? "Uploading..." : "Upload Image"}
-            </button>
+              <LuCirclePlus className="text-xl text-blue-700" />
+            </span>
           </div>
+        </div>
+
+        {/* Fixed Bottom Submit Button */}
+        <div className="fixed bottom-0 left-0 w-1/2 px-6 py-4 ">
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className={`px-4 py-1 bg-blue-500 text-white rounded transition-colors ${
-              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+            className={`w-full py-2 rounded text-white bg-[#1a1a1a] hover:bg-[#2a2a2a] transition-colors ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             I am done
           </button>
         </div>
-
-        {/* Title Input */}
-        <div className="mb-6">
-          <input
-            type="text"
-            value={articleTitle}
-            onChange={(e) => setArticleTitle(e.target.value)}
-            placeholder="Enter your article title..."
-            //disabled={isLoading}
-            className={`w-full px-4 py-2 text-2xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 outline-none `}
-            // className={`w-full px-4 py-2 text-2xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 outline-none ${
-            //   isLoading ? "opacity-50 cursor-not-allowed" : ""
-            // }`}
-          />
-        </div>
-
-        <textarea
-          id="markdown-editor"
-          autoFocus
-          //disabled={isLoading}
-          className={`p-4 border-none outline-none w-[96%] h-full text-base resize-none bg-[#151515] overflow-x-hidden `}
-          // className={`p-4 border-none outline-none w-[96%] h-full text-base resize-none bg-[#151515] overflow-x-hidden ${
-          //   isLoading ? "opacity-50 cursor-not-allowed" : ""
-          // }`}
-          value={markdownInput}
-          onChange={(e) => setMarkdownInput(e.target.value)}
-        />
       </div>
 
-      {/* Preview */}
-      <div className="w-[45%] h-[80%] m-6 outline-none flex flex-col p-5 bg-[#eceeee] border-2 border-gray-300 overflow-hidden overflow-y-auto">
-        <div className="w-full h-10 border-b border-gray-300 flex items-center text-sm font-medium mb-4">
-          PREVIEW
+      {/* Markdown Preview */}
+      <div className="w-1/2 p-6 bg-transparent overflow-y-auto relative">
+        <div className="flex items-center justify-center text-sm font-medium mb-4 fixed top-0 right-0  w-1/2 h-16 bg-[#0e0e0e] border-b border-l border-[#1a1a1a] z-10">
+          <div className="text-gray-400 text-3xl font-bold">PREVIEW</div>
         </div>
-        <div
-          className="p-4 w-[96%] h-full overflow-x-hidden bg-[#151515]"
-          ref={previewRef}
-        >
+
+        <div className="w-full text-white space-y-4 mt-12">
           {articleTitle && (
-            <h1 className="text-3xl font-bold mb-6 text-white">
-              {articleTitle}
-            </h1>
+            <h1 className="text-3xl font-bold mb-6">{articleTitle}</h1>
           )}
           <ReactMarkdown
             children={markdownInput}
             components={{
               img: ImageComponent,
+              // No need to override `code` unless needed
+              // Add custom styling for other markdown elements
+              h1: ({ node, ...props }) => (
+                <h1 className="text-white" {...props} />
+              ),
+              h2: ({ node, ...props }) => (
+                <h2 className="text-white" {...props} />
+              ),
+              h3: ({ node, ...props }) => (
+                <h3 className="text-white" {...props} />
+              ),
+              p: ({ node, ...props }) => (
+                <p className="text-gray-300" {...props} />
+              ),
+              a: ({ node, ...props }) => (
+                <a className="text-blue-400 hover:text-blue-300" {...props} />
+              ),
+              code: ({ node, ...props }) => (
+                <code
+                  className="bg-gray-800 text-gray-200 px-1 rounded"
+                  {...props}
+                />
+              ),
+              pre: ({ node, ...props }) => (
+                <pre
+                  className="bg-gray-800 text-gray-200 p-4 rounded-lg"
+                  {...props}
+                />
+              ),
+              blockquote: ({ node, ...props }) => (
+                <blockquote
+                  className="border-l-4 border-gray-600 pl-4 text-gray-400"
+                  {...props}
+                />
+              ),
+              ul: ({ node, ...props }) => (
+                <ul className="text-gray-300 list-disc pl-6" {...props} />
+              ),
+              ol: ({ node, ...props }) => (
+                <ol className="text-gray-300 list-decimal pl-6" {...props} />
+              ),
+              li: ({ node, ...props }) => (
+                <li className="text-gray-300" {...props} />
+              ),
             }}
           />
         </div>
       </div>
-
-      {/* Loading Overlay */}
-      {/* {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-2 text-gray-700">Uploading image...</p>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import MarkdownEditor from "../../components/article/MarkdownEditor";
 
 const CreateArticlePage = () => {
   return (
-    <div>
+    <div >
       <MarkdownEditor />
     </div>
   );

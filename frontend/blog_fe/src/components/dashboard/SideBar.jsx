@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   DocumentTextIcon,
@@ -12,11 +12,7 @@ import { PATHS } from "../../route/route";
 import { useLoginHook } from "../../hooks/useAuth";
 
 const sidebarItems = [
-  {
-    id: "Dashboard",
-    icon: HomeIcon,
-    path: PATHS.ADMIN.DASHBOARD,
-  },
+  { id: "Dashboard", icon: HomeIcon, path: PATHS.ADMIN.DASHBOARD },
   { id: "Article", icon: DocumentTextIcon, path: PATHS.ADMIN.ARTICLE },
   { id: "Projects", icon: FolderIcon, path: PATHS.ADMIN.PROJECT },
   { id: "Certificate", icon: AcademicCapIcon, path: PATHS.ADMIN.CERTIFICATION },
@@ -33,48 +29,41 @@ const SideBar = ({ activeItem, setActiveItem }) => {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
-    console.log("Logout clicked");
-    // Example: Clear local storage, redirect to login, etc.
-    // localStorage.removeItem("user");
-    // navigate(PATHS.ADMIN.LOGIN);
     logout();
     navigate(PATHS.HOME, { replace: true });
   };
 
   return (
-    <>
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Logo/Brand */}
-        <div className="h-16 flex items-center justify-center ">
-          <div className="text-sm font-bold text-gray-800">Admin Panel</div>
-        </div>
+    <aside className="w-64 h-screen bg-[#111111] border-r border-[#1f1f1f] flex flex-col shadow-lg">
+      {/* Logo/Brand */}
+      <div className="h-16 flex items-center justify-center border-b border-[#1f1f1f]">
+        <div className="text-lg font-bold text-gray-100 tracking-wide">Admin Panel</div>
+      </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {sidebarItems.map((item) => (
-            <SidebarItem
-              key={item.id}
-              icon={item.icon}
-              text={item.id}
-              isActive={activeItem === item.id}
-              onClick={() => handleNavigation(item)}
-            />
-          ))}
-        </nav>
-
-        {/* Logout Button */}
-        <div className="p-3 border-t border-gray-200">
+      {/* Navigation Items */}
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {sidebarItems.map((item) => (
           <SidebarItem
-            icon={ArrowRightOnRectangleIcon}
-            text="Log Out"
-            isActive={false}
-            onClick={handleLogout}
-            isLogout
+            key={item.id}
+            icon={item.icon}
+            text={item.id}
+            isActive={activeItem === item.id}
+            onClick={() => handleNavigation(item)}
           />
-        </div>
-      </aside>
-    </>
+        ))}
+      </nav>
+
+      {/* Logout */}
+      <div className="p-3 border-t border-[#1f1f1f]">
+        <SidebarItem
+          icon={ArrowRightOnRectangleIcon}
+          text="Log Out"
+          isActive={false}
+          onClick={handleLogout}
+          isLogout
+        />
+      </div>
+    </aside>
   );
 };
 
@@ -90,13 +79,13 @@ const SidebarItem = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors
+    className={`flex items-center space-x-3 w-full px-4 py-3 text-sm font-semibold rounded-md transition-colors
       ${
         isActive
-          ? "bg-blue-50 text-blue-600"
-          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          ? "bg-blue-600 text-white"
+          : "text-gray-400 hover:bg-[#1e1e1e] hover:text-white"
       }
-      ${isLogout ? "mt-auto" : ""}
+      ${isLogout ? "mt-auto text-red-500 hover:text-red-400" : ""}
     `}
   >
     <Icon className="w-5 h-5" />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { PATHS } from "../../route/route";
-import { FaLinkedin, FaTwitter, FaGithub } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaMedium } from "react-icons/fa";
 import wave from "../../assets/img/waving1.gif";
 
 export default function ProfileLeft({ visibleSections }) {
@@ -100,22 +100,30 @@ export default function ProfileLeft({ visibleSections }) {
       {/* Social Links */}
       <div className="mt-30 flex items-center justify-between">
         <a
-          href="#"
+          href="https://www.linkedin.com/in/samuel-joseph-gbenga/"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
         >
           <FaLinkedin />
         </a>
+
         <a
-          href="#"
-          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
-        >
-          <FaTwitter />
-        </a>
-        <a
-          href="#"
+          href="https://github.com/samuelgbenga"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
         >
           <FaGithub />
+        </a>
+
+        <a
+          href="https://medium.com/@samuelgbenga972"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white hover:text-[#8CBF75] transition-colors duration-300 text-lg"
+        >
+          <FaMedium />
         </a>
         <Petals1 />
         <Petals2 />

@@ -14,31 +14,29 @@ const TopBar = ({ isAvatarOpen, setIsAvatarOpen }) => {
 
   const handleLogout = () => {
     setIsAvatarOpen(false);
-   // console.log("logout");
+    // console.log("logout");
     logout();
     navigate(PATHS.HOME, { replace: true });
   };
 
-
   return (
     <>
-      {" "}
-      {/* Header */}
-      <header className="h-16 bg-white flex items-center justify-end px-6">
-        {/* Avatar */}
+      {/* TopBar Header */}
+      <header className="h-16 bg-gray-900 border-b border-[#1f1f1f] flex items-center justify-end px-6">
         <div className="relative">
-          <button
+          <span
             onClick={() => setIsAvatarOpen(!isAvatarOpen)}
-            className="flex items-center space-x-3 focus:outline-none"
+            className="all-[unset] flex items-center space-x-3 cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-600">AD</span>
+            <div className="w-9 h-9 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shadow-md">
+              <span className="text-sm font-semibold text-gray-300">AD</span>
             </div>
-          </button>
+          </span>
+
           <AvatarDropdown
             isOpen={isAvatarOpen}
-            onClose={() => handleNavigation()}
-            logout={()=> handleLogout()}
+            onClose={handleNavigation}
+            logout={handleLogout}
           />
         </div>
       </header>
@@ -53,16 +51,15 @@ const AvatarDropdown = ({ isOpen, onClose, logout }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+    <div className="absolute right-0 mt-2 w-48 bg-[#1c1c1c] border border-[#2a2a2a] rounded-md shadow-xl z-20">
       <button
-        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition"
         onClick={onClose}
       >
         View Profile
       </button>
-
       <button
-        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-[#2a2a2a] hover:text-red-400 transition"
         onClick={logout}
       >
         Logout
